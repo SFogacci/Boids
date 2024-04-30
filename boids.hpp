@@ -2,20 +2,35 @@
 #define BOID_HPP
 
 #include <SFML/Graphics.hpp>
- namespace bd{
-struct Position{};
-struct Velocity{};
-class Boid{
-    private:
-    Position position;
-    Velocity velocity;
+#include <vector>
 
-    public:
-    Boid(Position const& p,Velocity const&v ): position{p}, velocity{v} {}
-    Position getPosition() const;
-    void setPosition();
-    Velocity getVelocity() const;
-    void setVelocity();
+namespace bd {
+
+struct Vector
+{
+  float x{};
+  float y{};
 };
- }
-#endif BOIDS_HPP
+
+class Boid
+{
+  Vector position;
+  Vector velocity;
+
+ public:
+  Boid(Vector const& p, Vector const& v)
+      : position{p}
+      , velocity{v}
+  {}
+
+  Vector getPosition() const;
+  void setPosition();
+
+  Vector getVelocity() const;
+  void setVelocity();
+};
+
+float distance(Boid const&, Boid const&);
+
+} // namespace bd
+#endif
