@@ -2,7 +2,7 @@
 #define BOID_HPP
 
 #include <SFML/Graphics.hpp>
-#include <vector>
+
 
 namespace bd {
 
@@ -29,8 +29,5 @@ class Boid
   Vector getVelocity() const;
   void setVelocity();
 };
-
-float distance(Boid const&, Boid const&);
-
-} // namespace bd
-#endif
+ }
+#endif 
