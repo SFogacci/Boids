@@ -4,7 +4,7 @@
 namespace bd {
 float distance(Boid const& a, Boid const& b)
 {
-  return norm(vecdif(a.getPosition(), b.getPosition()));
+  return norm(vecsum(a.getPosition(), vecmul(b.getPosition(), -1.f)));
 }
 
 Vector Boid::getPosition() const
@@ -16,10 +16,19 @@ Vector Boid::getVelocity() const
   return velocity;
 }
 
-// Ora è primo-secondo
+Vector vecsum(Vector const& a, Vector const& b)
+{
+  return {a.x + b.x, a.y + b.y};
+}
+
 Vector vecdif(Vector const& a, Vector const& b)
 {
   return {a.x - b.x, a.y - b.y};
+} 
+
+Vector vecmul(Vector const& a, float b)
+{
+  return {a.x * b, a.y * b};
 }
 
 float norm(Vector a)
