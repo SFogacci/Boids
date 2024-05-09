@@ -29,5 +29,10 @@ class Boid
   Vector getVelocity() const;
   void setVelocity();
 };
+
+bool is_near(Boid const&, Boid const&, float);
+Vector alignment(Boid const&, std::vector<Boid>, float);
+Vector separation(Boid const&, std::vector<Boid>, float);
+Vector cohesion(Boid const&, std::vector<Boid>, float);
  }
 #endif 
