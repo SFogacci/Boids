@@ -16,19 +16,22 @@ Vector Boid::getVelocity() const
   return velocity;
 }
 
-Vector vecsum(Vector const& a, Vector const& b)
+Vector operator+(Vector const& v1, Vector const& v2)
 {
-  return {a.x + b.x, a.y + b.y};
+  Vector sum{v1.x + v2.x, v1.y + v2.y};
+  return sum;
 }
 
-Vector vecdif(Vector const& a, Vector const& b)
+Vector operator-(Vector const& v1, Vector const& v2)
 {
-  return {a.x - b.x, a.y - b.y};
-} 
+  Vector diff{v1.x - v2.x, v1.y - v2.y};
+  return diff;
+}
 
-Vector vecmul(Vector const& a, float b)
+Vector operator*(float a, Vector const& v)
 {
-  return {a.x * b, a.y * b};
+  Vector mul{a * v.x, a * v.y};
+  return mul;
 }
 
 float norm(Vector a)
