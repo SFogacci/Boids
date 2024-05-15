@@ -1,4 +1,4 @@
-ccmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.16)
 project(progettopf VERSION 0.1.0)
 
 # abilita il supporto per i test, tra cui l'opzione BUILD_TESTING usata sotto
@@ -24,16 +24,16 @@ string(APPEND CMAKE_EXE_LINKER_FLAGS_DEBUG " -fsanitize=address,undefined -fno-o
 #   le dipendenze vengono identificate automaticamente
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
-add_executable(boids main_sfml.cpp boids.cpp)
-target_link_libraries(boids PRIVATE sfml-graphics)
+add_executable(main main.cpp boid.cpp vectors.cpp)
+target_link_libraries(main PRIVATE sfml-graphics)
 
 # se il testing e' abilitato...
 #   per disabilitare il testing, passare -DBUILD_TESTING=OFF a cmake durante la fase di configurazione
 if (BUILD_TESTING)
 
   # aggiungi l'eseguibile all.t
-  add_executable(boids.t boids.test.cpp boids.cpp) #manca il file di grafica
+  # add_executable(all.t all.t.cpp complex.t.cpp)
   # aggiungi l'eseguibile all.t alla lista dei test
-  add_test(NAME boids.t COMMAND boids.t)
+  # add_test(NAME all.t COMMAND all.t)
 
 endif()
