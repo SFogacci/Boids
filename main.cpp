@@ -1,15 +1,45 @@
 #include "boid.hpp"
 #include "vectors.hpp"
 #include <iostream>
+#include <cmath>
+#include "SFML/Graphics.hpp"
 
-// int main()
-// {
-// bd::Boid b;
-// bd::Vector v {1, 0};
-// b.setVelocity(v);
-// auto [x, y] = b.getVelocity();
-// std::cout << x << ' ' << y << '\n';
-// }
+auto bd::Boid::moveBoid(bd::Flock const& flock, bd::Boid& b, float const d,
+                        float const ds, float s, float const a, float const c)
+{
+  auto v = (flock.separation(b, ds, s) + flock.alignment(b, d, a))
+         + flock.cohesion(b, d, c);
+  b.setVelocity(v + b.getVelocity());
+  b.setPosition(b.getPosition() + ((1.f / 60.f) * b.getVelocity() ));
+  b.getOrientation();
+}
+
+ void gameLoop(bd::Flock & flock, float const d, float const d_s,
+                float const s, float const a, float const c)
+  {
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Boids");
+    window.setFramerateLimit(60);
+    window.setPosition(sf::Vector2i(1920, -200));
+
+    while (window.isOpen()) {
+      sf::Event event;
+      while (window.pollEvent(event)) {
+        if (event.type == sf::Event::Closed) {
+          window.close();
+        }
+      }
+
+      window.clear();
+      for (auto it = flock.flock().begin(), last = flock.flock().end(); it != last; ++it) {
+        window.draw(it->birdShape);
+        // std::cout << " " << it->getVelocity().x << std::endl; //debug
+        it->moveBoid(flock, it, d, d_s, s, a, c);
+      }
+
+      window.display();
+    }
+  }
+
 
 int main()
 {
@@ -24,15 +54,14 @@ int main()
   bd::Boid b3{{0, 1}, {1, -1}};
   bd::Boid b4{{1, 1}, {-1, -1}};
 
-  bd::Boid::Flock flock{b1, b2, b3, b4};
-  std::cout << "Flock size is " << flock.size() << '\n';
+  bd::Flock flock(b1);
+  bd::Flock flock(b2);
+  bd::Flock flock(b3);
+  bd::Flock flock(b4);
 
-  for (auto& b : flock) {
-    bd::Vector newVel = b.getVelocity() + b.separation(flock, ds, s)
-                      + b.alignment(flock, d, a) + b.cohesion(flock, d, c);
-    std::cout << newVel.x << " " << newVel.y << "\n";
-    b.setVelocity(newVel);
-    b.setPosition(b.getPosition() + newVel); // i boids successivi lavoreranno
-                                             // con le nuove velocità di quelli precedenti, va bene?
-  }
+  std::cout << "Flock size is " << flock.flock().size() << '\n';
+
+void gameLoop(bd::Flock & flock, float const d, float const d_s,
+                float const s, float const a, float const c);
+ 
 }

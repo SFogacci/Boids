@@ -4,21 +4,21 @@
 namespace bd {
 struct Vector
 {
-  double x{};
-  double y{};
+  float x{};
+  float y{};
 
   Vector operator+=(Vector const&);
 };
 
 Vector operator+(Vector const&, Vector const&);
 
-Vector operator*(double, Vector const&);
+Vector operator*(float, Vector const&);
 
 Vector operator-(Vector const&, Vector const&);
 
-Vector operator/(Vector const&, double);
+Vector operator/(Vector const&, float);
 
-double norm(Vector const&);
+float norm(Vector const&);
 } // namespace bd
 
 #endif

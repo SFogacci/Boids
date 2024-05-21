@@ -2,9 +2,45 @@
 #define BOID_HPP
 
 #include "vectors.hpp"
+#include "SFML/Graphics.hpp"
+#include <cmath>
 #include <vector>
 
 namespace bd {
+
+const float pi = std::atan(1.f) * 4;
+
+class Flock
+{
+  std::vector<Boid> flock_;
+  std::size_t size_{};
+  float d;
+  float s;
+  float ds;
+  float a;
+  float c;
+
+ public:
+  Flock(Boid const& b)
+  {
+    flock_.push_back(b);
+    ++size_;
+  };
+  // class invariant is flock_.size() == size_;
+
+  auto const& flock() const
+  {
+    return flock_;
+  }
+  std::vector<bd::Boid> evolution()
+  {}
+
+  Vector separation(bd::Boid const&, float, float) const;
+
+  Vector alignment(bd::Boid const&, float, float) const;
+
+  Vector cohesion(bd::Boid const&, float, float) const;
+};
 
 class Boid
 {
@@ -15,8 +51,7 @@ class Boid
   Boid(Vector p, Vector v)
       : position_{p}
       , velocity_{v}
-  { // controlli sui valori di p e v?
-  }
+  {}
 
   auto getPosition() const
   {
@@ -28,25 +63,54 @@ class Boid
     return velocity_;
   }
 
+  auto getOrientation() const
+  {
+    if (velocity_.x > 0 && velocity_.y > 0) {
+      std::atan((velocity_.y) / velocity_.x) * (180 / pi);
+    }
+    if (velocity_.x < 0 && velocity_.y < 0) {
+      std::atan((velocity_.y) / velocity_.x) * (180 / pi) + 180.f;
+    };
+    if (velocity_.x > 0 && velocity_.y < 0) {
+      std::atan((velocity_.y) / velocity_.x) * (180 / pi) + 360.f;
+    };
+  }
+
   void setPosition(Vector const& p)
   {
-    (this->position_) = p;
+    position_ = p;
   }
 
   void setVelocity(Vector const& v)
   {
-    (this->velocity_) = v;
+    velocity_ = v;
   }
 
-  auto isClose(Boid const&, double) const;
+  void setRotation(float)
+  {
+    if (velocity_.x > 0 && velocity_.y > 0) {
+      std::atan((velocity_.y) / velocity_.x) * (180 / pi);
+    }
+    if (velocity_.x < 0 && velocity_.y < 0) {
+      std::atan((velocity_.y) / velocity_.x) * (180 / pi) + 180.f;
+    };
+    if (velocity_.x > 0 && velocity_.y < 0) {
+      std::atan((velocity_.y) / velocity_.x) * (180 / pi) + 360.f;
+    };
+  }
 
-  using Flock = std::vector<Boid>;
+  bool isClose(Boid const&, float) const;
 
-  Vector separation(Flock const&, double, double) const;
+  auto moveBoid(bd::Flock const& flock, bd::Boid& b, float const d,
+                float const ds, float s, float const a, float const c);
 
-  Vector alignment(Flock const&, double, double) const;
+  // using Flock = std::vector<Boid>;
 
-  Vector cohesion(Flock const&, double, double) const;
+  // Vector separation(Flock const&, float, float) const;
+
+  // Vector alignment(Flock const&, float, float) const;
+
+  // Vector cohesion(Flock const&, float, float) const;
 };
 
 } // namespace bd

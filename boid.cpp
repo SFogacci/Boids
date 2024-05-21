@@ -1,58 +1,104 @@
 #include "boid.hpp"
 namespace bd {
 
-auto Boid::isClose(Boid const& b, double d) const
-{
-  auto distance = norm((b.getPosition() - this->position_));
-  return distance < d; //&& distance != 0; non considera se stesso un vicino
-                       // ma potrebbe evitare un altro nello
-                       // stesso posto
-}
+// auto Boid::isClose(Boid const& b, float d) const
+// {
+//   auto distance = norm((b.getPosition() - this->position_));
+//   return distance < d; //&& distance != 0; non considera se stesso un vicino
+//                        // ma potrebbe evitare un altro nello
+//                        // stesso posto
+// }
 
-Vector Boid::separation(Flock const& f, double ds, double s) const
+// Vector Flock::separation(bd::Boid const& b, float ds, float s) const
+// {
+//   Vector correction;
+//   for (auto const& other : flock_) {
+//     if (b.isClose(other, ds)) {
+//       correction +=
+//           other.getPosition()
+//           - b.getPosition(); // da migliorare evitando il boid stesso a
+//           priori
+//     }
+//   }
+//   return -s * correction;
+// }
+
+// Vector Flock::alignment(bd::Boid const& b, float d, float a) const
+// {
+//   Vector sumVel;
+//   int size{};
+//   for (auto const& other : flock_) {
+//     if (b.isClose(other, d)) {
+//       sumVel += other.getVelocity();
+//       ++size;
+//     }
+//   }
+//   Vector correction;
+//   if (size != 1) {
+//     correction = (sumVel - b.getVelocity())
+//                / (size - 1); // da migliorare evitando il boid stesso a
+//                priori
+//   } // ho messo un assert per la divisione per 0, da migliorare
+//   return a * correction;
+// }
+
+// Vector Flock::cohesion(bd::Boid const& b, float d, float c) const
+// {
+//   Vector sumPos;
+//   int size{};
+//   for (auto const& other : flock_) {
+//     if (b.isClose(other, d)) {
+//       sumPos += other.getPosition();
+//       ++size;
+//     }
+//   }
+//   Vector correction;
+//   if (size != 1) {
+//     auto cmPos = (sumPos - b.getPosition()) / (size - 1);
+//     correction = cmPos - b.getPosition();
+//   } // ho messo un assert per la divisione per 0, da migliorare
+//   return c * correction;
+// }
+
+std::vector<Boid> Flock::evolution()
 {
-  Vector correction;
-  for (auto const& b : f) {
-    if (this->isClose(b, ds)) {
-      correction += b.getPosition() - this->position_;
+  std::vector<bd::Boid> modified_flock(size_);
+
+  for (auto const& boid : flock_) {
+    Vector separation;
+    Vector alignment;
+    Vector cohesion;
+    Vector sumVel;
+    Vector sumPos;
+    float neighbours{};
+    for (auto const& other : flock_) {
+      if (&other != &boid) {
+        if (boid.isClose(other, d)) {
+          sumPos += other.getPosition();
+          sumVel += other.getVelocity();
+          ++neighbours;
+        }
+
+        if (neighbours != 0.f) {
+          alignment = a * sumVel / (neighbours);
+          cohesion  = sumPos / (neighbours)-boid.getPosition();
+        }
+
+        if (boid.isClose(other, ds)) {
+          separation += other.getPosition();
+        }
+        separation = -s * separation;
+      }
     }
-  }
-  return -s * correction;
-}
 
-Vector Boid::alignment(Flock const& f, double d, double a) const
-{
-  Vector sumVel;
-  int size{};
-  for (auto const& b : f) {
-    if (this->isClose(b, d)) {
-      sumVel += b.getVelocity();
-      ++size;
-    }
-  }
-  Vector correction;
-  if (size != 1) {
-    correction = (sumVel - this->velocity_) / (size - 1);
-  } // ho messo un assert per la divisione per 0, da migliorare
-  return a * correction;
-}
+    Vector newVel = boid.getVelocity() + alignment + cohesion + separation;
+    Vector newPos = boid.getPosition() + newVel;
 
-Vector Boid::cohesion(Flock const& f, double d, double c) const
-{
-  Vector sumPos;
-  int size{};
-  for (auto const& b : f) {
-    if (this->isClose(b, d)) {
-      sumPos += b.getPosition();
-      ++size;
-    }
+    Boid modified_boid(newVel, newPos);
+    modified_flock.push_back(modified_boid);
   }
-  Vector correction;
-  if (size != 1) {
-    auto cmPos = (sumPos - this->position_) / (size - 1);
-    correction = cmPos - this->position_;
-  } // ho messo un assert per la divisione per 0, da migliorare
-  return c * correction;
+  return modified_flock;
 }
-
 } // namespace bd
+
+// namespace bd
