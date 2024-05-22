@@ -1,5 +1,5 @@
-#include "boid.hpp"
-namespace bd {
+// #include "boid.hpp"
+// namespace bd {
 
 // auto Boid::isClose(Boid const& b, float d) const
 // {
@@ -60,16 +60,28 @@ namespace bd {
 //   return c * correction;
 // }
 
+#include "boid.hpp"
+namespace bd {
+
+bool Boid::isClose(bd::Boid const& b, float d) const
+{
+  auto distance = norm((b.getPosition() - position_));
+  return distance < d; //&& distance != 0; non considera se stesso un vicino
+                       // ma potrebbe evitare un altro nello
+                       // stesso posto
+}
+
 std::vector<Boid> Flock::evolution()
 {
-  std::vector<bd::Boid> modified_flock(size_);
+  std::vector<bd::Boid> modified_flock;
+  modified_flock.reserve(size_);
 
   for (auto const& boid : flock_) {
-    Vector separation;
+    Vector separation{0.f, 0.f};
     Vector alignment;
     Vector cohesion;
-    Vector sumVel;
-    Vector sumPos;
+    Vector sumVel{0.f, 0.f};
+    Vector sumPos{0.f, 0.f};
     float neighbours{};
     for (auto const& other : flock_) {
       if (&other != &boid) {
@@ -79,26 +91,65 @@ std::vector<Boid> Flock::evolution()
           ++neighbours;
         }
 
-        if (neighbours != 0.f) {
-          alignment = a * sumVel / (neighbours);
-          cohesion  = sumPos / (neighbours)-boid.getPosition();
-        }
-
         if (boid.isClose(other, ds)) {
           separation += other.getPosition();
         }
-        separation = -s * separation;
       }
     }
+    if (neighbours != 0.f) {
+      alignment = sumVel / neighbours;
+      cohesion  = (sumPos / neighbours) - boid.getPosition();
+    }
 
-    Vector newVel = boid.getVelocity() + alignment + cohesion + separation;
-    Vector newPos = boid.getPosition() + newVel;
+    Vector newVel =
+        boid.getVelocity() + a * alignment + c * cohesion + -s * separation;
+    // Vector newPos = boid.getPosition() + newVel;
 
-    Boid modified_boid(newVel, newPos);
+    Boid modified_boid(newVel, boid.getPosition() + newVel);
     modified_flock.push_back(modified_boid);
   }
   return modified_flock;
 }
 } // namespace bd
+// std::vector<Boid> Flock::evolution()
+// {
+//   std::vector<bd::Boid> modified_flock(size_);
 
-// namespace bd
+//   for (auto const& boid : flock_) {
+//     Vector separation;
+//     Vector alignment;
+//     Vector cohesion;
+//     Vector sumVel;
+//     Vector sumPos;
+//     float neighbours{};
+//     for (auto const& other : flock_) {
+//       if (&other != &boid) {
+//         if (boid.isClose(other, d)) {
+//           sumPos += other.getPosition();
+//           sumVel += other.getVelocity();
+//           ++neighbours;
+//         }
+
+//         if (neighbours != 0.f) {
+//           alignment = a * sumVel / (neighbours);
+//           cohesion  = sumPos / (neighbours)-boid.getPosition();
+//         }
+
+//         if (boid.isClose(other, ds)) {
+//           separation += other.getPosition();
+//         }
+//         separation = -s * separation;
+//       }
+//     }
+
+//     Vector newVel = boid.getVelocity() + alignment + cohesion + separation;
+//     Vector newPos = boid.getPosition() + newVel;
+
+//     Boid modified_boid(newVel, newPos);
+//     modified_flock.push_back(modified_boid);
+//   }
+//   return modified_flock;
+// }
+// } // namespace bd
+
+// // namespace bd
