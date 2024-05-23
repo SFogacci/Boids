@@ -50,12 +50,25 @@ class Boid
 {
   Vector position_;
   Vector velocity_;
+ 
 
  public:
+  sf::ConvexShape birdShape;
+  
   Boid(Vector p, Vector v)
       : position_{p}
       , velocity_{v}
-  {}
+  {
+    birdShape.setPointCount(3);
+    birdShape.setPoint(0, sf::Vector2f(p.x - 10.f, p.y - 5.f));
+    birdShape.setPoint(1, sf::Vector2f(p.x + 10.f, p.y));
+    birdShape.setPoint(2, sf::Vector2f(p.x - 10.f, p.y + 5.f));
+    birdShape.setFillColor(sf::Color::Red);
+    birdShape.setOutlineColor(sf::Color::White);
+    birdShape.setOutlineThickness(1.f);
+    birdShape.setPosition(p.x, p.y);
+    birdShape.setOrigin(p.x, p.y);
+  }
 
   auto getPosition() const
   {
@@ -121,9 +134,9 @@ struct Parameters
 {
   float a;
   float c;
-  float s;
   float d;
   float ds;
+  float s;
 };
 
 } // namespace bd

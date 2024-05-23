@@ -85,13 +85,13 @@ std::vector<Boid> Flock::evolution()
     float neighbours{};
     for (auto const& other : flock_) {
       if (&other != &boid) {
-        if (boid.isClose(other, d)) {
+        if (boid.isClose(other, flock_parameters_.d)) {
           sumPos += other.getPosition();
           sumVel += other.getVelocity();
           ++neighbours;
         }
 
-        if (boid.isClose(other, ds)) {
+        if (boid.isClose(other, flock_parameters_.ds)) {
           separation += other.getPosition();
         }
       }
@@ -102,7 +102,7 @@ std::vector<Boid> Flock::evolution()
     }
 
     Vector newVel =
-        boid.getVelocity() + a * alignment + c * cohesion + -s * separation;
+        boid.getVelocity() + flock_parameters_.a * alignment + flock_parameters_.c * cohesion + -flock_parameters_.s * separation;
     // Vector newPos = boid.getPosition() + newVel;
 
     Boid modified_boid(newVel, boid.getPosition() + newVel);
