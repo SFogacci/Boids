@@ -14,18 +14,22 @@ class Flock
 {
   std::vector<Boid> flock_;
   std::size_t size_{};
-  float d;
-  float s;
-  float ds;
-  float a;
-  float c;
+  Parameters flock_parameters_;
 
  public:
-  Flock(Boid const& b)
+  Flock(Boid const& b, Parameters a)
+      : flock_parameters_{a}
   {
     flock_.push_back(b);
     ++size_;
   };
+
+  Flock(std::vector<Boid> b, Parameters a)
+      : flock_{b}
+      , flock_parameters_{a}
+  {
+    size_ = b.size();
+  }
   // class invariant is flock_.size() == size_;
 
   auto const& flock() const
@@ -111,6 +115,15 @@ class Boid
   // Vector alignment(Flock const&, float, float) const;
 
   // Vector cohesion(Flock const&, float, float) const;
+};
+
+struct Parameters
+{
+  float a;
+  float c;
+  float s;
+  float d;
+  float ds;
 };
 
 } // namespace bd
