@@ -1,4 +1,5 @@
 #include "boid.hpp"
+#include <iostream>
 
 namespace bd {
 
@@ -10,7 +11,7 @@ bool Boid::isClose(bd::Boid const& b, float d) const
                        // stesso posto
 }
 
-//std::vector<Boid> Flock::evolution()
+// std::vector<Boid> Flock::evolution()
 void Flock::evolution()
 {
   std::vector<bd::Boid> modified_flock;
@@ -41,13 +42,14 @@ void Flock::evolution()
       cohesion  = (sumPos / neighbours) - boid.getPosition();
     }
 
-    Vector newVel =
-        boid.getVelocity() + flock_parameters_.a * alignment + flock_parameters_.c * cohesion + -flock_parameters_.s * separation;
+    Vector newVel = boid.getVelocity() + flock_parameters_.a * alignment
+                  + flock_parameters_.c * cohesion
+                  + -flock_parameters_.s * separation;
     // Vector newPos = boid.getPosition() + newVel;
 
-    Boid modified_boid(newVel, boid.getPosition() + newVel);
+    Boid modified_boid(boid.getPosition() + newVel, newVel);
     modified_flock.push_back(modified_boid);
   }
-  flock_=modified_flock;
+  flock_ = modified_flock;
 }
 } // namespace bd
