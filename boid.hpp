@@ -13,7 +13,7 @@ const float pi = std::atan(1.f) * 4;
 class Flock
 {
   std::vector<Boid> flock_;
-  std::size_t size_{};
+  // std::size_t size_{};
   Parameters flock_parameters_;
 
  public:
@@ -21,14 +21,14 @@ class Flock
       : flock_parameters_{a}
   {
     flock_.push_back(b);
-    ++size_;
+  //  ++size_;
   };
 
   Flock(std::vector<Boid> b, Parameters a)
       : flock_{b}
       , flock_parameters_{a}
   {
-    size_ = b.size();
+    // size_ = b.size();
   }
   // class invariant is flock_.size() == size_;
 
@@ -36,8 +36,9 @@ class Flock
   {
     return flock_;
   }
-  std::vector<bd::Boid> evolution()
-  {}
+  
+  //std::vector<bd::Boid> evolution();
+  void evolution();
 
   Vector separation(bd::Boid const&, float, float) const;
 
@@ -139,6 +140,7 @@ struct Parameters
   float s;
 };
 
+void gameLoop (Flock &);
 } // namespace bd
 
 #endif
