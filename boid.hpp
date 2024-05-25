@@ -14,14 +14,14 @@ class Boid
 {
   Vector position_;
   Vector velocity_;
-  sf::ConvexShape birdShape;
+  // sf::ConvexShape birdShape;
 
  public:
   Boid(Vector p, Vector v)
       : position_{p}
       , velocity_{v}
   {
-    setShape();
+    //setShape();
   }
 
   auto getPosition() const
@@ -44,10 +44,10 @@ class Boid
     }
   }
 
-  sf::ConvexShape getShape() const
-  {
-    return birdShape;
-  }
+  // sf::ConvexShape getShape() const
+  // {
+  //   return birdShape;
+  // }
 
   void setPosition(Vector const& p)
   {
@@ -66,22 +66,23 @@ class Boid
   void sety_Velocity (float const y){
     velocity_.y=y;
   }
-
+// void setShape()
+//   {
+//     birdShape.setPointCount(3);
+//     birdShape.setPoint(0, sf::Vector2f(position_.x - 10.f, position_.y - 5.f));
+//     birdShape.setPoint(1, sf::Vector2f(position_.x + 10.f, position_.y));
+//     birdShape.setPoint(2, sf::Vector2f(position_.x - 10.f, position_.y + 5.f));
+//     birdShape.setFillColor(sf::Color::Red);
+//     birdShape.setOutlineColor(sf::Color::White);
+//     birdShape.setOutlineThickness(1.f);
+//     birdShape.setPosition(position_.x, position_.y);
+//     birdShape.setOrigin(position_.x, position_.y);
+//     birdShape.setRotation(getOrientation());
+//   }
+  
   bool isClose(Boid const&, float) const;
 
-  void setShape()
-  {
-    birdShape.setPointCount(3);
-    birdShape.setPoint(0, sf::Vector2f(position_.x - 10.f, position_.y - 5.f));
-    birdShape.setPoint(1, sf::Vector2f(position_.x + 10.f, position_.y));
-    birdShape.setPoint(2, sf::Vector2f(position_.x - 10.f, position_.y + 5.f));
-    birdShape.setFillColor(sf::Color::Red);
-    birdShape.setOutlineColor(sf::Color::White);
-    birdShape.setOutlineThickness(1.f);
-    birdShape.setPosition(position_.x, position_.y);
-    birdShape.setOrigin(position_.x, position_.y);
-    birdShape.setRotation(getOrientation());
-  }
+  
 };
 
 struct Parameters
@@ -122,8 +123,6 @@ class Flock
 
   void evolution();
 };
-
-// void gameLoop (Flock &);
 
 } // namespace bd
 

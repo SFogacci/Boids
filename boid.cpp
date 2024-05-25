@@ -41,24 +41,27 @@ void Flock::evolution()
       cohesion  = (sumPos / neighbours) - boid.getPosition();
     }
 
-    Vector newVel =
-        boid.getVelocity()
-        + (flock_parameters_.a * alignment + flock_parameters_.c * cohesion
-           + -flock_parameters_.s * separation);
+    Vector newVel = boid.getVelocity() + flock_parameters_.a * alignment
+                  + flock_parameters_.c * cohesion
+                  - flock_parameters_.s * separation;
 
-    Boid modified_boid(boid.getPosition() + newVel / 60.f, newVel);
+    Boid modified_boid(boid.getPosition() + newVel, newVel);
 
-    if (modified_boid.getPosition().x > 850.f )  {
-      modified_boid.setx_Velocity(newVel.x- (modified_boid.getPosition().x-850.f));
+    if (modified_boid.getPosition().x > 850.f) {
+      modified_boid.setx_Velocity(newVel.x
+                                  - (modified_boid.getPosition().x - 850.f));
     }
     if (modified_boid.getPosition().y > 850.f) {
-      modified_boid.sety_Velocity(newVel.y- (modified_boid.getPosition().y-850.f));
+      modified_boid.sety_Velocity(newVel.y
+                                  - (modified_boid.getPosition().y - 850.f));
     }
-    if (modified_boid.getPosition().x < 50.f )  {
-      modified_boid.setx_Velocity(newVel.x+ (-modified_boid.getPosition().x + 50.f));
+    if (modified_boid.getPosition().x < 50.f) {
+      modified_boid.setx_Velocity(newVel.x
+                                  + (-modified_boid.getPosition().x + 50.f));
     }
     if (modified_boid.getPosition().y < 50.f) {
-      modified_boid.sety_Velocity(newVel.y+ (-modified_boid.getPosition().y + 50.f));
+      modified_boid.sety_Velocity(newVel.y
+                                  + (-modified_boid.getPosition().y + 50.f));
     }
     modified_flock.push_back(modified_boid);
   }

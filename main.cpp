@@ -1,33 +1,34 @@
 #include "boid.hpp"
 #include "vectors.hpp"
-#include "SFML/Graphics.hpp"
+// #include "SFML/Graphics.hpp"
+#include "graphics.hpp"
 #include <cmath>
 #include <iostream>
 
-void gameLoop(bd::Flock& flock)
-{
-  sf::RenderWindow window(sf::VideoMode(900, 900), "Boids");
-  window.setFramerateLimit(30);
-  // window.setPosition(sf::Vector2i(1920, -200));
+// void gameLoop(bd::Flock& flock)
+// {
+//   sf::RenderWindow window(sf::VideoMode(900, 900), "Boids");
+//   window.setFramerateLimit(60);
+//   // window.setPosition(sf::Vector2i(1920, -200));
 
-  while (window.isOpen()) {
-    sf::Event event;
-    while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed) {
-        window.close();
-      }
-    }
+//   while (window.isOpen()) {
+//     sf::Event event;
+//     while (window.pollEvent(event)) {
+//       if (event.type == sf::Event::Closed) {  
+//         window.close();
+//       }
+//     }
 
-    window.clear();
-    flock.evolution();
-    for (auto it = flock.flock().begin(), last = flock.flock().end();
-         it != last; ++it) {
-      window.draw(it->getShape());
-    }
+//     window.clear();
+//     flock.evolution();
+//     for (auto it = flock.flock().begin(), last = flock.flock().end();
+//          it != last; ++it) {
+//       window.draw(it->getShape());
+//     }
 
-    window.display();
-  }
-}
+//     window.display();
+//   }
+// }
 
 int main()
 {
@@ -47,7 +48,5 @@ int main()
 
   bd::Flock flock{storno, par};
 
-  std::cout << "Flock size is " << static_cast<int>(flock.flock().size()) << '\n';
-
-  gameLoop(flock);
+  gameLoop(flock );
 }
