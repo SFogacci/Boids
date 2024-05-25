@@ -45,7 +45,7 @@ void Flock::evolution()
                   + flock_parameters_.c * cohesion
                   - flock_parameters_.s * separation;
 
-    Boid modified_boid(boid.getPosition() + newVel, newVel);
+    Boid modified_boid(boid.getPosition() + newVel/60.f, newVel);
 
     if (modified_boid.getPosition().x > 850.f) {
       modified_boid.setx_Velocity(newVel.x
