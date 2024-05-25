@@ -11,7 +11,6 @@ bool Boid::isClose(bd::Boid const& b, float d) const
                        // stesso posto
 }
 
-// std::vector<Boid> Flock::evolution()
 void Flock::evolution()
 {
   std::vector<bd::Boid> modified_flock;
@@ -30,24 +29,37 @@ void Flock::evolution()
           sumPos += other.getPosition();
           sumVel += other.getVelocity();
           ++neighbours;
-        }
 
-        if (boid.isClose(other, flock_parameters_.ds)) {
-          separation += other.getPosition();
+          if (boid.isClose(other, flock_parameters_.ds)) {
+            separation = separation + other.getPosition() - boid.getPosition();
+          }
         }
       }
     }
     if (neighbours != 0.f) {
-      alignment = sumVel / neighbours;
+      alignment = sumVel / neighbours - boid.getVelocity();
       cohesion  = (sumPos / neighbours) - boid.getPosition();
     }
 
-    Vector newVel = boid.getVelocity() + flock_parameters_.a * alignment
-                  + flock_parameters_.c * cohesion
-                  + -flock_parameters_.s * separation;
-    // Vector newPos = boid.getPosition() + newVel;
+    Vector newVel =
+        boid.getVelocity()
+        + (flock_parameters_.a * alignment + flock_parameters_.c * cohesion
+           + -flock_parameters_.s * separation);
 
-    Boid modified_boid(boid.getPosition() + newVel, newVel);
+    Boid modified_boid(boid.getPosition() + newVel / 60.f, newVel);
+
+    if (modified_boid.getPosition().x > 850.f )  {
+      modified_boid.setx_Velocity(newVel.x- (modified_boid.getPosition().x-850.f));
+    }
+    if (modified_boid.getPosition().y > 850.f) {
+      modified_boid.sety_Velocity(newVel.y- (modified_boid.getPosition().y-850.f));
+    }
+    if (modified_boid.getPosition().x < 50.f )  {
+      modified_boid.setx_Velocity(newVel.x+ (-modified_boid.getPosition().x + 50.f));
+    }
+    if (modified_boid.getPosition().y < 50.f) {
+      modified_boid.sety_Velocity(newVel.y+ (-modified_boid.getPosition().y + 50.f));
+    }
     modified_flock.push_back(modified_boid);
   }
   flock_ = modified_flock;

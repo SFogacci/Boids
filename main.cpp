@@ -7,7 +7,7 @@
 void gameLoop(bd::Flock& flock)
 {
   sf::RenderWindow window(sf::VideoMode(900, 900), "Boids");
-  window.setFramerateLimit(60);
+  window.setFramerateLimit(30);
   // window.setPosition(sf::Vector2i(1920, -200));
 
   while (window.isOpen()) {
@@ -22,7 +22,7 @@ void gameLoop(bd::Flock& flock)
     flock.evolution();
     for (auto it = flock.flock().begin(), last = flock.flock().end();
          it != last; ++it) {
-      window.draw(it->birdShape);
+      window.draw(it->getShape());
     }
 
     window.display();
@@ -31,18 +31,19 @@ void gameLoop(bd::Flock& flock)
 
 int main()
 {
-  bd::Parameters par{0.5f, 0.5f, 10.f, 1.f, 0.5f};
+  bd::Parameters par{0.4f, 0.1f, 100.f, 10.f, 5.f};
 
-  bd::Boid b1{{100, 255}, {0.1, 0.1}};
-  bd::Boid b2{{200, 306}, {0.3, 0.11}};
-  bd::Boid b3{{259, 404}, {0.1, -0.5}};
-  bd::Boid b4{{158, 90}, {-0.1, -0.1}};
-  bd::Boid b5{{100, 98}, {0.1, 0.1}};
-  bd::Boid b6{{705, 305}, {0.3, 0.45}};
-  bd::Boid b7{{534, 76}, {0.1, -0.31}};
-  bd::Boid b8{{696, 90}, {-0.11, -0.1}};
-
-  std::vector storno{b1, b2, b3, b4, b5, b6, b7, b8};
+  bd::Boid b1{{450, 210}, {50.f, -43.f}};
+  bd::Boid b2{{430, 400}, {45.f, 21.f}};
+  bd::Boid b3{{440, 105}, {-50.f, 35.f}};
+  bd::Boid b4{{350, 610}, {50.f, -43.f}};
+  bd::Boid b5{{530, 300}, {45.f, 21.f}};
+  bd::Boid b6{{640, 805}, {90.f, 200.f}};
+  bd::Boid b7{{350, 210}, {-50.f, -43.f}};
+  bd::Boid b8{{230, 100}, {45.f, 111.f}};
+  bd::Boid b9{{140, 205}, {50.f, 35.f}};
+ 
+  std::vector storno{b1, b2, b3, b4, b5, b6, b7, b8, b9};
 
   bd::Flock flock{storno, par};
 

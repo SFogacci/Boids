@@ -4,6 +4,7 @@
 #include "vectors.hpp"
 #include "SFML/Graphics.hpp"
 #include <cmath>
+#include <iostream>
 #include <vector>
 
 namespace bd {
@@ -13,24 +14,14 @@ class Boid
 {
   Vector position_;
   Vector velocity_;
- 
+  sf::ConvexShape birdShape;
 
  public:
-  sf::ConvexShape birdShape;
-  
   Boid(Vector p, Vector v)
       : position_{p}
       , velocity_{v}
   {
-    birdShape.setPointCount(3);
-    birdShape.setPoint(0, sf::Vector2f(p.x - 10.f, p.y - 5.f));
-    birdShape.setPoint(1, sf::Vector2f(p.x + 10.f, p.y));
-    birdShape.setPoint(2, sf::Vector2f(p.x - 10.f, p.y + 5.f));
-    birdShape.setFillColor(sf::Color::Red);
-    birdShape.setOutlineColor(sf::Color::White);
-    birdShape.setOutlineThickness(1.f);
-    birdShape.setPosition(p.x, p.y);
-    // birdShape.setOrigin(p.x, p.y);
+    setShape();
   }
 
   auto getPosition() const
@@ -43,17 +34,19 @@ class Boid
     return velocity_;
   }
 
-  auto getOrientation() const
+  float getOrientation() const
   {
-    if (velocity_.x > 0 && velocity_.y > 0) {
-      std::atan((velocity_.y) / velocity_.x) * (180 / pi);
+    float orientation = atan2f(velocity_.y, velocity_.x) * 180.f / pi;
+    if (orientation >= 0.f) {
+      return orientation;
+    } else {
+      return orientation + 360.f;
     }
-    if (velocity_.x < 0 && velocity_.y < 0) {
-      std::atan((velocity_.y) / velocity_.x) * (180 / pi) + 180.f;
-    };
-    if (velocity_.x > 0 && velocity_.y < 0) {
-      std::atan((velocity_.y) / velocity_.x) * (180 / pi) + 360.f;
-    };
+  }
+
+  sf::ConvexShape getShape() const
+  {
+    return birdShape;
   }
 
   void setPosition(Vector const& p)
@@ -66,20 +59,29 @@ class Boid
     velocity_ = v;
   }
 
-  void setRotation(float)
-  {
-    if (velocity_.x > 0 && velocity_.y > 0) {
-      std::atan((velocity_.y) / velocity_.x) * (180 / pi);
-    }
-    if (velocity_.x < 0 && velocity_.y < 0) {
-      std::atan((velocity_.y) / velocity_.x) * (180 / pi) + 180.f;
-    };
-    if (velocity_.x > 0 && velocity_.y < 0) {
-      std::atan((velocity_.y) / velocity_.x) * (180 / pi) + 360.f;
-    };
+  void setx_Velocity (float const x){
+    velocity_.x=x;
+  }
+
+  void sety_Velocity (float const y){
+    velocity_.y=y;
   }
 
   bool isClose(Boid const&, float) const;
+
+  void setShape()
+  {
+    birdShape.setPointCount(3);
+    birdShape.setPoint(0, sf::Vector2f(position_.x - 10.f, position_.y - 5.f));
+    birdShape.setPoint(1, sf::Vector2f(position_.x + 10.f, position_.y));
+    birdShape.setPoint(2, sf::Vector2f(position_.x - 10.f, position_.y + 5.f));
+    birdShape.setFillColor(sf::Color::Red);
+    birdShape.setOutlineColor(sf::Color::White);
+    birdShape.setOutlineThickness(1.f);
+    birdShape.setPosition(position_.x, position_.y);
+    birdShape.setOrigin(position_.x, position_.y);
+    birdShape.setRotation(getOrientation());
+  }
 };
 
 struct Parameters
@@ -90,6 +92,7 @@ struct Parameters
   float ds;
   float s;
 };
+
 class Flock
 {
   std::vector<Boid> flock_;
@@ -101,7 +104,7 @@ class Flock
       : flock_parameters_{a}
   {
     flock_.push_back(b);
-  //  ++size_;
+    //  ++size_;
   }
 
   Flock(std::vector<Boid> b, Parameters a)
@@ -116,18 +119,9 @@ class Flock
   {
     return flock_;
   }
-  
-  //std::vector<bd::Boid> evolution();
+
   void evolution();
-
-  // Vector separation(bd::Boid const&, float, float) const;
-
-  // Vector alignment(bd::Boid const&, float, float) const;
-
-  // Vector cohesion(bd::Boid const&, float, float) const;
 };
-
-
 
 // void gameLoop (Flock &);
 
