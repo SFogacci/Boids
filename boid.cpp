@@ -6,9 +6,7 @@ namespace bd {
 bool Boid::isClose(bd::Boid const& b, float d) const
 {
   auto distance = norm((b.getPosition() - position_));
-  return distance < d; //&& distance != 0; non considera se stesso un vicino
-                       // ma potrebbe evitare un altro nello
-                       // stesso posto
+  return distance < d;
 }
 
 void Flock::evolution()
@@ -38,14 +36,14 @@ void Flock::evolution()
     }
     if (neighbours != 0.f) {
       alignment = sumVel / neighbours - boid.getVelocity();
-      cohesion  = (sumPos / neighbours) - boid.getPosition();
+      cohesion  = (sumPos / neighbours) - boid.getPosition(); //Accelerano tra di loro non importa quanta distanza c'è 101-102, 100-103 finiscono in 101.5
     }
 
     Vector newVel = boid.getVelocity() + flock_parameters_.a * alignment
                   + flock_parameters_.c * cohesion
                   - flock_parameters_.s * separation;
 
-    Boid modified_boid(boid.getPosition() + newVel/60.f, newVel);
+    Boid modified_boid(boid.getPosition() + newVel/60.f, newVel); //se vogliamo un parametro tocca accordarci (per i test)
 
     if (modified_boid.getPosition().x > 850.f) {
       modified_boid.setx_Velocity(newVel.x

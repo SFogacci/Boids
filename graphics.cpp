@@ -1,8 +1,8 @@
 #include "graphics.hpp"
 
 namespace bd {
-sf::ConvexShape birdShape;
-sf::ConvexShape setShape(bd::Boid b) // passaggio by const ref
+  sf::ConvexShape birdShape;
+sf::ConvexShape setShape(bd::Boid const& b) // passaggio by const ref
 {
   birdShape.setPointCount(3);
   birdShape.setPoint(
