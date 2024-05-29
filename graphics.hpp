@@ -2,7 +2,6 @@
 #define GRAPHICS_HPP
 
 #include "boid.hpp"
-#include "vectors.hpp"
 #include "SFML/Graphics.hpp"
 
 namespace bd {
