@@ -2,9 +2,7 @@
 #define BOID_HPP
 
 #include "vectors.hpp"
-#include "SFML/Graphics.hpp"
 #include <cmath>
-#include <iostream>
 #include <vector>
 
 namespace bd {
