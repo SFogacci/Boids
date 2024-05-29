@@ -2,7 +2,6 @@
 
 #include "boid.hpp"
 #include "doctest.h"
-#include "vectors.hpp"
 
 namespace bd {
 TEST_CASE("One boid, all rules")
