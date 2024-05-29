@@ -1,5 +1,4 @@
 #include "boid.hpp"
-#include <iostream>
 
 namespace bd {
 
