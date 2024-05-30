@@ -127,15 +127,21 @@ TEST_CASE("two boids normal situation") // Come lo risolviamo?
     CHECK(et->getVelocity().x == doctest::Approx(-2));
     CHECK(et->getVelocity().y == doctest::Approx(5));
   }
+}
 
-  Parameters parameters1{0.5f, 0.5f, 10.f, 1.f, 0.5f};
-  Flock flock1(flock.flock(), parameters1);
-  flock1.evolution();
+  TEST_CASE ("all rules")
+  {
+
+  Boid b1{{101.f, 101.f}, {2.f, -1.f}};
+  Boid b2{{105.f, 90.f}, {-2.f, 5.f}};
+  std::vector birds{b1, b2};
+  Parameters parameters{0.5f, 0.5f, 10.f, 1.f, 0.5f};
+  Flock flock{birds, parameters};
+  flock.evolution();
+  flock.evolution();
   auto it1 = flock.flock().begin();
   auto et1 = it1 + 1;
 
-  SUBCASE("all rules")
-  {
     CHECK(it1->getPosition().x == doctest::Approx(103));
     CHECK(it1->getPosition().y == doctest::Approx(100.75));
     CHECK(et1->getPosition().x == doctest::Approx(103));
@@ -145,7 +151,8 @@ TEST_CASE("two boids normal situation") // Come lo risolviamo?
     CHECK(it1->getVelocity().y == doctest::Approx(0.75));
     CHECK(et1->getVelocity().x == doctest::Approx(0));
     CHECK(et1->getVelocity().y == doctest::Approx(3.75));
-  }
+
+
 }
 
 // cohesion  -2,5 2,5 --  -1,25  1,25
