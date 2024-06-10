@@ -12,11 +12,10 @@ auto getParameters()
   float ds;
   float s;
 
-  Parameters parameters{a, c, d, ds, s};
-  std::cout << "Insert flock's parameters: \n";
+  std::cout << "Insert flock parameters: \n";
   std::cout << "Cohesion intensity [0,1]: ";
   std::cin >> c;
-  std::cout << "allignment intensity [0,1]: ";
+  std::cout << "Alignment intensity [0,1]: ";
   std::cin >> a;
   std::cout << "Separation intensity [0,1]: ";
   std::cin >> s;
@@ -24,6 +23,8 @@ auto getParameters()
   std::cin >> d;
   std::cout << "Separation distance [0, 20]: ";
   std::cin >> ds;
+  Parameters parameters{a, c, d, ds, s};
+
   return parameters;
 }
 
@@ -35,7 +36,9 @@ auto getSize()
   return n;
 }
 
-auto generateCoordinate(float a, float b) // limiti per la generazione delle velocità e posizioni. Le velocità possono essere anche negative, le coordinate no.                               
+auto generateCoordinate(float a, float b)
+// limiti per la generazione delle velocità e posizioni. Le
+// velocità possono essere anche negative, le coordinate no.
 {
   std::random_device rd;
   std::uniform_real_distribution<> dis(a, b);

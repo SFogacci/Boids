@@ -20,6 +20,7 @@ void Flock::evolution()
     Vector sumVel{0.f, 0.f};
     Vector sumPos{0.f, 0.f};
     float neighbours{};
+
     for (auto const& other : flock_) {
       if (&other != &boid) {
         if (boid.isClose(other, flock_parameters_.d)) {
@@ -33,22 +34,21 @@ void Flock::evolution()
         }
       }
     }
+
     if (neighbours != 0.f) {
       alignment = sumVel / neighbours - boid.getVelocity();
-      std::cout << alignment.x << '\n'; 
-      cohesion  = (sumPos / neighbours)
-               - boid.getPosition(); // Accelerano tra di loro non importa
-                                     // quanta distanza c'è 101-102, 100-103
-                                     // finiscono in 101.5
+      cohesion  = sumPos / neighbours - boid.getPosition();
+      // Accelerano tra di loro non importa
+      // quanta distanza c'è 101-102, 100-103
+      // finiscono in 101.5
     }
 
     Vector newVel = boid.getVelocity() + flock_parameters_.a * alignment
                   + flock_parameters_.c * cohesion
                   - flock_parameters_.s * separation;
 
-    Boid modified_boid(
-        boid.getPosition() + newVel,
-        newVel); // se vogliamo un parametro tocca accordarci (per i test)
+    Boid modified_boid(boid.getPosition() + newVel, newVel);
+    // se vogliamo un parametro tocca accordarci (per i test)
 
     if (modified_boid.getPosition().x > 850.f) {
       modified_boid.setx_Velocity(newVel.x

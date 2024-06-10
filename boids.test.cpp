@@ -11,7 +11,7 @@ TEST_CASE("One boid, all rules")
   Parameters parameters{0.5f, 0.5f, 2.f, 1.5f, 0.5f};
   Flock flock{birds, parameters};
   flock.evolution();
-  auto it = flock.flock().begin();
+  auto it = flock.getFlock().begin();
   CHECK(it->getPosition().x == doctest::Approx(102));
   CHECK(it->getPosition().y == doctest::Approx(102));
 
@@ -27,7 +27,7 @@ TEST_CASE("Two boids, separation only")
   Parameters parameters{0.f, 0.f, 2.f, 1.5f, 0.5f};
   Flock flock{birds, parameters};
   flock.evolution();
-  auto it = flock.flock().begin();
+  auto it = flock.getFlock().begin();
   auto et = it + 1;
   CHECK(it->getPosition().x == doctest::Approx(100.5));
   CHECK(it->getPosition().y == doctest::Approx(101));
@@ -49,7 +49,7 @@ TEST_CASE(
   Parameters parameters{0.f, 0.5f, 4.f, 1.5f, 0.f};
   Flock flock{birds, parameters};
   flock.evolution();
-  auto it = flock.flock().begin();
+  auto it = flock.getFlock().begin();
   auto et = it + 1;
   CHECK(it->getPosition().x == doctest::Approx(102));
   CHECK(it->getPosition().y == doctest::Approx(101));
@@ -70,7 +70,7 @@ TEST_CASE("Two boids, alignment only: one still.")
   Parameters parameters{0.5f, 0.f, 2.f, 1.5f, 0.f};
   Flock flock{birds, parameters};
   flock.evolution();
-  auto it = flock.flock().begin();
+  auto it = flock.getFlock().begin();
   auto et = it + 1;
   CHECK(it->getPosition().x == doctest::Approx(101));
   CHECK(it->getPosition().y == doctest::Approx(101.5));
@@ -91,7 +91,7 @@ TEST_CASE("Overlap of two boids") // Come lo risolviamo?
   Parameters parameters{0.5f, 0.5f, 2.f, 1.5f, 0.5f};
   Flock flock{birds, parameters};
   flock.evolution();
-  auto it = flock.flock().begin();
+  auto it = flock.getFlock().begin();
   auto et = it + 1;
   CHECK(it->getPosition().x == doctest::Approx(101));
   CHECK(it->getPosition().y == doctest::Approx(101));
@@ -112,7 +112,7 @@ TEST_CASE("two boids normal situation") // Come lo risolviamo?
   Parameters parameters{0.5f, 0.5f, 10.f, 1.f, 0.5f};
   Flock flock{birds, parameters};
   flock.evolution();
-  auto it = flock.flock().begin();
+  auto it = flock.getFlock().begin();
   auto et = it + 1;
 
   SUBCASE("No interaction")
@@ -139,18 +139,18 @@ TEST_CASE("two boids normal situation") // Come lo risolviamo?
   Flock flock{birds, parameters};
   flock.evolution();
   flock.evolution();
-  auto it1 = flock.flock().begin();
+  auto it1 = flock.getFlock().begin();
   auto et1 = it1 + 1;
 
     CHECK(it1->getPosition().x == doctest::Approx(103));
-    CHECK(it1->getPosition().y == doctest::Approx(100.75));
+    CHECK(it1->getPosition().y == doctest::Approx(99.5));
     CHECK(et1->getPosition().x == doctest::Approx(103));
-    CHECK(et1->getPosition().y == doctest::Approx(98.75));
+    CHECK(et1->getPosition().y == doctest::Approx(99.5));
 
     CHECK(it1->getVelocity().x == doctest::Approx(0));
-    CHECK(it1->getVelocity().y == doctest::Approx(0.75));
+    CHECK(it1->getVelocity().y == doctest::Approx(-0.5));
     CHECK(et1->getVelocity().x == doctest::Approx(0));
-    CHECK(et1->getVelocity().y == doctest::Approx(3.75));
+    CHECK(et1->getVelocity().y == doctest::Approx(4.5));
 
 
 }

@@ -4,9 +4,9 @@
 
 namespace bd {
 
-Vector Vector::operator+=(Vector const& b)
+Vector Vector::operator+=(Vector const& add)
 {
-  return {x += b.x, y += b.y};
+  return {x += add.x, y += add.y};
 }
 
 Vector operator+(Vector const& a, Vector const& b)
@@ -22,13 +22,13 @@ Vector operator*(float c, Vector const& v)
 
 Vector operator-(Vector const& a, Vector const& b)
 {
-  return a + (-1) * b;
+  return a + (-1.f) * b;
 }
 
 Vector operator/(Vector const& v, float d)
 {
   assert(d != 0); // da ottimizzare con exception ad esempio
-  return 1. / d * v;
+  return 1.f / d * v;
 }
 
 float norm(Vector const& v)

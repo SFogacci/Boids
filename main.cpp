@@ -4,7 +4,7 @@
 
 int main()
 {
-  bd::Parameters parameters   = bd::getParameters();
+  bd::Parameters parameters = bd::getParameters();
   std::vector<bd::Boid> birds = bd::createBirds(bd::getSize());
   bd::Flock flock{birds, parameters};
   bd::gameLoop(flock);

@@ -8,14 +8,14 @@
 namespace bd {
 
 const float pi = std::atan(1.f) * 4;
+
 class Boid
 {
   Vector position_;
   Vector velocity_;
- 
 
  public:
-  Boid(Vector p, Vector v)
+  explicit Boid(Vector p, Vector v)
       : position_{p}
       , velocity_{v}
   {}
@@ -50,17 +50,17 @@ class Boid
     velocity_ = v;
   }
 
-  void setx_Velocity (float const x){
-    velocity_.x=x;
+  void setx_Velocity(float const x)
+  {
+    velocity_.x = x;
   }
 
-  void sety_Velocity (float const y){
-    velocity_.y=y;
+  void sety_Velocity(float const y)
+  {
+    velocity_.y = y;
   }
-  
+
   bool isClose(Boid const&, float) const;
-
-  
 };
 
 struct Parameters
@@ -79,22 +79,21 @@ class Flock
   Parameters flock_parameters_;
 
  public:
-  Flock(Boid const& b, Parameters a)
-      : flock_parameters_{a}
+  explicit Flock(Boid const& b, Parameters p)
+      : flock_parameters_{p}
   {
     flock_.push_back(b);
     //  ++size_;
   }
 
-  Flock(std::vector<Boid> b, Parameters a)
-      : flock_{b}
-      , flock_parameters_{a}
-  {
-    // size_ = b.size();
+  explicit Flock(std::vector<Boid> v, Parameters p)
+      : flock_{v}
+      , flock_parameters_{p}
+  { // size_ = b.size();
   }
   // class invariant is flock_.size() == size_;
 
-  auto const& flock() const
+  auto const& getFlock() const
   {
     return flock_;
   }

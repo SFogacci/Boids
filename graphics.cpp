@@ -1,7 +1,7 @@
 #include "graphics.hpp"
 
 namespace bd {
-  sf::ConvexShape birdShape;
+sf::ConvexShape birdShape;
 sf::ConvexShape setShape(bd::Boid const& b) // passaggio by const ref
 {
   birdShape.setPointCount(3);
@@ -36,7 +36,7 @@ void gameLoop(bd::Flock& flock)
 
     window.clear();
     flock.evolution();
-    for (auto it = flock.flock().begin(), last = flock.flock().end();
+    for (auto it = flock.getFlock().begin(), last = flock.getFlock().end();
          it != last; ++it) {
       window.draw(setShape(*it));
     }
