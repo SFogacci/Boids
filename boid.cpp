@@ -40,7 +40,7 @@ void Flock::evolution()
     auto neighbours = static_cast<float>(
         std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) {
           return boid.hasNeighbour(other, flock_parameters_.d);
-        })); //why does it have a long int return type?
+        })); // why does it have a long int return type?
 
     auto corrections = std::accumulate(
         flock_.begin(), flock_.end(), Corrections{},
@@ -52,9 +52,10 @@ void Flock::evolution()
               sums.separation += other.getPosition() - boid.getPosition();
             }
           }
+          return sums;
         });
 
-    if (neighbours != 0) {
+    if (neighbours != 0.f) {
       corrections.alignment =
           corrections.alignment / neighbours - boid.getVelocity();
       corrections.cohesion =
