@@ -40,27 +40,30 @@ class Boid
     }
   }
 
-  void setPosition(Vector const& p)
-  {
-    position_ = p;
-  }
+  // void setPosition(Vector const& p)
+  // {
+  //   position_ = p;
+  // }
 
-  void setVelocity(Vector const& v)
-  {
-    velocity_ = v;
-  }
+  // void setVelocity(Vector const& v)
+  // {
+  //   velocity_ = v;
+  // }
 
-  void setx_Velocity(float const x)
-  {
-    velocity_.x = x;
-  }
+  // void setx_Velocity(float const x)
+  // {
+  //   velocity_.x = x;
+  // }
 
-  void sety_Velocity(float const y)
-  {
-    velocity_.y = y;
-  }
+  // void sety_Velocity(float const y)
+  // {
+  //   velocity_.y = y;
+  // }
+
+  void correct_borders();
 
   bool isClose(Boid const&, float) const;
+  bool hasNeighbour(Boid const&, float) const;
 };
 
 struct Parameters
@@ -70,6 +73,13 @@ struct Parameters
   float d;
   float ds;
   float s;
+};
+
+struct Corrections
+{
+  Vector alignment;
+  Vector cohesion;
+  Vector separation;
 };
 
 class Flock

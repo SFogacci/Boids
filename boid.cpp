@@ -1,74 +1,76 @@
 #include "boid.hpp"
+#include <algorithm>
+#include <numeric>
 
 namespace bd {
 
-bool Boid::isClose(bd::Boid const& b, float d) const
+void Boid::correct_borders()
+{
+  if (position_.x > 850.f) {
+    velocity_.x += -position_.x + 850.f;
+  }
+  if (position_.y > 850.f) {
+    velocity_.y += -position_.y + 850.f;
+  }
+  if (position_.x < 50.f) {
+    velocity_.y += -position_.x + 50.f;
+  }
+  if (position_.y < 50.f) {
+    velocity_.y += -position_.y + 50.f;
+  }
+}
+
+bool Boid::isClose(Boid const& b, float d) const
 {
   auto distance = norm((b.getPosition() - position_));
   return distance < d;
 }
 
+bool Boid::hasNeighbour(Boid const& b, float d) const
+{
+  return isClose(b, d) && (&b != this);
+}
+
 void Flock::evolution()
 {
-  std::vector<bd::Boid> modified_flock;
+  std::vector<Boid> modified_flock;
   modified_flock.reserve(flock_.size());
 
-  for (auto const& boid : flock_) {
-    Vector separation{0.f, 0.f};
-    Vector alignment;
-    Vector cohesion;
-    Vector sumVel{0.f, 0.f};
-    Vector sumPos{0.f, 0.f};
-    float neighbours{};
+  for (Boid const& boid : flock_) {
+    auto neighbours = static_cast<float>(
+        std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) {
+          return boid.hasNeighbour(other, flock_parameters_.d);
+        })); //why does it have a long int return type?
 
-    for (auto const& other : flock_) {
-      if (&other != &boid) {
-        if (boid.isClose(other, flock_parameters_.d)) {
-          sumPos += other.getPosition();
-          sumVel += other.getVelocity();
-          ++neighbours;
-
-          if (boid.isClose(other, flock_parameters_.ds)) {
-            separation = separation + other.getPosition() - boid.getPosition();
+    auto corrections = std::accumulate(
+        flock_.begin(), flock_.end(), Corrections{},
+        [&](auto& sums, auto const& other) {
+          if (boid.hasNeighbour(other, flock_parameters_.d)) {
+            sums.alignment += other.getVelocity();
+            sums.cohesion += other.getPosition();
+            if (boid.hasNeighbour(other, flock_parameters_.ds)) {
+              sums.separation += other.getPosition() - boid.getPosition();
+            }
           }
-        }
-      }
+        });
+
+    if (neighbours != 0) {
+      corrections.alignment =
+          corrections.alignment / neighbours - boid.getVelocity();
+      corrections.cohesion =
+          corrections.cohesion / neighbours - boid.getPosition();
     }
 
-    if (neighbours != 0.f) {
-      alignment = sumVel / neighbours - boid.getVelocity();
-      cohesion  = sumPos / neighbours - boid.getPosition();
-      // Accelerano tra di loro non importa
-      // quanta distanza c'è 101-102, 100-103
-      // finiscono in 101.5
-    }
-
-    Vector newVel = boid.getVelocity() + flock_parameters_.a * alignment
-                  + flock_parameters_.c * cohesion
-                  - flock_parameters_.s * separation;
+    auto newVel = boid.getVelocity()
+                + flock_parameters_.a * corrections.alignment
+                + flock_parameters_.c * corrections.cohesion
+                - flock_parameters_.s * corrections.separation;
 
     Boid modified_boid(boid.getPosition() + newVel, newVel);
-    // se vogliamo un parametro tocca accordarci (per i test)
-
-    if (modified_boid.getPosition().x > 850.f) {
-      modified_boid.setx_Velocity(newVel.x
-                                  - (modified_boid.getPosition().x - 850.f));
-    }
-    if (modified_boid.getPosition().y > 850.f) {
-      modified_boid.sety_Velocity(newVel.y
-                                  - (modified_boid.getPosition().y - 850.f));
-    }
-    if (modified_boid.getPosition().x < 50.f) {
-      modified_boid.setx_Velocity(newVel.x
-                                  + (-modified_boid.getPosition().x + 50.f));
-    }
-    if (modified_boid.getPosition().y < 50.f) {
-      modified_boid.sety_Velocity(newVel.y
-                                  + (-modified_boid.getPosition().y + 50.f));
-    }
-
+    modified_boid.correct_borders();
     modified_flock.push_back(modified_boid);
   }
+
   flock_ = modified_flock;
 }
 } // namespace bd
