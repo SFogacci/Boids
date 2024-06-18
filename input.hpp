@@ -6,11 +6,11 @@ namespace bd {
 
 Parameters getParameters();
 
-size_t getSize();
+std::size_t getSize();
 
 Vector generateCoordinate(float a, float b);
 
-std::vector<Boid> createBirds(size_t);
+std::vector<Boid> createBirds(std::size_t);
 
 } // namespace bd
 #endif

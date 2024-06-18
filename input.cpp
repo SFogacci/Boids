@@ -30,7 +30,7 @@ auto getParameters()
 
 auto getSize()
 {
-  size_t n;
+  std::size_t n;
   std::cout << "Number of boids: ";
   std::cin >> n;
   return n;
@@ -46,12 +46,12 @@ auto generateCoordinate(float a, float b)
   return coordinates;
 }
 
-auto createBirds(size_t n)
+auto createBirds(std::size_t n)
 {
   std::vector<Boid> birds;
   birds.reserve(n);
 
-  for (size_t i = 0; i != n; ++i) {
+  for (std::size_t i = 0; i != n; ++i) {
     Boid bird{generateCoordinate(0.f, 900.f), generateCoordinate(-20.f, 20.f)};
     birds.push_back(bird);
   }
