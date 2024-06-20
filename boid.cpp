@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iostream>
 #include <numeric>
+#include <random>
 
 namespace bd {
 
@@ -13,6 +14,14 @@ bool operator==(Boid const& v, Boid const& p)
   } else {
     return false;
   };
+}
+
+Vector generateCoordinate(float a, float b)
+{
+  std::random_device rd;
+  std::uniform_real_distribution<> dis(a, b);
+  Vector coordinates{static_cast<float>(dis(rd)), static_cast<float>(dis(rd))};
+  return coordinates;
 }
 
 void Boid::correct_borders()
@@ -34,7 +43,7 @@ void Boid::correct_borders()
 
 void Predator::correct_borders()
 {
-  float consistency_factor{30.f};
+  float consistency_factor{20.f};
   if (position_.x > 850.f) {
     velocity_.x += consistency_factor * (-position_.x + 850.f);
   }
@@ -115,7 +124,12 @@ void Flock::predator_evolution(Predator& p)
             sums.alignment += other.getVelocity();
             sums.cohesion += other.getPosition();
             if (boid.hasNeighbour(other, flock_parameters_.ds)) {
-              sums.separation += other.getPosition() - boid.getPosition();
+              sums.separation +=
+                  flock_parameters_.ds
+                  / norm(other.getPosition() - boid.getPosition())
+                  / norm(other.getPosition() - boid.getPosition())
+                  * (other.getPosition()
+                     - boid.getPosition()); // versore e normalizzazione su ds
             }
           }
           return sums;
@@ -136,7 +150,6 @@ void Flock::predator_evolution(Predator& p)
     if (std::find_if(preys.begin(), preys.end(),
                      [boid](Boid const& prey) { return prey == boid; })
         != preys.end()) {
-      std::cout << preys.size() << "\n";
       newVel = (flock_parameters_.d / norm(p.getPosition() - boid.getPosition())
                 * par.s * p.getVelocity());
     }
@@ -145,6 +158,13 @@ void Flock::predator_evolution(Predator& p)
     Boid modified_boid(boid.getPosition() + newVel / (consistency_factor),
                        newVel);
     modified_boid.correct_borders();
+    std::for_each(flock_.begin(), flock_.end(),
+                  [&modified_boid](Boid const& bird) {
+                    if (bird == modified_boid) {
+                    modified_boid.setPosition(modified_boid.getPosition()
+                                             + generateCoordinate(-1.f, 1.f));
+                    };
+                  });
     modified_flock.push_back(modified_boid);
   }
 

@@ -1,18 +1,10 @@
 #include <iostream>
-#include <random>
 
 #include "boid.hpp"
 namespace bd {
 
 
 
-auto generateCoordinate(float a, float b)                            
-{
-  std::random_device rd;
-  std::uniform_real_distribution<> dis(a, b);
-  Vector coordinates{static_cast<float>(dis(rd)), static_cast<float>(dis(rd))};
-  return coordinates;
-}
 
 auto createBirds(const size_t& n)
 {
@@ -27,7 +19,7 @@ auto createBirds(const size_t& n)
 }
 
 auto createPredators(){
-  Predator bird{generateCoordinate(0.f, 900.f), generateCoordinate(-0.05f, 0.05f)};
+  Predator bird{generateCoordinate(0.f, 900.f), generateCoordinate(-5.f, 5.f)};
   return bird;
 }
 

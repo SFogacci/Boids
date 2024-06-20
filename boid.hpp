@@ -40,10 +40,10 @@ class Boid
     }
   }
 
-  // void setPosition(Vector const& p)
-  // {
-  //   position_ = p;
-  // }
+  void setPosition(Vector const& p)
+  {
+    position_ = p;
+  }
 
   // void setVelocity(Vector const& v)
   // {
@@ -66,6 +66,7 @@ class Boid
   bool hasNeighbour(Boid const&, float) const;
 };
 
+Vector generateCoordinate(float a, float b);
 bool operator==(Boid const&, Boid const&);
 
 struct Parameters
