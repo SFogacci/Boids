@@ -7,28 +7,25 @@ namespace bd {
 
 bool operator==(Boid const& v, Boid const& p)
 {
-  if (v.getVelocity() == p.getVelocity()
-      && v.getPosition() == p.getPosition()) {
-    return true;
-  } else {
-    return false;
-  };
+  // return (v.getVelocity() == p.getVelocity()
+  //         && v.getPosition() == p.getPosition());
+  return &v == &p;
 }
 
 void Boid::correct_borders()
 {
   float consistency_factor{30.f};
   if (position_.x > 850.f) {
-    velocity_.x += consistency_factor * (-position_.x + 850.f);
+    velocity_.x += consistency_factor * (850.f - position_.x);
   }
   if (position_.y > 850.f) {
-    velocity_.y += consistency_factor * (-position_.y + 850.f);
+    velocity_.y += consistency_factor * (850.f - position_.y);
   }
   if (position_.x < 50.f) {
-    velocity_.x += consistency_factor * (-position_.x + 50.f);
+    velocity_.x += consistency_factor * (50.f - position_.x);
   }
   if (position_.y < 50.f) {
-    velocity_.y += consistency_factor * (-position_.y + 50.f);
+    velocity_.y += consistency_factor * (50.f - position_.y);
   }
 }
 
@@ -69,14 +66,13 @@ bool Predator::isClose(Boid const& b, float d) const
 void Flock::predator_evolution(Predator& p)
 {
   Vector center_of_mass{};
-  float d{flock_parameters_.d};
+  float d = flock_parameters_.d;
   std::vector<Boid> preys;
   std::for_each(flock_.begin(), flock_.end(),
                 [p, d, &preys, &center_of_mass](Boid const& b) {
                   if (p.isClose(b, d)) {
                     center_of_mass += b.getPosition();
                     preys.push_back(b);
-                  } else {
                   };
                 });
 

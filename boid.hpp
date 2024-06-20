@@ -75,7 +75,7 @@ struct Parameters
   float d;
   float ds;
   float s;
-  size_t n;
+  std::size_t n;
 };
 
 struct Corrections
@@ -160,9 +160,6 @@ class Flock
   void evolution();
   void predator_evolution(Predator &p);
 };
-
-
-
 
 } // namespace bd
 
