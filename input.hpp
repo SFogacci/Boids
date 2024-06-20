@@ -4,13 +4,9 @@
 #include "boid.hpp"
 namespace bd {
 
-Parameters getParameters();
-
-std::size_t getSize();
-
 Vector generateCoordinate(float a, float b);
 
-std::vector<Boid> createBirds(std::size_t);
+std::vector<Boid> createBirds(const size_t&);
 
 } // namespace bd
 #endif
