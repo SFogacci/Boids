@@ -18,6 +18,8 @@ Vector operator-(Vector const&, Vector const&);
 
 Vector operator/(Vector const&, float);
 
+bool operator==(Vector const&, Vector const&);
+
 float norm(Vector const&);
 } // namespace bd
 

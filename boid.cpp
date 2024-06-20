@@ -1,22 +1,51 @@
 #include "boid.hpp"
 #include <algorithm>
+#include <iostream>
 #include <numeric>
 
 namespace bd {
 
+bool operator==(Boid const& v, Boid const& p)
+{
+  if (v.getVelocity() == p.getVelocity()
+      && v.getPosition() == p.getPosition()) {
+    return true;
+  } else {
+    return false;
+  };
+}
+
 void Boid::correct_borders()
 {
+  float consistency_factor{30.f};
   if (position_.x > 850.f) {
-    velocity_.x += -position_.x + 850.f;
+    velocity_.x += consistency_factor * (-position_.x + 850.f);
   }
   if (position_.y > 850.f) {
-    velocity_.y += -position_.y + 850.f;
+    velocity_.y += consistency_factor * (-position_.y + 850.f);
   }
   if (position_.x < 50.f) {
-    velocity_.y += -position_.x + 50.f;
+    velocity_.x += consistency_factor * (-position_.x + 50.f);
   }
   if (position_.y < 50.f) {
-    velocity_.y += -position_.y + 50.f;
+    velocity_.y += consistency_factor * (-position_.y + 50.f);
+  }
+}
+
+void Predator::correct_borders()
+{
+  float consistency_factor{30.f};
+  if (position_.x > 850.f) {
+    velocity_.x += consistency_factor * (-position_.x + 850.f);
+  }
+  if (position_.y > 850.f) {
+    velocity_.y += consistency_factor * (-position_.y + 850.f);
+  }
+  if (position_.x < 50.f) {
+    velocity_.x += consistency_factor * (-position_.x + 50.f);
+  }
+  if (position_.y < 50.f) {
+    velocity_.y += consistency_factor * (-position_.y + 50.f);
   }
 }
 
@@ -31,8 +60,45 @@ bool Boid::hasNeighbour(Boid const& b, float d) const
   return isClose(b, d) && (&b != this);
 }
 
-void Flock::evolution()
+bool Predator::isClose(Boid const& b, float d) const
 {
+  auto distance = norm((b.getPosition() - position_));
+  return distance < d;
+}
+
+void Flock::predator_evolution(Predator& p)
+{
+  Vector center_of_mass{};
+  float d{flock_parameters_.d};
+  std::vector<Boid> preys;
+  std::for_each(flock_.begin(), flock_.end(),
+                [p, d, &preys, &center_of_mass](Boid const& b) {
+                  if (p.isClose(b, d)) {
+                    center_of_mass += b.getPosition();
+                    preys.push_back(b);
+                  } else {
+                  };
+                });
+
+  Parameters par{0.f, 0.f,         flock_parameters_.d, flock_parameters_.ds,
+                 1.f, preys.size()};
+  Flock poor_preys(preys, par);
+
+  if (preys.size() >= 1) {
+    float consistency_factor{60.f};
+    Vector hunting =
+        center_of_mass / static_cast<float>(preys.size()) - p.getPosition();
+    p.setPosition(p.getPosition() + hunting / consistency_factor);
+    p.setVelocity(p.getVelocity() + hunting);
+  } else {
+    float consistency_factor{60.f};
+    p.setPosition(p.getPosition() + p.getVelocity() / consistency_factor);
+  }
+  p.correct_borders();
+  // }
+
+  // void Flock::evolution()
+  // {
   std::vector<Boid> modified_flock;
   modified_flock.reserve(flock_.size());
 
@@ -67,7 +133,17 @@ void Flock::evolution()
                 + flock_parameters_.c * corrections.cohesion
                 - flock_parameters_.s * corrections.separation;
 
-    Boid modified_boid(boid.getPosition() + newVel, newVel);
+    if (std::find_if(preys.begin(), preys.end(),
+                     [boid](Boid const& prey) { return prey == boid; })
+        != preys.end()) {
+      std::cout << preys.size() << "\n";
+      newVel = (flock_parameters_.d / norm(p.getPosition() - boid.getPosition())
+                * par.s * p.getVelocity());
+    }
+
+    float consistency_factor{60.f};
+    Boid modified_boid(boid.getPosition() + newVel / (consistency_factor),
+                       newVel);
     modified_boid.correct_borders();
     modified_flock.push_back(modified_boid);
   }

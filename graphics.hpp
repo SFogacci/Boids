@@ -6,7 +6,8 @@
 
 namespace bd {
 sf::ConvexShape setShape(Boid const&);
-void gameLoop(bd::Flock& flock);
+sf::ConvexShape setShape(Predator const&);
+void gameLoop(bd::Flock& flock, Predator &p);
 } // namespace bd
 
 #endif 

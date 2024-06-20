@@ -66,6 +66,8 @@ class Boid
   bool hasNeighbour(Boid const&, float) const;
 };
 
+bool operator==(Boid const&, Boid const&);
+
 struct Parameters
 {
   float a;
@@ -83,10 +85,57 @@ struct Corrections
   Vector separation;
 };
 
+class Predator{
+
+  Vector position_;
+  Vector velocity_;
+
+  public:
+
+  explicit Predator(Vector p, Vector v)
+      : position_{p}
+      , velocity_{v}
+  {}
+
+  auto getPosition() const
+  {
+    return position_;
+  }
+
+  auto getVelocity() const
+  {
+    return velocity_;
+  }
+
+  float getOrientation() const
+  {
+    float orientation = atan2f(velocity_.y, velocity_.x) * 180.f / pi;
+    if (orientation >= 0.f) {
+      return orientation;
+    } else {
+      return orientation + 360.f;
+    }
+  }
+
+
+  void setPosition(Vector const& p)
+  {
+    position_ = p;
+  }
+
+  void setVelocity(Vector const& v)
+  {
+    velocity_ = v;
+  }
+
+  void correct_borders();
+
+  bool isClose(Boid const&, float) const;
+};
+
 class Flock
 {
   std::vector<Boid> flock_;
-  // std::size_t size_{};
   Parameters flock_parameters_;
 
  public:
@@ -94,13 +143,12 @@ class Flock
       : flock_parameters_{p}
   {
     flock_.push_back(b);
-    //  ++size_;
   }
 
   explicit Flock(std::vector<Boid> v, Parameters p)
       : flock_{v}
       , flock_parameters_{p}
-  { // size_ = b.size();
+  {
   }
   // class invariant is flock_.size() == size_;
 
@@ -110,7 +158,11 @@ class Flock
   }
 
   void evolution();
+  void predator_evolution(Predator &p);
 };
+
+
+
 
 } // namespace bd
 

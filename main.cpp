@@ -9,7 +9,7 @@ int main()
 {
   try {
     float a, c, d, ds, s;
-    size_t n;
+    size_t n; // even if p is not a size, yet.
 
     std::cout << "Insert flock's parameters in the following order: \n"
               << "Cohesion intensity [0,1], \n"
@@ -34,8 +34,9 @@ int main()
     bd::Parameters parameters{a, c, d, ds, s, n};
 
     std::vector<bd::Boid> birds = bd::createBirds(parameters.n);
+    bd::Predator predator =bd::createPredators();
     bd::Flock flock{birds, parameters};
-    bd::gameLoop(flock);
+    bd::gameLoop(flock, predator);
   }
 
   catch (std::runtime_error const& e) {

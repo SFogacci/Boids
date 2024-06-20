@@ -31,6 +31,11 @@ Vector operator/(Vector const& v, float d)
   return 1.f / d * v;
 }
 
+bool operator==(Vector const& v, Vector const& p){
+  if (v.x == p.x && v.y ==p.y){ return true;} else {return false;}
+}
+
+
 float norm(Vector const& v)
 {
   return std::hypot(v.x, v.y);
