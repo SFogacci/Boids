@@ -4,22 +4,6 @@
 
 namespace bd {
 
-void Boid::correct_borders()
-{
-  if (position_.x > 850.f) {
-    velocity_.x += -position_.x + 850.f;
-  }
-  if (position_.y > 850.f) {
-    velocity_.y += -position_.y + 850.f;
-  }
-  if (position_.x < 50.f) {
-    velocity_.y += -position_.x + 50.f;
-  }
-  if (position_.y < 50.f) {
-    velocity_.y += -position_.y + 50.f;
-  }
-}
-
 bool Boid::isClose(Boid const& b, float d) const
 {
   auto distance = norm((b.getPosition() - position_));
@@ -31,6 +15,22 @@ bool Boid::hasNeighbour(Boid const& b, float d) const
   return isClose(b, d) && (&b != this);
 }
 
+void Boid::correct_borders()
+{
+  if (position_.x > 850.f) {
+    velocity_.x += 850.f - position_.x;
+  }
+  if (position_.y > 850.f) {
+    velocity_.y += 850.f - position_.y;
+  }
+  if (position_.x < 50.f) {
+    velocity_.y += 50.f - position_.x;
+  }
+  if (position_.y < 50.f) {
+    velocity_.y += 50.f - position_.y;
+  }
+}
+/*
 void Flock::evolution()
 {
   std::vector<Boid> modified_flock;
@@ -73,5 +73,5 @@ void Flock::evolution()
   }
 
   flock_ = modified_flock;
-}
+}*/
 } // namespace bd

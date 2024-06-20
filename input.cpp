@@ -41,8 +41,8 @@ auto generateCoordinate(float a, float b)
 // velocità possono essere anche negative, le coordinate no.
 {
   std::random_device rd;
-  std::uniform_real_distribution<> dis(a, b);
-  Vector coordinates{static_cast<float>(dis(rd)), static_cast<float>(dis(rd))};
+  std::uniform_real_distribution<float> dis(a, b);
+  Vector coordinates{dis(rd), dis(rd)};
   return coordinates;
 }
 
