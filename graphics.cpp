@@ -44,7 +44,7 @@ sf::ConvexShape setShape(bd::Predator const& b)
 void gameLoop(bd::Flock& flock, Predator& p)
 {
   sf::RenderWindow window(sf::VideoMode(900, 900), "Boids");
-  window.setFramerateLimit(30);
+  window.setFramerateLimit(60);
   // window.setPosition(sf::Vector2i(1920, -200));
 
   while (window.isOpen()) {
