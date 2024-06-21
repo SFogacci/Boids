@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iostream>
 #include <numeric>
+#include <random>
 
 namespace bd {
 
@@ -12,9 +13,9 @@ bool operator==(Boid const& v, Boid const& p)
   return &v == &p;
 }
 
-void Boid::correct_borders()
+void Boid::correct_borders() 
 {
-  float consistency_factor{30.f};
+  float consistency_factor{1.f}; //20.f
   if (position_.x > 850.f) {
     velocity_.x += consistency_factor * (850.f - position_.x);
   }
@@ -31,7 +32,7 @@ void Boid::correct_borders()
 
 void Predator::correct_borders()
 {
-  float consistency_factor{30.f};
+  float consistency_factor{1.f}; //20.f
   if (position_.x > 850.f) {
     velocity_.x += consistency_factor * (-position_.x + 850.f);
   }
@@ -63,6 +64,22 @@ bool Predator::isClose(Boid const& b, float d) const
   return distance < d;
 }
 
+void Boid::biological_limits()
+{
+  float maximum_speed = 5.f; //500.f
+  if (norm(velocity_) > maximum_speed) {
+    velocity_ = maximum_speed * velocity_ / norm(velocity_);
+  }
+}
+
+void Predator::biological_limits()
+{
+  float maximum_speed = 10.f; //600.f
+  if (norm(velocity_) > maximum_speed) {
+    velocity_ = maximum_speed * velocity_ / norm(velocity_);
+  }
+}
+
 void Flock::predator_evolution(Predator& p)
 {
   Vector center_of_mass{};
@@ -78,19 +95,21 @@ void Flock::predator_evolution(Predator& p)
 
   Parameters par{0.f, 0.f,         flock_parameters_.d, flock_parameters_.ds,
                  1.f, preys.size()};
-  Flock poor_preys(preys, par);
+  // Flock poor_preys(preys, par);
 
   if (preys.size() >= 1) {
-    float consistency_factor{60.f};
+    float consistency_factor{1.f}; //60.f
     Vector hunting =
-        center_of_mass / static_cast<float>(preys.size()) - p.getPosition();
+        (center_of_mass / static_cast<float>(preys.size()) - p.getPosition())
+        / 100.f; //No factor
     p.setPosition(p.getPosition() + hunting / consistency_factor);
     p.setVelocity(p.getVelocity() + hunting);
   } else {
-    float consistency_factor{60.f};
+    float consistency_factor{1.f}; //60.f
     p.setPosition(p.getPosition() + p.getVelocity() / consistency_factor);
   }
   p.correct_borders();
+  p.biological_limits();
   // }
 
   // void Flock::evolution()
@@ -111,7 +130,12 @@ void Flock::predator_evolution(Predator& p)
             sums.alignment += other.getVelocity();
             sums.cohesion += other.getPosition();
             if (boid.hasNeighbour(other, flock_parameters_.ds)) {
-              sums.separation += other.getPosition() - boid.getPosition();
+              sums.separation +=
+                  flock_parameters_.ds
+                  / norm(other.getPosition() - boid.getPosition())
+                  / norm(other.getPosition() - boid.getPosition())
+                  * (other.getPosition()
+                     - boid.getPosition()); // versore e normalizzazione su ds
             }
           }
           return sums;
@@ -126,21 +150,28 @@ void Flock::predator_evolution(Predator& p)
 
     auto newVel = boid.getVelocity()
                 + flock_parameters_.a * corrections.alignment
-                + flock_parameters_.c * corrections.cohesion
+                + flock_parameters_.c * corrections.cohesion / 100.f //No factor
                 - flock_parameters_.s * corrections.separation;
 
     if (std::find_if(preys.begin(), preys.end(),
                      [boid](Boid const& prey) { return prey == boid; })
         != preys.end()) {
-      std::cout << preys.size() << "\n";
       newVel = (flock_parameters_.d / norm(p.getPosition() - boid.getPosition())
                 * par.s * p.getVelocity());
     }
 
-    float consistency_factor{60.f};
+    float consistency_factor{1.f}; // 60.f
     Boid modified_boid(boid.getPosition() + newVel / (consistency_factor),
                        newVel);
     modified_boid.correct_borders();
+    std::for_each(
+        flock_.begin(), flock_.end(), [&modified_boid](Boid const& bird) {
+          if (bird == modified_boid) {
+            modified_boid.setPosition(modified_boid.getPosition()
+                                      + generateCoordinate(-1.f, 1.f));
+          };
+        });
+    modified_boid.biological_limits();
     modified_flock.push_back(modified_boid);
   }
 

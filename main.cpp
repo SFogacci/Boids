@@ -8,7 +8,7 @@
 int main()
 {
   try {
-    float a, c, d, ds, s;
+    float a, c, d, ds, s; // Giacomini asked to avoid this, didn't him?
     size_t n; // even if p is not a size, yet.
 
     std::cout << "Insert flock's parameters in the following order: \n"
