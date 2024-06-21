@@ -8,14 +8,13 @@ namespace bd {
 
 bool operator==(Boid const& v, Boid const& p)
 {
-  // return (v.getVelocity() == p.getVelocity()
-  //         && v.getPosition() == p.getPosition());
-  return &v == &p;
+  return (v.getVelocity() == p.getVelocity()
+          && v.getPosition() == p.getPosition());
 }
 
-void Boid::correct_borders() 
+void Boid::correct_borders()
 {
-  float consistency_factor{1.f}; //20.f
+  float consistency_factor{1.f}; // 20.f
   if (position_.x > 850.f) {
     velocity_.x += consistency_factor * (850.f - position_.x);
   }
@@ -32,7 +31,7 @@ void Boid::correct_borders()
 
 void Predator::correct_borders()
 {
-  float consistency_factor{1.f}; //20.f
+  float consistency_factor{1.f}; // 20.f
   if (position_.x > 850.f) {
     velocity_.x += consistency_factor * (-position_.x + 850.f);
   }
@@ -66,7 +65,7 @@ bool Predator::isClose(Boid const& b, float d) const
 
 void Boid::biological_limits()
 {
-  float maximum_speed = 5.f; //500.f
+  float maximum_speed = 5.f; // 500.f
   if (norm(velocity_) > maximum_speed) {
     velocity_ = maximum_speed * velocity_ / norm(velocity_);
   }
@@ -74,7 +73,7 @@ void Boid::biological_limits()
 
 void Predator::biological_limits()
 {
-  float maximum_speed = 10.f; //600.f
+  float maximum_speed = 10.f; // 600.f
   if (norm(velocity_) > maximum_speed) {
     velocity_ = maximum_speed * velocity_ / norm(velocity_);
   }
@@ -98,14 +97,14 @@ void Flock::predator_evolution(Predator& p)
   // Flock poor_preys(preys, par);
 
   if (preys.size() >= 1) {
-    float consistency_factor{1.f}; //60.f
+    float consistency_factor{1.f}; // 60.f
     Vector hunting =
         (center_of_mass / static_cast<float>(preys.size()) - p.getPosition())
-        / 100.f; //No factor
+        / 100.f; // No factor
     p.setPosition(p.getPosition() + hunting / consistency_factor);
     p.setVelocity(p.getVelocity() + hunting);
   } else {
-    float consistency_factor{1.f}; //60.f
+    float consistency_factor{1.f}; // 60.f
     p.setPosition(p.getPosition() + p.getVelocity() / consistency_factor);
   }
   p.correct_borders();
@@ -148,10 +147,10 @@ void Flock::predator_evolution(Predator& p)
           corrections.cohesion / neighbours - boid.getPosition();
     }
 
-    auto newVel = boid.getVelocity()
-                + flock_parameters_.a * corrections.alignment
-                + flock_parameters_.c * corrections.cohesion / 100.f //No factor
-                - flock_parameters_.s * corrections.separation;
+    auto newVel =
+        boid.getVelocity() + flock_parameters_.a * corrections.alignment
+        + flock_parameters_.c * corrections.cohesion / 100.f // No factor
+        - flock_parameters_.s * corrections.separation;
 
     if (std::find_if(preys.begin(), preys.end(),
                      [boid](Boid const& prey) { return prey == boid; })
