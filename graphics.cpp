@@ -56,8 +56,8 @@ void gameLoop(bd::Flock& flock, Predator& p)
     }
 
     window.clear();
-    flock.predator_evolution(p);
-    // flock.evolution();
+    // flock.predator_evolution(p);
+    flock.evolution();
     window.draw(setShape(p));
     for (auto it = flock.getFlock().begin(), last = flock.getFlock().end();
          it != last; ++it) {

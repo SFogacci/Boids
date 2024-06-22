@@ -23,6 +23,8 @@ bool operator==(Vector const&, Vector const&);
 float norm(Vector const&);
 
 Vector generateCoordinates(float a, float b);
+
+void normalize(Vector&, float);
 } // namespace bd
 
 #endif

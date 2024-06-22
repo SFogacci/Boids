@@ -32,10 +32,10 @@ Vector operator/(Vector const& v, float d)
   return 1.f / d * v;
 }
 
-bool operator==(Vector const& v, Vector const& p){
-  if (v.x == p.x && v.y ==p.y){ return true;} else {return false;}
+bool operator==(Vector const& v, Vector const& p)
+{
+  return (v.x == p.x && v.y == p.y);
 }
-
 
 float norm(Vector const& v)
 {
@@ -48,5 +48,10 @@ Vector generateCoordinates(float a, float b)
   std::uniform_real_distribution<float> dis(a, b);
   Vector coordinates{dis(rd), dis(rd)};
   return coordinates;
+}
+
+void normalize(Vector& v, float f)
+{
+  v = f / norm(v) * v;
 }
 } // namespace bd

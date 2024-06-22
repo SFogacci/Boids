@@ -43,7 +43,7 @@ void Boid::biological_limits()
 {
   float maximum_speed = 5.f; // 500.f
   if (norm(velocity_) > maximum_speed) {
-    velocity_ = maximum_speed * velocity_ / norm(velocity_);
+    normalize(velocity_, maximum_speed);
   }
 }
 
@@ -58,7 +58,7 @@ void Boid::biological_limits()
 void Flock::predator_evolution(Predator& p)
 {
   Vector center_of_mass{};
-  float d = flock_parameters_.d;
+  const float d = flock_parameters_.d;
   std::vector<Boid> preys;
   std::for_each(flock_.begin(), flock_.end(),
                 [p, d, &preys, &center_of_mass](Boid const& b) {
@@ -85,69 +85,74 @@ void Flock::predator_evolution(Predator& p)
   }
   p.correct_borders();
   p.biological_limits();
-  // }
+}
 
-  // void Flock::evolution()
-  // {
+void Flock::evolution()
+{
   std::vector<Boid> modified_flock;
   modified_flock.reserve(flock_.size());
 
   for (Boid const& boid : flock_) {
-    auto neighbours = static_cast<float>(
+    const auto neighbours = static_cast<float>(
         std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) {
           return boid.hasNeighbour(other, flock_parameters_.d);
-        })); // why does it have a long int return type?
-
-    auto corrections = std::accumulate(
-        flock_.begin(), flock_.end(), Corrections{},
-        [&](auto& sums, auto const& other) {
-          if (boid.hasNeighbour(other, flock_parameters_.d)) {
-            sums.alignment += other.getVelocity();
-            sums.cohesion += other.getPosition();
-            if (boid.hasNeighbour(other, flock_parameters_.ds)) {
-              sums.separation +=
-                  flock_parameters_.ds
-                  / norm(other.getPosition() - boid.getPosition())
-                  / norm(other.getPosition() - boid.getPosition())
-                  * (other.getPosition()
-                     - boid.getPosition()); // versore e normalizzazione su ds
-            }
-          }
-          return sums;
-        });
+        }));
 
     if (neighbours != 0.f) {
+      auto corrections = std::accumulate(
+          flock_.begin(), flock_.end(), Corrections{},
+          [&](auto& sums, auto const& other) {
+            if (boid.hasNeighbour(other, flock_parameters_.d)) {
+              sums.alignment += other.getVelocity();
+              sums.cohesion += other.getPosition();
+              if (boid.hasNeighbour(other, flock_parameters_.ds)) {
+                auto distance = other.getPosition() - boid.getPosition();
+                normalize(distance, flock_parameters_.ds / norm(distance));
+                sums.separation += distance; // versore e normalizzazione su ds
+              }
+            }
+            return sums;
+          });
+
       corrections.alignment =
           corrections.alignment / neighbours - boid.getVelocity();
       corrections.cohesion =
           corrections.cohesion / neighbours - boid.getPosition();
+
+      auto newVel =
+          boid.getVelocity() + flock_parameters_.a * corrections.alignment
+          + flock_parameters_.c * corrections.cohesion // /100.F (No factor)
+          - flock_parameters_.s * corrections.separation;
+
+      float consistency_factor{1.f}; // 60.f
+      Boid modified_boid(boid.getPosition() + newVel / (consistency_factor),
+                         newVel);
+
+      // if (std::find_if(preys.begin(), preys.end(),
+      //                  [boid](Boid const& prey) { return prey == boid; })
+      //     != preys.end()) {
+      //   newVel = (flock_parameters_.d / norm(p.getPosition() -
+      //   boid.getPosition())
+      //             * par.s * p.getVelocity());
+      // }
+
+      std::for_each(
+          flock_.begin(), flock_.end(), [&modified_boid](Boid const& other) {
+            if (other == modified_boid) {
+              modified_boid.setPosition(modified_boid.getPosition()
+                                        + generateCoordinates(-1.f, 1.f));
+            };
+          });
+      modified_boid.biological_limits();
+      modified_boid.correct_borders();
+      modified_flock.push_back(modified_boid);
+    } else {
+      float consistency_factor{1.f}; // 60.f
+      Boid modified_boid(boid.getPosition()
+                             + boid.getVelocity() / (consistency_factor),
+                         boid.getVelocity());
+      modified_flock.push_back(modified_boid);
     }
-
-    auto newVel =
-        boid.getVelocity() + flock_parameters_.a * corrections.alignment
-        + flock_parameters_.c * corrections.cohesion / 100.f // No factor
-        - flock_parameters_.s * corrections.separation;
-
-    if (std::find_if(preys.begin(), preys.end(),
-                     [boid](Boid const& prey) { return prey == boid; })
-        != preys.end()) {
-      newVel = (flock_parameters_.d / norm(p.getPosition() - boid.getPosition())
-                * par.s * p.getVelocity());
-    }
-
-    float consistency_factor{1.f}; // 60.f
-    Boid modified_boid(boid.getPosition() + newVel / (consistency_factor),
-                       newVel);
-    modified_boid.correct_borders();
-    std::for_each(
-        flock_.begin(), flock_.end(), [&modified_boid](Boid const& bird) {
-          if (bird == modified_boid) {
-            modified_boid.setPosition(modified_boid.getPosition()
-                                      + generateCoordinates(-1.f, 1.f));
-          };
-        });
-    modified_boid.biological_limits();
-    modified_flock.push_back(modified_boid);
   }
 
   flock_ = modified_flock;
