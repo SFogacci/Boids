@@ -8,8 +8,12 @@
 int main()
 {
   try {
-    float a, c, d, ds, s; // Giacomini asked to avoid this, didn't him?
-    size_t n; // even if p is not a size, yet.
+    float a{};
+    float c{};
+    float d{};
+    float ds{};
+    float s{}; // Giacomini asked to avoid this, didn't he? (Fixed)
+    std::size_t n{};
 
     std::cout << "Insert flock's parameters in the following order: \n"
               << "Cohesion intensity [0,1], \n"
@@ -24,7 +28,7 @@ int main()
     if (std::cin >> c >> a >> s >> d >> ds
         >> n) { // checks if input type is valid
       if (c < 0 || c > 1 || a < 0 || a > 1 || s < 0 || s > 1 || d < 0 || d > 100
-          || ds < 0 || ds > 20 || n > 300) {  // checks range of input (size_t is by def >0).
+          || ds < 0 || ds > 20 || n > 300) {  // checks range of input (std::size_t is by def >0).
         throw e; // if input not in range
       }
 

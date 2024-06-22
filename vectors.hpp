@@ -21,6 +21,8 @@ Vector operator/(Vector const&, float);
 bool operator==(Vector const&, Vector const&);
 
 float norm(Vector const&);
+
+Vector generateCoordinates(float a, float b);
 } // namespace bd
 
 #endif

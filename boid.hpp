@@ -53,7 +53,7 @@ class Boid
 
   void correct_borders();
 
-  bool isClose(Boid const&, float) const;
+  // bool isClose(Boid const&, float) const;
   bool hasNeighbour(Boid const&, float) const;
   void biological_limits();
 };
@@ -66,7 +66,6 @@ class Predator : public Boid // predator derivata da boid.
   {}
 };
 
-Vector generateCoordinate(float a, float b);
 bool operator==(Boid const&, Boid const&);
 
 struct Parameters

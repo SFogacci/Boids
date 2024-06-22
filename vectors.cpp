@@ -1,6 +1,7 @@
 #include "vectors.hpp"
 #include <cassert>
 #include <cmath>
+#include <random>
 
 namespace bd {
 
@@ -39,5 +40,13 @@ bool operator==(Vector const& v, Vector const& p){
 float norm(Vector const& v)
 {
   return std::hypot(v.x, v.y);
+}
+
+Vector generateCoordinates(float a, float b)
+{
+  std::random_device rd;
+  std::uniform_real_distribution<float> dis(a, b);
+  Vector coordinates{dis(rd), dis(rd)};
+  return coordinates;
 }
 } // namespace bd

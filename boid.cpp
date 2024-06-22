@@ -1,60 +1,36 @@
 #include "boid.hpp"
+#include "vectors.hpp"
 #include <algorithm>
 #include <iostream>
 #include <numeric>
-#include <random>
 
 namespace bd {
 
-bool operator==(Boid const& v, Boid const& p)
+bool operator==(Boid const& a, Boid const& b)
 {
-  return (v.getVelocity() == p.getVelocity()
-          && v.getPosition() == p.getPosition());
+  return (a.getVelocity() == b.getVelocity()
+          && a.getPosition() == b.getPosition());
 }
 
 void Boid::correct_borders()
 {
-  float consistency_factor{1.f}; // 20.f
-  if (position_.x > 850.f) {
-    velocity_.x += consistency_factor * (850.f - position_.x);
+  if (position_.x > 900.f) {
+    position_.x -= 900.f;
+  } else if (position_.x < 0.f) {
+    position_.x += 900.f;
   }
-  if (position_.y > 850.f) {
-    velocity_.y += consistency_factor * (850.f - position_.y);
+  if (position_.y > 900.f) {
+    position_.y -= 900.f;
   }
-  if (position_.x < 50.f) {
-    velocity_.x += consistency_factor * (50.f - position_.x);
-  }
-  if (position_.y < 50.f) {
-    velocity_.y += consistency_factor * (50.f - position_.y);
-  }
-}
-
-// void Predator::correct_borders()
-// {
-//   float consistency_factor{1.f}; //20.f
-//   if (position_.x > 850.f) {
-//     velocity_.x += consistency_factor * (-position_.x + 850.f);
-//   }
-//   if (position_.y > 850.f) {
-//     velocity_.y += consistency_factor * (-position_.y + 850.f);
-//   }
-//   if (position_.x < 50.f) {
-//     velocity_.x += consistency_factor * (-position_.x + 50.f);
-//   }
-//   if (position_.y < 50.f) {
-//     velocity_.y += consistency_factor * (-position_.y + 50.f);
-//   }
-// }
-
-bool Boid::isClose(Boid const& b, float d) const
-{
-  auto distance = norm((b.getPosition() - position_));
-  return distance < d;
+  if (position_.y < 0.f) {
+    position_.y += 900.f;
+  } // c'è un problema sulla y per colpa della barra in alto che copre
 }
 
 bool Boid::hasNeighbour(Boid const& b, float d) const
 {
-  return isClose(b, d) && (&b != this);
+  auto distance = norm(b.getPosition() - position_);
+  return distance < d && (&b != this);
 }
 
 // bool Predator::isClose(Boid const& b, float d) const
@@ -86,7 +62,7 @@ void Flock::predator_evolution(Predator& p)
   std::vector<Boid> preys;
   std::for_each(flock_.begin(), flock_.end(),
                 [p, d, &preys, &center_of_mass](Boid const& b) {
-                  if (p.isClose(b, d)) {
+                  if (p.hasNeighbour(b, d)) {
                     center_of_mass += b.getPosition();
                     preys.push_back(b);
                   };
@@ -167,7 +143,7 @@ void Flock::predator_evolution(Predator& p)
         flock_.begin(), flock_.end(), [&modified_boid](Boid const& bird) {
           if (bird == modified_boid) {
             modified_boid.setPosition(modified_boid.getPosition()
-                                      + generateCoordinate(-1.f, 1.f));
+                                      + generateCoordinates(-1.f, 1.f));
           };
         });
     modified_boid.biological_limits();
