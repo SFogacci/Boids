@@ -5,9 +5,19 @@
 #include "SFML/Graphics.hpp"
 
 namespace bd {
+
 sf::ConvexShape setShape(Boid const&);
-sf::ConvexShape setShape(Predator const&);
-void gameLoop(bd::Flock& flock, Predator &p);
+
+void gameLoop(bd::Flock& flock);
+
+void positionGraph(Flock const&, sf::RenderWindow&);
+
+std::vector<int> binning_velocities(Flock const&);
+
+std::vector<int> binning_distances(Flock const&);
+
+std::vector<sf::RectangleShape> graphing(std::vector<int> const&, float const&);
+
 } // namespace bd
 
-#endif 
+#endif
