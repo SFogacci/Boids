@@ -29,22 +29,22 @@ void Boid::correct_borders()
   }
 }
 
-void Predator::correct_borders()
-{
-  float consistency_factor{1.f}; // 20.f
-  if (position_.x > 850.f) {
-    velocity_.x += consistency_factor * (-position_.x + 850.f);
-  }
-  if (position_.y > 850.f) {
-    velocity_.y += consistency_factor * (-position_.y + 850.f);
-  }
-  if (position_.x < 50.f) {
-    velocity_.x += consistency_factor * (-position_.x + 50.f);
-  }
-  if (position_.y < 50.f) {
-    velocity_.y += consistency_factor * (-position_.y + 50.f);
-  }
-}
+// void Predator::correct_borders()
+// {
+//   float consistency_factor{1.f}; //20.f
+//   if (position_.x > 850.f) {
+//     velocity_.x += consistency_factor * (-position_.x + 850.f);
+//   }
+//   if (position_.y > 850.f) {
+//     velocity_.y += consistency_factor * (-position_.y + 850.f);
+//   }
+//   if (position_.x < 50.f) {
+//     velocity_.x += consistency_factor * (-position_.x + 50.f);
+//   }
+//   if (position_.y < 50.f) {
+//     velocity_.y += consistency_factor * (-position_.y + 50.f);
+//   }
+// }
 
 bool Boid::isClose(Boid const& b, float d) const
 {
@@ -57,11 +57,11 @@ bool Boid::hasNeighbour(Boid const& b, float d) const
   return isClose(b, d) && (&b != this);
 }
 
-bool Predator::isClose(Boid const& b, float d) const
-{
-  auto distance = norm((b.getPosition() - position_));
-  return distance < d;
-}
+// bool Predator::isClose(Boid const& b, float d) const
+// {
+//   auto distance = norm((b.getPosition() - position_));
+//   return distance < d;
+// }
 
 void Boid::biological_limits()
 {
@@ -71,13 +71,13 @@ void Boid::biological_limits()
   }
 }
 
-void Predator::biological_limits()
-{
-  float maximum_speed = 10.f; // 600.f
-  if (norm(velocity_) > maximum_speed) {
-    velocity_ = maximum_speed * velocity_ / norm(velocity_);
-  }
-}
+// void Predator::biological_limits()
+// {
+//   float maximum_speed = 10.f; //600.f
+//   if (norm(velocity_) > maximum_speed) {
+//     velocity_ = maximum_speed * velocity_ / norm(velocity_);
+//   }
+// }
 
 void Flock::predator_evolution(Predator& p)
 {
