@@ -1,4 +1,5 @@
 #include "graphics.hpp"
+#include <algorithm>
 
 namespace bd {
 sf::ConvexShape birdShape;
@@ -56,14 +57,11 @@ void gameLoop(bd::Flock& flock, Predator& p)
     }
 
     window.clear();
-    // flock.predator_evolution(p);
+    // flock.predator_evolution(p);     // manca da muovere il predatore
     flock.evolution();
     window.draw(setShape(p));
-    for (auto it = flock.getFlock().begin(), last = flock.getFlock().end();
-         it != last; ++it) {
-      window.draw(setShape(*it));
-    }
-
+    std::for_each(flock.getFlock().begin(), flock.getFlock().end(),
+                  [&window](Boid const& b) { window.draw(setShape(b)); });
     window.display();
   }
 }

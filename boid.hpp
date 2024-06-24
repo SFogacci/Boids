@@ -91,11 +91,12 @@ class Flock
   Parameters flock_parameters_;
 
  public:
-  explicit Flock(Boid const& b, Parameters p)
-      : flock_parameters_{p}
-  {
-    flock_.push_back(b);
-  }
+  // explicit Flock(Boid const& b, Parameters p)
+  //     : flock_parameters_{p}
+  // {
+  //   flock_.push_back(b);
+  // }
+  // Flock() = default; //default constructor (?)
 
   explicit Flock(std::vector<Boid> v, Parameters p)
       : flock_{v}
