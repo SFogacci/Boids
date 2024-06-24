@@ -2,20 +2,9 @@
 
 #include "boid.hpp"
 #include "doctest.h"
+#include "statistics.hpp"
 
 namespace bd {
-
-TEST_CASE("Vector functions")
-{
-  SUBCASE("Normalize function")
-  {
-    bd::Vector v{5, 0};
-    normalize(v, 1);
-    CHECK(v.x == doctest::Approx(1));
-    CHECK(v.y == doctest::Approx(0));
-    // da aggiungere altri casi,  e test anche per le altre funzioni
-  }
-}
 
 TEST_CASE("One boid, all rules")
 {
@@ -53,8 +42,7 @@ TEST_CASE("Two boids, separation only")
   CHECK(et->getVelocity().y == doctest::Approx(0));
 }
 
-TEST_CASE(
-    "Two boids, cohesion only") // se messimo c>= o.5 si scambiano le posizioni
+TEST_CASE("Two boids, cohesion only") // se messimo c>= o.5 si scambiano le posizioni
 {
   Boid b1{{101.f, 101.f}, {0.f, 0.f}};
   Boid b2{{103.f, 101.f}, {1.f, 0.f}};
@@ -164,7 +152,6 @@ TEST_CASE("all rules")
   CHECK(et1->getVelocity().x == doctest::Approx(0));
   CHECK(et1->getVelocity().y == doctest::Approx(4.5));
 }
-
 // cohesion  -2,5 2,5 --  -1,25  1,25
 // alignment   6   -6  --  3      -3
 
