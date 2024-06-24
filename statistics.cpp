@@ -46,13 +46,6 @@ Results statistics(Flock const& f)
   distances.reserve(
       static_cast<std::size_t>(pairs)); // conversions are to be improved
 
-  // std::transform(flock.begin(), flock.end(), speeds.begin(), [](Boid const&
-  // b) {
-  //   auto velocity = b.getVelocity();
-  //   return norm(velocity);
-  // }); // filling the speeds vector with the magnitude of each
-  //     // boid's velocity
-
   for (std::size_t i = 0; i < N; ++i) {
     auto velocity = flock[i].getVelocity();
     speeds.push_back(norm(velocity)); // filling the speeds vector with the
@@ -60,8 +53,8 @@ Results statistics(Flock const& f)
     for (std::size_t j = i + 1; j < N; ++j) {
       auto distance = flock[i].getPosition() - flock[j].getPosition();
       distances.push_back(norm(distance));
-    }
-  } // filling the distances vector with the distance of each pair of boids
+    } // filling the distances vector with the distance of each pair of boids
+  }
 
   const Stats speedStats{doStatistics(speeds)};
   const Stats distanceStats{doStatistics(distances)};
