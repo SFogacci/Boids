@@ -51,17 +51,17 @@ class Boid
     velocity_ = v;
   }
 
-  void correct_borders();
+  void correctBorders();
 
   // bool isClose(Boid const&, float) const;
   bool hasNeighbour(Boid const&, float) const;
-  void biological_limits();
+  void biologicalLimits();
 };
 
 class Predator : public Boid // predator derivata da boid.
 {
  public:
-  Predator(Vector position, Vector velocity)
+  explicit Predator(Vector position, Vector velocity)
       : Boid{position, velocity}
   {}
 };
@@ -88,18 +88,18 @@ struct Corrections
 class Flock
 {
   std::vector<Boid> flock_;
-  Parameters flock_parameters_;
+  Parameters flock_pars_;
 
  public:
   explicit Flock(Boid const& b, Parameters p)
-      : flock_parameters_{p}
+      : flock_pars_{p}
   {
     flock_.push_back(b);
   }
 
   explicit Flock(std::vector<Boid> v, Parameters p)
       : flock_{v}
-      , flock_parameters_{p}
+      , flock_pars_{p}
   {}
 
   auto const& getFlock() const
@@ -108,7 +108,7 @@ class Flock
   }
 
   void evolution();
-  void predator_evolution(Predator& p);
+  void predator_evolution(Predator& p); // forse meglio come metodo di Predator?
 };
 
 } // namespace bd
