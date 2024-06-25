@@ -2,12 +2,16 @@
 #define BOID_HPP
 
 #include "vectors.hpp"
+#include "SFML/Graphics.hpp"
 #include <cmath>
 #include <vector>
 
 namespace bd {
 
 const float pi = std::atan(1.f) * 4;
+const auto w_window = 900;//sf::VideoMode::getDesktopMode().width;
+const auto h_window = 900;//sf::VideoMode::getDesktopMode().height; prima di inserire questi, va modificata la generazione delle posizioni (h è diverso da w)
+
 
 class Boid
 {
@@ -83,6 +87,7 @@ struct Corrections
   Vector alignment;
   Vector cohesion;
   Vector separation;
+  Vector separation_predator;
 };
 
 class Flock
@@ -108,8 +113,9 @@ class Flock
     return flock_;
   }
 
-  void evolution();
-  void predator_evolution(Predator& p);
+  void evolution(Predator const&);
+  Predator predator_evolution(Predator const&) const;
+  void overlapping(Boid&);
 };
 
 } // namespace bd
