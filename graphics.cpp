@@ -59,9 +59,9 @@ void gameLoop(bd::Flock& flock, Predator& p)
       }
     }
 
-    Predator predator_container = flock.predator_evolution(p);
+    auto modified_predator = p.evolution(flock);
     flock.evolution(p);
-    p = predator_container;
+    p = modified_predator;
 
     window.clear();
 

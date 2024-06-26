@@ -13,6 +13,8 @@ struct Vector
 Vector operator+(Vector const&, Vector const&);
 
 Vector operator*(float, Vector const&);
+Vector operator*(Vector const&,
+                 float); // così il prodotto è commutativo (non indispensabile)
 
 Vector operator-(Vector const&, Vector const&);
 

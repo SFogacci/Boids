@@ -8,10 +8,11 @@
 
 namespace bd {
 
-const float pi = std::atan(1.f) * 4;
-const auto w_window = 900;//sf::VideoMode::getDesktopMode().width;
-const auto h_window = 900;//sf::VideoMode::getDesktopMode().height; prima di inserire questi, va modificata la generazione delle posizioni (h è diverso da w)
-
+const float pi      = std::atan(1.f) * 4;
+const auto w_window = 900; // sf::VideoMode::getDesktopMode().width;
+const auto h_window =
+    900; // sf::VideoMode::getDesktopMode().height; prima di inserire questi, va
+         // modificata la generazione delle posizioni (h è diverso da w)
 
 class Boid
 {
@@ -24,6 +25,7 @@ class Boid
       : position_{p}
       , velocity_{v}
   {}
+  // Boid() = default;
 
   auto getPosition() const
   {
@@ -61,13 +63,19 @@ class Boid
   bool hasNeighbour(Boid const&, float) const;
   void biological_limits();
 };
-
+class Flock;
 class Predator : public Boid // predator derivata da boid.
 {
  public:
-  Predator(Vector position, Vector velocity)
+  explicit Predator(Vector position, Vector velocity)
       : Boid{position, velocity}
   {}
+  void operator=(Predator const& p)
+  {
+    this->setPosition(p.getPosition());
+    this->setVelocity(p.getVelocity());
+  }
+  Predator evolution(Flock const&) const;
 };
 
 bool operator==(Boid const&, Boid const&);
@@ -113,8 +121,13 @@ class Flock
     return flock_;
   }
 
+  auto const& getFlockParameters() const
+  {
+    return flock_parameters_;
+  }
+
   void evolution(Predator const&);
-  Predator predator_evolution(Predator const&) const;
+  // Predator predator_evolution(Predator const&) const;
   void overlapping(Boid&);
 };
 

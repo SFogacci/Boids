@@ -28,8 +28,9 @@ int main()
     if (std::cin >> c >> a >> s >> d >> ds
         >> n) { // checks if input type is valid
       if (c < 0 || c > 1 || a < 0 || a > 1 || s < 0 || s > 1 || d < 0 || d > 100
-          || ds < 0 || ds > 20 || n > 300) {  // checks range of input (std::size_t is by def >0).
-        throw e; // if input not in range
+          || ds < 0 || ds > 20
+          || n > 300) { // checks range of input (std::size_t is by def >0).
+        throw e;        // if input not in range
       }
 
     } else
@@ -38,13 +39,16 @@ int main()
     bd::Parameters parameters{a, c, d, ds, s, n};
 
     std::vector<bd::Boid> birds = bd::createBirds(parameters.n);
-    bd::Predator predator =bd::createPredators();
+    bd::Predator predator       = bd::createPredators();
     bd::Flock flock{birds, parameters};
     bd::gameLoop(flock, predator);
   }
 
   catch (std::runtime_error const& e) {
     std::cerr << e.what() << '\n';
+    return EXIT_FAILURE;
+  } catch (...) {
+    std::cerr << "Caught unknown exception\n";
     return EXIT_FAILURE;
   }
 }

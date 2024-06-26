@@ -21,6 +21,11 @@ Vector operator*(float c, Vector const& v)
   return {c * v.x, c * v.y};
 }
 
+Vector operator*(Vector const& v, float c)
+{
+  return c * v;
+}
+
 Vector operator-(Vector const& a, Vector const& b)
 {
   return a + (-1.f) * b;
