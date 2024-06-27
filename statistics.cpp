@@ -66,9 +66,10 @@ std::string printStatistics(Results const& results)
 {
   const std::string print{
       "Flock mean speed: " + std::to_string(results.speedStats.mean) + '\n'
-      + "Flock  standard deviation: " + std::to_string(results.speedStats.sigma)
-      + '\n' + "Flock mean distance: "
-      + std::to_string(results.distanceStats.mean) + '\n' + "Flock mean speed: "
+      + "Flock speed standard deviation: "
+      + std::to_string(results.speedStats.sigma) + '\n'
+      + "Flock mean distance: " + std::to_string(results.distanceStats.mean)
+      + '\n' + "Flock distance standard deviation: "
       + std::to_string(results.distanceStats.sigma) + '\n'};
   return print;
 }

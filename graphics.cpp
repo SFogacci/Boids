@@ -1,8 +1,10 @@
 #include "graphics.hpp"
+#include "statistics.hpp"
+#include <algorithm>
 #include <iostream>
 
 namespace bd {
-sf::ConvexShape birdShape;                  // cercare di spostarlo nell'hpp
+sf::ConvexShape birdShape;
 sf::ConvexShape setShape(bd::Boid const& b) // passaggio by const ref
 {
   birdShape.setPointCount(3);
@@ -21,6 +23,27 @@ sf::ConvexShape setShape(bd::Boid const& b) // passaggio by const ref
   return birdShape;
 }
 
+sf::ConvexShape predatorShape;
+sf::ConvexShape setShape(bd::Predator const& b)
+{
+  predatorShape.setPointCount(4);
+  predatorShape.setPoint(
+      0, sf::Vector2f(b.getPosition().x - 15.f, b.getPosition().y - 10.f));
+  predatorShape.setPoint(
+      1, sf::Vector2f(b.getPosition().x + 15.f, b.getPosition().y));
+  predatorShape.setPoint(
+      2, sf::Vector2f(b.getPosition().x - 15.f, b.getPosition().y + 10.f));
+  predatorShape.setPoint(
+      3, sf::Vector2f(b.getPosition().x - 5.f, b.getPosition().y));
+  predatorShape.setFillColor(sf::Color::Green);
+  predatorShape.setOutlineColor(sf::Color::White);
+  predatorShape.setOutlineThickness(1.f);
+  predatorShape.setPosition(b.getPosition().x, b.getPosition().y);
+  predatorShape.setOrigin(b.getPosition().x, b.getPosition().y);
+  predatorShape.setRotation(b.getOrientation());
+  return predatorShape;
+}
+
 void gameLoop(bd::Flock& flock)
 {
   sf::ContextSettings settings;
@@ -28,114 +51,25 @@ void gameLoop(bd::Flock& flock)
 
   sf::RenderWindow window(sf::VideoMode(900, 900), "Boids", sf::Style::Default,
                           settings);
-  sf::RenderWindow graphs(sf::VideoMode(900, 900), "Graphs");
-
   window.setFramerateLimit(60);
-  graphs.setFramerateLimit(60);
-
-  window.setPosition({0, 0});
-  graphs.setPosition(
-      {900, 0}); // parametri che poi dovremo trasformare in costanti
+  window.setPosition(sf::Vector2i(0, 0));
 
   while (window.isOpen()) {
-    while (graphs.isOpen()) {
-      sf::Event event;
-
-      while (window.pollEvent(event) || graphs.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
-          window.close();
-          graphs.close();
-          // } else if (event.type == sf::Event::Resized) {
-          // fai in modo che non si possa fare il resize
-          //   }
-        }
-      }
-
-      window.clear();
-      graphs.clear();
-
-      flock.evolution();
-
-      // positionGraph(flock, graphs);
-
-      for (auto const& it : flock.getFlock()) {
-        window.draw(setShape(it));
-      }
-
-      // std::vector<int> binned_vel = binning_velocities(flock);
-      std::vector<sf::RectangleShape> vel_graph = graphing(
-          binning_velocities(flock), graphs.getView().getSize().y / 3.f);
-      for (auto const& it : vel_graph) {
-        graphs.draw(it);
-      }
-
-      std::vector<sf::RectangleShape> dis_graph =
-          graphing(binning_distances(flock), graphs.getView().getSize().y);
-      for (auto const& it : dis_graph) {
-        graphs.draw(it);
-      }
-
-      window.display();
-      graphs.display();
-    }
-  }
-}
-
-std::vector<int>
-binning_velocities(Flock const& flock) // prendo solo le norme delle velocità,
-                                       // quindi sempre positive
-{
-  std::vector<int> binned_velocities(100, 0);
-
-  for (auto const& it : flock.getFlock()) {
-    if (norm(it.getVelocity()) <= 1000.f) {
-      binned_velocities[static_cast<unsigned>((norm(it.getVelocity()) / 10))] +=
-          1;
-    } else {
-      binned_velocities[99] += 1;
-    }
-  }
-
-  return binned_velocities;
-}
-
-std::vector<int> binning_distances(Flock const& flock)
-{
-  std::vector<int> binned_distances(100, 0);
-  float distance;
-  for (auto const& boid : flock.getFlock()) {
-    for (auto const& other : flock.getFlock()) {
-      if (&other != &boid) {
-        distance = norm(boid.getPosition() - other.getPosition());
-        if (distance <= 1275.f)
-          binned_distances[static_cast<unsigned>(distance / 12.75f)] += 1;
-        else {
-          binned_distances[99] += 1;
-        }
+    sf::Event event;
+    while (window.pollEvent(event)) {
+      if (event.type == sf::Event::Closed) {
+        window.close();
       }
     }
+
+    flock.evolution();
+
+    window.clear();
+
+    std::for_each(flock.getFlock().begin(), flock.getFlock().end(),
+                  [&window](Boid const& b) { window.draw(setShape(b)); });
+    window.display();
+    std::cout << printStatistics(statistics(flock));
   }
-  return binned_distances;
-}
-
-std::vector<sf::RectangleShape>
-graphing(std::vector<int> const& binned_stat,
-         float const& side) // side sarebbe l'altezza, ma dato che è 900*900, lo
-                            // chiamo side
-{
-  std::vector<sf::RectangleShape> graph;
-
-  for (size_t i{0u}; i < binned_stat.size(); ++i) {
-    sf::RectangleShape bar(
-        sf::Vector2f(9.f, static_cast<float>(-binned_stat[i]) * 10.f));
-    // std::cout << "binned_stat[" << i << "] = " << binned_stat[i] << '\n';
-    bar.setPosition(static_cast<float>(i) * 9.f, side);
-    bar.setFillColor(sf::Color::White);
-    bar.setOutlineColor(sf::Color::Black);
-    bar.setOutlineThickness(1.f);
-    graph.push_back(bar);
-  }
-
-  return graph;
 }
 } // namespace bd
