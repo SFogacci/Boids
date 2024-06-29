@@ -1,6 +1,10 @@
 #include "graphics.hpp"
+// #include "TApplication.h"
+// #include "TCanvas.h"
+// #include "TGraph.h"
 #include "statistics.hpp"
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 
 namespace bd {
@@ -23,7 +27,7 @@ sf::ConvexShape setShape(bd::Boid const& b) // passaggio by const ref
   return birdShape;
 }
 
-sf::ConvexShape predatorShape;
+/*sf::ConvexShape predatorShape;
 sf::ConvexShape setShape(bd::Predator const& b)
 {
   predatorShape.setPointCount(4);
@@ -42,7 +46,7 @@ sf::ConvexShape setShape(bd::Predator const& b)
   predatorShape.setOrigin(b.getPosition().x, b.getPosition().y);
   predatorShape.setRotation(b.getOrientation());
   return predatorShape;
-}
+}*/
 
 void gameLoop(bd::Flock& flock)
 {
@@ -53,6 +57,20 @@ void gameLoop(bd::Flock& flock)
                           settings);
   window.setFramerateLimit(60);
   window.setPosition(sf::Vector2i(0, 0));
+
+  /*TApplication app{"Window", 0, nullptr};
+  TCanvas canvas{"canvas", "Statistics", -1, 0, 600, 600};
+  canvas.Divide(2, 2);
+  canvas.cd(1);
+  TGraph meanSpeeds     = TGraph();
+  TGraph sigmaSpeeds    = TGraph();
+  TGraph meanDistances  = TGraph();
+  TGraph sigmaDistances = TGraph();*/
+  std::ofstream outfile{"statistics.txt"};
+  if (!outfile) {
+    throw std::runtime_error{"Impossible to open file!"};
+  }
+  auto iteration{0};
 
   while (window.isOpen()) {
     sf::Event event;
@@ -69,7 +87,13 @@ void gameLoop(bd::Flock& flock)
     std::for_each(flock.getFlock().begin(), flock.getFlock().end(),
                   [&window](Boid const& b) { window.draw(setShape(b)); });
     window.display();
-    std::cout << printStatistics(statistics(flock));
+
+    auto stats{statistics(flock)};
+    outfile << iteration << ' ' << stats.speedStats.mean << ' '
+            << stats.speedStats.sigma << ' ' << stats.distanceStats.mean << ' '
+            << stats.distanceStats.sigma << '\n';
+    std::cout << printStatistics(stats);
+    ++iteration;
   }
 }
 } // namespace bd

@@ -1,3 +1,6 @@
+#include "TApplication.h"
+#include "TCanvas.h"
+#include "TGraph.h"
 #include "graphics.hpp"
 #include "input.hpp"
 #include <stdlib.h>
@@ -42,6 +45,29 @@ int main()
     // bd::Predator predator       = bd::createPredators();
     bd::Flock flock{birds, parameters};
     bd::gameLoop(flock);
+
+    TApplication app("app", 0, nullptr);
+    TCanvas canvas = TCanvas("canvas", "Statistics", 0, 0, 800, 600);
+    canvas.Divide(2, 2);
+    canvas.cd(1);
+    TGraph meanSpeeds("statistics.txt", "%lg %lg");
+    meanSpeeds.SetTitle("Mean speed");
+    meanSpeeds.Draw("AC");
+    canvas.cd(2);
+    TGraph sigmaSpeeds("statistics.txt", "%lg %*lg %lg");
+    sigmaSpeeds.SetTitle("Sigma speed");
+    sigmaSpeeds.Draw("AC");
+    canvas.cd(3);
+    TGraph meanDistances("statistics.txt", "%lg %*lg %*lg %lg");
+    meanDistances.SetTitle("Mean distance");
+    meanDistances.Draw("AC");
+    canvas.cd(4);
+    TGraph sigmaDistances("statistics.txt", "%lg %*lg %*lg %*lg %lg");
+    sigmaDistances.SetTitle("Sigma distance");
+    sigmaDistances.Draw("AC");
+    canvas.Modified();
+    canvas.Update();
+    app.Run();
   }
 
   catch (std::runtime_error const& e) {

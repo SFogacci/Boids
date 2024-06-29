@@ -70,7 +70,7 @@ std::string printStatistics(Results const& results)
       + std::to_string(results.speedStats.sigma) + '\n'
       + "Flock mean distance: " + std::to_string(results.distanceStats.mean)
       + '\n' + "Flock distance standard deviation: "
-      + std::to_string(results.distanceStats.sigma) + '\n'};
+      + std::to_string(results.distanceStats.sigma) + '\n' + '\n'};
   return print;
 }
 } // namespace bd
