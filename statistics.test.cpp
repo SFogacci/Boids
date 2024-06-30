@@ -4,18 +4,6 @@
 #include "boid.hpp"
 #include "doctest.h"
 
-TEST_CASE("Vector functions")
-{
-  SUBCASE("Normalize function")
-  {
-    bd::Vector v{5, 0};
-    bd::normalize(v, 1);
-    CHECK(v.x == doctest::Approx(1));
-    CHECK(v.y == doctest::Approx(0));
-    // da aggiungere altri casi,  e test anche per le altre funzioni
-  }
-}
-
 TEST_CASE("Statistics functions")
 {
   SUBCASE("doStatistics function throws with no entries")
