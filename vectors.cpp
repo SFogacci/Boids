@@ -54,4 +54,32 @@ void normalize(Vector& v, float f)
 {
   v = f / norm(v) * v;
 }
+
+float toroidalDistance(float pos1, float pos2, float maxVal)  // nello spazio toridale, lungo ciascun asse, la massima 
+{                                                             // distanza tra due boids diventa pari a metà della  
+  float dist = std::abs(pos1 - pos2);                         // dimensione della finestra lungo quell'asse.
+  if (dist > maxVal / 2) {                                    // Dati due boids, tra di loro ci sono due distanze: quella toroidale, 
+    dist = maxVal - dist;                                     // che trapassa i bordi, e quella normale. La funzione restituisce la 
+  }                                                           // minima tra le due.
+  return dist;
+}
+
+Vector toroidalDifference(Vector const& pos1, Vector const& pos2) // Crea un vettore che contiene le distanze lungo i due assi 
+{                                                                 // tra due boids: i segni sono attribuiti in modo da 
+  float xDiff = pos1.x - pos2.x;                                  // far funzionare correttamente separation e cohesion.
+  float yDiff = pos1.y - pos2.y;
+
+  if (std::abs(xDiff) > 900.f / 2) {
+    xDiff = 900.f - std::abs(xDiff);
+    xDiff *= (pos1.x > pos2.x) ? -1 : 1;
+  }
+
+  if (std::abs(yDiff) > 900.f / 2) {
+    yDiff = 900.f - std::abs(yDiff);
+    yDiff *= (pos1.y > pos2.y) ? -1 : 1;
+  }
+
+  return Vector{xDiff, yDiff};
+}
+
 } // namespace bd

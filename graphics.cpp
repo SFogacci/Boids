@@ -1,5 +1,8 @@
 #include "graphics.hpp"
+#include "statistics.hpp"
 #include <algorithm>
+#include <fstream>
+#include <iostream>
 
 namespace bd {
 sf::ConvexShape birdShape;
@@ -42,14 +45,21 @@ sf::ConvexShape setShape(bd::Predator const& b)
   return predatorShape;
 }
 
-void gameLoop(bd::Flock& flock, Predator& p)
-{ 
+void gameLoop(Flock& flock, Predator& p)
+{
   sf::ContextSettings settings;
   settings.antialiasingLevel = 8;
 
-  sf::RenderWindow window(sf::VideoMode(w_window, h_window), "Boids", sf::Style::Default, settings);
+  sf::RenderWindow window(sf::VideoMode(w_window, h_window), "Boids",
+                          sf::Style::Default, settings);
   window.setFramerateLimit(60);
   window.setPosition(sf::Vector2i(0, 0));
+
+  std::ofstream outfile{"statistics.txt"};
+  if (!outfile) {
+    throw std::runtime_error{"Impossible to open file!"};
+  }
+  auto iteration{0};
 
   while (window.isOpen()) {
     sf::Event event;
@@ -69,6 +79,19 @@ void gameLoop(bd::Flock& flock, Predator& p)
     std::for_each(flock.getFlock().begin(), flock.getFlock().end(),
                   [&window](Boid const& b) { window.draw(setShape(b)); });
     window.display();
+
+    auto stats{statistics(flock)};
+    outfile << iteration << ' ' << stats.speedStats.mean << ' '
+            << stats.speedStats.sigma << ' ' << stats.distanceStats.mean << ' '
+            << stats.distanceStats.sigma << '\n';
+    std::cout << "Iteration: " << iteration << '\n' << printStatistics(stats);
+    ++iteration;
   }
+}
+
+void drawGraph(TGraph& graph)
+{
+  graph.SetLineColor(kAzure + 4);
+  graph.Draw("AC");
 }
 } // namespace bd

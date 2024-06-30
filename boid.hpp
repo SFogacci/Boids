@@ -67,7 +67,7 @@ class Boid
 class Predator : public Boid // predator derivata da boid.
 {
  public:
-  Predator(Vector position, Vector velocity)
+  explicit Predator(Vector position, Vector velocity)
       : Boid{position, velocity}
   {}
 };
