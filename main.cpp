@@ -46,27 +46,29 @@ int main()
     bd::Flock flock{birds, parameters};
     bd::gameLoop(flock);
 
+    // drawing graphs of distance and speed over time
     TApplication app("app", 0, nullptr);
-    TCanvas canvas = TCanvas("canvas", "Statistics", 0, 0, 800, 600);
+    TCanvas canvas("Statistics", "Statistics", 0, 0, 800, 600);
     canvas.Divide(2, 2);
     canvas.cd(1);
     TGraph meanSpeeds("statistics.txt", "%lg %lg");
     meanSpeeds.SetTitle("Mean speed");
-    meanSpeeds.Draw("AC");
+    bd::drawGraph(meanSpeeds);
     canvas.cd(2);
     TGraph sigmaSpeeds("statistics.txt", "%lg %*lg %lg");
-    sigmaSpeeds.SetTitle("Sigma speed");
-    sigmaSpeeds.Draw("AC");
+    sigmaSpeeds.SetTitle("Std deviation for speed");
+    bd::drawGraph(sigmaSpeeds);
     canvas.cd(3);
     TGraph meanDistances("statistics.txt", "%lg %*lg %*lg %lg");
     meanDistances.SetTitle("Mean distance");
-    meanDistances.Draw("AC");
+    bd::drawGraph(meanDistances);
     canvas.cd(4);
     TGraph sigmaDistances("statistics.txt", "%lg %*lg %*lg %*lg %lg");
-    sigmaDistances.SetTitle("Sigma distance");
-    sigmaDistances.Draw("AC");
+    sigmaDistances.SetTitle("Std deviation for distance");
+    bd::drawGraph(sigmaDistances);
     canvas.Modified();
     canvas.Update();
+    canvas.Print("statistics.pdf");
     app.Run();
   }
 

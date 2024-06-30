@@ -1,7 +1,4 @@
 #include "graphics.hpp"
-// #include "TApplication.h"
-// #include "TCanvas.h"
-// #include "TGraph.h"
 #include "statistics.hpp"
 #include <algorithm>
 #include <fstream>
@@ -58,14 +55,6 @@ void gameLoop(bd::Flock& flock)
   window.setFramerateLimit(60);
   window.setPosition(sf::Vector2i(0, 0));
 
-  /*TApplication app{"Window", 0, nullptr};
-  TCanvas canvas{"canvas", "Statistics", -1, 0, 600, 600};
-  canvas.Divide(2, 2);
-  canvas.cd(1);
-  TGraph meanSpeeds     = TGraph();
-  TGraph sigmaSpeeds    = TGraph();
-  TGraph meanDistances  = TGraph();
-  TGraph sigmaDistances = TGraph();*/
   std::ofstream outfile{"statistics.txt"};
   if (!outfile) {
     throw std::runtime_error{"Impossible to open file!"};
@@ -92,8 +81,14 @@ void gameLoop(bd::Flock& flock)
     outfile << iteration << ' ' << stats.speedStats.mean << ' '
             << stats.speedStats.sigma << ' ' << stats.distanceStats.mean << ' '
             << stats.distanceStats.sigma << '\n';
-    std::cout << printStatistics(stats);
+    std::cout << "Iteration: " << iteration << '\n' << printStatistics(stats);
     ++iteration;
   }
+}
+
+void drawGraph(TGraph& graph)
+{
+  graph.SetLineColor(kAzure + 4);
+  graph.Draw("AC");
 }
 } // namespace bd
