@@ -14,16 +14,24 @@ const auto h_window =
     900; // sf::VideoMode::getDesktopMode().height; prima di inserire questi, va
          // modificata la generazione delle posizioni (h è diverso da w)
 
+class Flock;
+
 class Boid
 {
  private:
   Vector position_;
   Vector velocity_;
+  bool isPredator_{0};
 
  public:
   explicit Boid(Vector p, Vector v)
       : position_{p}
       , velocity_{v}
+  {}
+  Boid(Vector p, Vector v, bool isPred)
+      : position_{p}
+      , velocity_{v}
+      , isPredator_{isPred}
   {}
   // Boid() = default;
 
@@ -57,14 +65,21 @@ class Boid
     velocity_ = v;
   }
 
+  auto isPredator() const
+  {
+    return isPredator_;
+  }
+
+  Boid predator_evolution(Flock const&) const;
+
   void correct_borders();
 
-  // bool isClose(Boid const&, float) const;
   bool hasNeighbour(Boid const&, float) const;
+
   void biological_limits();
 };
-class Flock;
-class Predator : public Boid // predator derivata da boid.
+
+/*class Predator : public Boid // predator derivata da boid.
 {
  public:
   explicit Predator(Vector position, Vector velocity)
@@ -72,7 +87,7 @@ class Predator : public Boid // predator derivata da boid.
   {}
 
   Predator evolution(Flock const&) const;
-};
+};*/
 
 bool operator==(Boid const&, Boid const&);
 
@@ -122,7 +137,7 @@ class Flock
     return flock_parameters_;
   }
 
-  void evolution(Predator const&);
+  void evolution(Boid const&);
   // Predator predator_evolution(Predator const&) const;
   void overlapping(Boid&);
 };

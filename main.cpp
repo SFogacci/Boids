@@ -39,7 +39,7 @@ int main()
     bd::Parameters parameters{a, c, d, ds, s, n};
 
     std::vector<bd::Boid> birds = bd::createBirds(parameters.n);
-    bd::Predator predator       = bd::createPredators();
+    bd::Boid predator       = bd::createPredator();
     bd::Flock flock{birds, parameters};
     bd::gameLoop(flock, predator);
   }

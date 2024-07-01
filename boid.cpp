@@ -1,6 +1,7 @@
 #include "boid.hpp"
 #include "vectors.hpp"
 #include <algorithm>
+#include <cassert>
 #include <iostream>
 #include <numeric>
 
@@ -43,17 +44,10 @@ void Boid::biological_limits()
   }
 }
 
-// void Predator::biological_limits()
-// {
-//   float maximum_speed = 10.f; //600.f
-//   if (norm(velocity_) > maximum_speed) {
-//     velocity_ = maximum_speed * velocity_ / norm(velocity_);
-//   }
-// }
-
-Predator Predator::evolution(Flock const& f) const
+Boid Boid::predator_evolution(Flock const& f) const
 {
-  Predator copy = *this;
+  assert(isPredator_);
+  Boid copy = *this;
   const float d = 2.f * f.getFlockParameters().d;
   // gli do 2 volte la visione dei boid, così vede più lontano (se è un
   // predatore si sarà evoluto in modo da vedere meglio le prede, no?)
@@ -70,19 +64,20 @@ Predator Predator::evolution(Flock const& f) const
                                             return sum;
                                           });
 
-    const Vector hunting = (center_of_mass / preys
-                            - position_); // perché dividiamo per 100?
-    copy.setVelocity(this->getVelocity() + hunting);
+    const Vector hunting =
+        (center_of_mass / preys - position_); // perché dividiamo per 100?
+    copy.setVelocity(velocity_ + hunting);
   }
   copy.biological_limits();
-  copy.setPosition(this->getPosition() + dt * copy.getVelocity());
+  copy.setPosition(position_ + dt * velocity_);
   copy.correct_borders();
 
   return copy;
 }
 
-void Flock::evolution(Predator const& p)
+void Flock::evolution(Boid const& p)
 {
+  assert(p.isPredator());
   std::vector<Boid> modified_flock;
   modified_flock.reserve(flock_.size());
 
