@@ -93,7 +93,7 @@ void Flock::evolution(Predator const& p)
           flock_parameters_.s
           * (flock_parameters_.d
              / norm(toroidalDifference(p.getPosition(), boid.getPosition(),
-                                       windowDimensions))
+                                    windowDimensions))
              * p.getVelocity());
       modified_boid.setVelocity(boid.getVelocity() + separation_predator);
     }

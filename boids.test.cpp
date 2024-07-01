@@ -152,7 +152,4 @@ TEST_CASE("all rules")
   CHECK(et1->getVelocity().x == doctest::Approx(0));
   CHECK(et1->getVelocity().y == doctest::Approx(4.5));
 }
-// cohesion  -2,5 2,5 --  -1,25  1,25
-// alignment   6   -6  --  3      -3
-
 } // namespace bd

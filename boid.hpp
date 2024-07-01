@@ -83,6 +83,18 @@ struct Parameters
   float ds;
   float s;
   std::size_t n;
+
+  Parameters()= default;
+
+  explicit Parameters(std::vector<float> v, std::size_t p)
+      : a{v[0]}
+      , c{v[1]}
+      , d{v[2]}
+      , ds{v[3]}
+      , s{v[4]}
+      , n{p}
+  {}
+
 };
 
 struct Corrections

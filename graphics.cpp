@@ -10,11 +10,11 @@ sf::ConvexShape setShape(bd::Boid const& b) // passaggio by const ref
 {
   birdShape.setPointCount(3);
   birdShape.setPoint(
-      0, sf::Vector2f(b.getPosition().x - 10.f, b.getPosition().y - 5.f));
+      0, sf::Vector2f(b.getPosition().x - 5.f, b.getPosition().y - 2.f));
   birdShape.setPoint(1,
-                     sf::Vector2f(b.getPosition().x + 10.f, b.getPosition().y));
+                     sf::Vector2f(b.getPosition().x + 4.f, b.getPosition().y));
   birdShape.setPoint(
-      2, sf::Vector2f(b.getPosition().x - 10.f, b.getPosition().y + 5.f));
+      2, sf::Vector2f(b.getPosition().x - 5.f, b.getPosition().y + 2.f));
   birdShape.setFillColor(sf::Color::Red);
   birdShape.setOutlineColor(sf::Color::White);
   birdShape.setOutlineThickness(1.f);
