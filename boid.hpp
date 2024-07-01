@@ -70,11 +70,7 @@ class Predator : public Boid // predator derivata da boid.
   explicit Predator(Vector position, Vector velocity)
       : Boid{position, velocity}
   {}
-  void operator=(Predator const& p)
-  {
-    this->setPosition(p.getPosition());
-    this->setVelocity(p.getVelocity());
-  }
+
   Predator evolution(Flock const&) const;
 };
 

@@ -67,24 +67,15 @@ Predator Predator::evolution(Flock const& f) const
                                             if (hasNeighbour(b, d)) {
                                               sum += b.getPosition();
                                             }
+                                            return sum;
                                           });
 
-    // auto corrections =
-    //     std::accumulate(flock_.begin(), flock_.end(), Corrections{},
-    //                     [&](auto& sums, auto const& other) {
-    //                       if (boid.hasNeighbour(other, flock_parameters_.d))
-    //                       {
-    //                         sums.cohesion += other.getPosition();
-    //                       }
-    //                     });
-    const Vector hunting = (center_of_mass / preys - this->getPosition())
-                         / 100.f; // perché dividiamo per 100?
+    const Vector hunting = (center_of_mass / preys
+                            - position_); // perché dividiamo per 100?
     copy.setVelocity(this->getVelocity() + hunting);
   }
-  // così è anche già aggiunto hunting e inoltre aggiungiamo anche la
-  // velocità delpredatore, cosa che prima non avveniva
-  copy.setPosition(this->getPosition() + dt * copy.getVelocity());
   copy.biological_limits();
+  copy.setPosition(this->getPosition() + dt * copy.getVelocity());
   copy.correct_borders();
 
   return copy;
@@ -104,20 +95,6 @@ void Flock::evolution(Predator const& p)
              * p.getVelocity());
       modified_boid.setVelocity(boid.getVelocity() + separation_predator);
     }
-    // if (boid.hasNeighbour(p, flock_parameters_.d)) {
-    //   corrections.separation_predator +=
-    //       (flock_parameters_.d / norm(p.getPosition() -
-    //       boid.getPosition())
-    //        * p.getVelocity());
-    // } // l'obiettivo è farlo funzionare come separation, al momento lo
-    // lascio così
-
-    // if (std::find_if(preys.begin(), preys.end(), [boid](Boid const& prey)
-    // { return prey == boid; }) != preys.end()) {
-    //   corrections_predator = (flock_parameters_.d / norm(p.getPosition()
-    //   - boid.getPosition()) * flock_parameters_.s * p.getVelocity()); //
-    //   il flock_parameters_.s è il vecchio par.s
-    // }
 
     const auto neighbours = static_cast<float>(
         std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) {
@@ -133,8 +110,6 @@ void Flock::evolution(Predator const& p)
               if (boid.hasNeighbour(other, flock_parameters_.ds)) {
                 auto distance = other.getPosition() - boid.getPosition();
                 normalize(distance, flock_parameters_.ds / norm(distance));
-                std::cout << " distance = "
-                          << std::hypot(distance.x, distance.y) << '\n';
                 sums.separation += distance; // versore e normalizzazione su ds
               }
             }
@@ -146,20 +121,15 @@ void Flock::evolution(Predator const& p)
       corrections.cohesion =
           corrections.cohesion / neighbours - boid.getPosition();
 
-      modified_boid.setVelocity(
-          modified_boid.getVelocity()
-          + flock_parameters_.a * corrections.alignment
-          + flock_parameters_.c * corrections.cohesion // /100.F (No factor)
-          - flock_parameters_.s * corrections.separation);
+      modified_boid.setVelocity(modified_boid.getVelocity()
+                                + flock_parameters_.a * corrections.alignment
+                                + flock_parameters_.c * corrections.cohesion
+                                - flock_parameters_.s * corrections.separation);
     }
-    // Boid modified_boid(boid.getPosition() + dt * newVel, newVel);
+    modified_boid.biological_limits();
     modified_boid.setPosition(modified_boid.getPosition()
                               + dt * modified_boid.getVelocity());
-    overlapping(modified_boid); // io la ho messa membro di flock, si potrebbe
-                                // anche mettere membro di Boid però anziche
-                                // passare un boid dovrei passare il flock
-
-    modified_boid.biological_limits();
+    overlapping(modified_boid);
     modified_boid.correct_borders();
     modified_flock.push_back(modified_boid);
   }
