@@ -52,13 +52,9 @@ Results statistics(Flock const& f)
     speeds.push_back(norm(velocity)); // filling the speeds vector with the
                                       // magnitude of each boid's velocity
     for (std::size_t j = i + 1; j < N; ++j) {
-      float xDist   = toroidalDistance(flock[i].getPosition().x,
-                                       flock[j].getPosition().x, w_window);
-      float yDist   = toroidalDistance(flock[i].getPosition().y,
-                                       flock[j].getPosition().y, h_window);
-      auto distance = std::hypot(xDist, yDist);
-      // auto distance = flock[i].getPosition() - flock[j].getPosition();
-      distances.push_back(distance);
+      auto distance = toroidalDifference(
+          flock[i].getPosition(), flock[j].getPosition(), windowDimensions);
+      distances.push_back(norm(distance));
     } // filling the distances vector with the distance of each pair of boids
   }
 
