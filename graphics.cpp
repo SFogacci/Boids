@@ -92,6 +92,9 @@ void gameLoop(Flock& flock, Predator& p)
 void drawGraph(TGraph& graph)
 {
   graph.SetLineColor(kAzure + 4);
+  // auto ctitle{title.c_str()};
+  // graph.SetTitle(";iterations;");
+  // graph.SetTitle(ctitle);
   graph.Draw("AC");
 }
 } // namespace bd

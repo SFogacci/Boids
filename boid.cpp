@@ -11,10 +11,11 @@ const float dt{1.f};
 
 bool operator==(Boid const& a, Boid const& b)
 {
-  return (a.getVelocity() == b.getVelocity() && a.getPosition() == b.getPosition());
+  return (a.getVelocity() == b.getVelocity()
+          && a.getPosition() == b.getPosition());
 }
 
-void Boid::correct_borders()               // teletrasporto toroidale 
+void Boid::correct_borders() // teletrasporto toroidale
 {
   if (position_.x > w_window) {
     position_.x -= w_window;
@@ -28,12 +29,14 @@ void Boid::correct_borders()               // teletrasporto toroidale
   }
 }
 
-bool Boid::hasNeighbour(Boid const& b, float d) const                  // Al posto della distanza normale, usa distanza toroidale.
+bool Boid::hasNeighbour(Boid const& b, float d)
+    const // Al posto della distanza normale, usa distanza toroidale.
 {
-  float xDist   = toroidalDistance(position_.x, b.getPosition().x, 900.f);
-  float yDist   = toroidalDistance(position_.y, b.getPosition().y, 900.f);
-  auto distance = std::hypot(xDist, yDist);
-  return distance < d && (&b != this);
+  // float xDist   = toroidalDistance(position_.x, b.getPosition().x, 900.f);
+  // float yDist   = toroidalDistance(position_.y, b.getPosition().y, 900.f);
+  // auto distance = std::hypot(xDist, yDist);
+  auto distance = toroidalDifference(position_, b.getPosition(), windowDimensions);
+  return norm(distance) < d && (&b != this);
 }
 
 void Boid::biological_limits()
@@ -44,25 +47,32 @@ void Boid::biological_limits()
   }
 }
 
-Predator Flock::predator_evolution(Predator const& p) const   // Tutto ciò che riguarda distanze e correzioni è stato trasposto 
-{                                                             // nello spazio toroidale. Le regole di correzione per l'alignment (Cami l'ho scritto bene solo per te)
-  Predator copy = p;                                          // non sono state modificate.
+Predator Flock::predator_evolution(Predator const& p)
+    const // Tutto ciò che riguarda distanze e correzioni è stato trasposto
+{ // nello spazio toroidale. Le regole di correzione per l'alignment (Cami l'ho
+  // scritto bene solo per te)
+  Predator copy = p; // non sono state modificate.
   const float d = 2.f * flock_parameters_.d;
 
-  const auto preys = static_cast<float>(std::count_if(
-      flock_.begin(), flock_.end(), [&](auto const& boid) { return p.hasNeighbour(boid, d); }));
+  const auto preys = static_cast<float>(
+      std::count_if(flock_.begin(), flock_.end(),
+                    [&](auto const& boid) { return p.hasNeighbour(boid, d); }));
   assert(preys >= 0.f);
   if (preys != 0.f) {
-    const auto center_of_mass =
-        std::accumulate(flock_.begin(), flock_.end(), Vector{}, [&](auto& sum, auto const& b) {
+    const auto center_of_mass = std::accumulate(
+        flock_.begin(), flock_.end(), Vector{}, [&](auto& sum, auto const& b) {
           if (p.hasNeighbour(b, d)) {
             // sum += b.getPosition();
-            auto difference = toroidalDifference(b.getPosition(), p.getPosition());  // Calcolo centro di massa nello spazio toroidale.
+            auto difference =
+                toroidalDifference(b.getPosition(), p.getPosition(),
+                                   windowDimensions); // Calcolo centro di massa
+                                            // nello spazio toroidale.
             sum += p.getPosition() + difference;
           }
           return sum;
         });
-    const auto hunting = toroidalDifference(center_of_mass / preys, p.getPosition());
+    const auto hunting =
+        toroidalDifference(center_of_mass / preys, p.getPosition(), windowDimensions);
     copy.setVelocity(p.getVelocity() + hunting);
     copy.biological_limits();
   }
@@ -81,24 +91,29 @@ void Flock::evolution(Predator const& p)
     if (boid.hasNeighbour(p, flock_parameters_.d)) {
       const auto separation_predator =
           flock_parameters_.s
-          * (flock_parameters_.d / norm(toroidalDifference(p.getPosition(), boid.getPosition()))
+          * (flock_parameters_.d
+             / norm(toroidalDifference(p.getPosition(), boid.getPosition(),
+                                       windowDimensions))
              * p.getVelocity());
       modified_boid.setVelocity(boid.getVelocity() + separation_predator);
     }
 
-    const auto neighbours =
-        static_cast<float>(std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) {
+    const auto neighbours = static_cast<float>(
+        std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) {
           return boid.hasNeighbour(other, flock_parameters_.d);
         }));
     assert(neighbours >= 0.f);
     if (neighbours != 0.f) {
       auto corrections = std::accumulate(
-          flock_.begin(), flock_.end(), Corrections{}, [&](auto& sums, auto const& other) {
+          flock_.begin(), flock_.end(), Corrections{},
+          [&](auto& sums, auto const& other) {
             if (boid.hasNeighbour(other, flock_parameters_.d)) {
               sums.alignment += other.getVelocity();
-              sums.cohesion += toroidalDifference(other.getPosition(), boid.getPosition());
+              sums.cohesion += toroidalDifference(other.getPosition(),
+                                                  boid.getPosition(), windowDimensions);
               if (boid.hasNeighbour(other, flock_parameters_.ds)) {
-                auto distance = toroidalDifference(other.getPosition(), boid.getPosition());
+                auto distance = toroidalDifference(other.getPosition(),
+                                                   boid.getPosition(), windowDimensions);
                 normalize(distance, flock_parameters_.ds / norm(distance));
                 sums.separation += distance;
               }
@@ -106,8 +121,9 @@ void Flock::evolution(Predator const& p)
             return sums;
           });
 
-      corrections.alignment = corrections.alignment / neighbours - boid.getVelocity();
-      corrections.cohesion  = corrections.cohesion / neighbours;
+      corrections.alignment =
+          corrections.alignment / neighbours - boid.getVelocity();
+      corrections.cohesion = corrections.cohesion / neighbours;
 
       modified_boid.setVelocity(modified_boid.getVelocity()
                                 + flock_parameters_.a * corrections.alignment
@@ -115,7 +131,8 @@ void Flock::evolution(Predator const& p)
                                 - flock_parameters_.s * corrections.separation);
     }
 
-    modified_boid.setPosition(modified_boid.getPosition() + dt * modified_boid.getVelocity());
+    modified_boid.setPosition(modified_boid.getPosition()
+                              + dt * modified_boid.getVelocity());
     overlapping(modified_boid);
     modified_boid.biological_limits();
     modified_boid.correct_borders();

@@ -9,10 +9,11 @@
 namespace bd {
 
 const float pi      = std::atan(1.f) * 4;
-const auto w_window = 900; // sf::VideoMode::getDesktopMode().width;
-const auto h_window =
-    900; // sf::VideoMode::getDesktopMode().height; prima di inserire questi, va
-         // modificata la generazione delle posizioni (h è diverso da w)
+const auto w_window = 900.f; // sf::VideoMode::getDesktopMode().width;
+const auto h_window = 900.f; // sf::VideoMode::getDesktopMode().height; prima di
+                             // inserire questi, va modificata la generazione
+                             // delle posizioni (h è diverso da w)
+const SpaceDimensions windowDimensions{w_window, h_window};
 
 class Boid
 {

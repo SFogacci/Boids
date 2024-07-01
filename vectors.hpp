@@ -28,7 +28,13 @@ void normalize(Vector&, float);
 
 float toroidalDistance(float, float, float);
 
-Vector toroidalDifference(Vector const&, Vector const&);
+struct SpaceDimensions
+{
+  float width;
+  float height;
+};
+
+Vector toroidalDifference(Vector const&, Vector const&, SpaceDimensions);
 } // namespace bd
 
 #endif
