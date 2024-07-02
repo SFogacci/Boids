@@ -2,6 +2,7 @@
 #include "TCanvas.h"
 #include "TGraph.h"
 #include "graphics.hpp"
+#include "statistics.hpp"
 #include "input.hpp"
 #include <stdlib.h>
 #include <algorithm>
@@ -107,8 +108,9 @@ int main()
     bd::drawGraph(sigmaDistances);
     canvas.Modified();
     canvas.Update();
-    canvas.Print("statistics.pdf");
+    canvas.Print(bd::fileName().c_str());
     app.Run();
+
   } catch (std::exception const& e) {
     std::cerr << e.what() << "'\n";
     return EXIT_FAILURE;
