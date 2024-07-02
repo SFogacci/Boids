@@ -42,12 +42,11 @@ float norm(Vector const& v)
   return std::hypot(v.x, v.y);
 }
 
-Vector generateCoordinates(float a, float b)
+float generateCoordinates(float a, float b)
 {
   std::random_device rd;
   std::uniform_real_distribution<float> dis(a, b);
-  Vector coordinates{dis(rd), dis(rd)};
-  return coordinates;
+  return dis(rd);
 }
 
 void normalize(Vector& v, float f)
@@ -69,21 +68,20 @@ float toroidalDistance(
   return dist;
 }
 
-Vector toroidalDifference(Vector const& pos1, Vector const& pos2,
-                          SpaceDimensions dim) // Crea un vettore che contiene
+Vector toroidalDifference(Vector const& pos1, Vector const& pos2) // Crea un vettore che contiene
                                                // le distanze lungo i due assi
 { // tra due boids: i segni sono attribuiti in modo da
   float xDiff =
       pos1.x - pos2.x; // far funzionare correttamente separation e cohesion.
   float yDiff = pos1.y - pos2.y;
 
-  if (std::abs(xDiff) > dim.width / 2) {
-    xDiff = dim.width - std::abs(xDiff);
+  if (std::abs(xDiff) > windowDimensions.x / 2) {
+    xDiff = windowDimensions.x - std::abs(xDiff);
     xDiff *= (pos1.x > pos2.x) ? -1 : 1;
   }
 
-  if (std::abs(yDiff) > dim.height / 2) {
-    yDiff = dim.height - std::abs(yDiff);
+  if (std::abs(yDiff) > windowDimensions.y / 2) {
+    yDiff = windowDimensions.y - std::abs(yDiff);
     yDiff *= (pos1.y > pos2.y) ? -1 : 1;
   }
 
