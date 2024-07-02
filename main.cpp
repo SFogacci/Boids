@@ -27,7 +27,6 @@ int main()
     std::runtime_error e{"Invalid input. \n"};
 
     while (std::cin >> cmd) {
-
       if (cmd == 'p') {
         std::cout << "Insert flock's parameters in the following order: \n"
                   << "Cohesion intensity [0,1], \n"
@@ -38,17 +37,7 @@ int main()
                   << "Number of boids [0, 300]. \n";
 
         if (std::cin >> parameters.c >> parameters.a >> parameters.s
-            >> parameters.d >> parameters.ds
-            >> parameters.n) { // checks if input type is valid
-          if (parameters.c < 0 || parameters.c > 1 || parameters.a < 0
-              || parameters.a > 1 || parameters.s < 0 || parameters.s > 1
-              || parameters.d < 0 || parameters.d > 100 || parameters.ds < 0
-              || parameters.ds > 20
-              || parameters.n > 300) { // checks range of input (std::size_t is
-                                       // by def >0).
-            throw e;                   // if input not in range
-          }
-
+            >> parameters.d >> parameters.ds >> parameters.n) {
         } else
           throw e; // if input type not valid
       }
@@ -77,6 +66,17 @@ int main()
         std::cout << "Bad format, insert a new command\n";
         std::cin.clear();
       }
+
+      // checks if input type is valid
+      if (parameters.c < 0 || parameters.c > 1 || parameters.a < 0
+          || parameters.a > 1 || parameters.s < 0 || parameters.s > 1
+          || parameters.d < 0 || parameters.d > 100 || parameters.ds < 0
+          || parameters.ds > 20
+          || parameters.n > 300) { // checks range of input (std::size_t is
+                                   // by def >0).
+        throw e;                   // if input not in range
+      }
+
       break;
     }
 
