@@ -34,8 +34,10 @@ target_link_libraries (main PRIVATE ROOT::Core ROOT::Hist ROOT::HistPainter)
 if (BUILD_TESTING)
 
   # aggiungi l'eseguibile all.t
-  add_executable(boid.t boids.test.cpp boid.cpp vectors.cpp)
+  # add_executable(boid.t boids.test.cpp boid.cpp vectors.cpp)
+  # target_link_libraries(boid.t PRIVATE sfml-graphics)
   add_executable(stats.t statistics.test.cpp boid.cpp vectors.cpp statistics.cpp)
+  target_link_libraries(stats.t PRIVATE sfml-graphics)
   # aggiungi l'eseguibile all.t alla lista dei test
   add_test(NAME boid.t COMMAND boid.t)
   add_test(NAME stats.t COMMAND stats.t)
