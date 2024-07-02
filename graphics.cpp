@@ -40,27 +40,6 @@ sf::ConvexShape setShape(bd::Boid const& b) // passaggio by const ref
     return birdShape;
   }
 }
-/*
-  sf::ConvexShape setShape(bd::Predator const& b)
-  {
-    predatorShape.setPointCount(4);
-    predatorShape.setPoint(
-        0, sf::Vector2f(b.getPosition().x - 15.f, b.getPosition().y - 10.f));
-    predatorShape.setPoint(
-        1, sf::Vector2f(b.getPosition().x + 15.f, b.getPosition().y));
-    predatorShape.setPoint(
-        2, sf::Vector2f(b.getPosition().x - 15.f, b.getPosition().y + 10.f));
-    predatorShape.setPoint(
-        3, sf::Vector2f(b.getPosition().x - 5.f, b.getPosition().y));
-    predatorShape.setFillColor(sf::Color::Green);
-    predatorShape.setOutlineColor(sf::Color::White);
-    predatorShape.setOutlineThickness(1.f);
-    predatorShape.setPosition(b.getPosition().x, b.getPosition().y);
-    predatorShape.setOrigin(b.getPosition().x, b.getPosition().y);
-    predatorShape.setRotation(b.getOrientation());
-    return predatorShape;
-  }
-  */
 
 void gameLoop(Flock& flock, Boid& p)
 {

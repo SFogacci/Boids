@@ -15,19 +15,18 @@ bool operator==(Boid const& a, Boid const& b)
           && a.getPosition() == b.getPosition());
 }
 
-void Boid::correct_borders()
+void Boid::correct_borders() // teletrasporto toroidale
 {
-  if (position_.x > static_cast<float>(w_window)) {
-    position_.x -= static_cast<float>(w_window);
+  if (position_.x > w_window) {
+    position_.x -= w_window;
   } else if (position_.x < 0.f) {
-    position_.x += static_cast<float>(w_window);
+    position_.x += w_window;
   }
-  if (position_.y > static_cast<float>(h_window)) {
-    position_.y -= static_cast<float>(h_window);
+  if (position_.y > h_window) {
+    position_.y -= h_window;
+  } else if (position_.y < 0.f) {
+    position_.y += h_window;
   }
-  if (position_.y < 0.f) {
-    position_.y += static_cast<float>(h_window);
-  } // c'è un problema sulla y per colpa della barra in alto che copre
 }
 
 bool Boid::hasNeighbour(Boid const& b, float d) const
@@ -47,7 +46,7 @@ void Boid::biological_limits()
 Boid Boid::predator_evolution(Flock const& f) const
 {
   assert(isPredator_);
-  Boid copy = *this;
+  Boid copy     = *this;
   const float d = 2.f * f.getFlockParameters().d;
   // gli do 2 volte la visione dei boid, così vede più lontano (se è un
   // predatore si sarà evoluto in modo da vedere meglio le prede, no?)
@@ -55,6 +54,7 @@ Boid Boid::predator_evolution(Flock const& f) const
   const auto preys = static_cast<float>(
       std::count_if(flock.begin(), flock.end(),
                     [&](auto const& boid) { return hasNeighbour(boid, d); }));
+  assert(preys >= 0.f);
   if (preys != 0) {
     auto center_of_mass = std::accumulate(flock.begin(), flock.end(), Vector{},
                                           [&](auto& sum, auto const& b) {
@@ -64,14 +64,12 @@ Boid Boid::predator_evolution(Flock const& f) const
                                             return sum;
                                           });
 
-    const Vector hunting =
-        (center_of_mass / preys - position_); // perché dividiamo per 100?
+    const Vector hunting = center_of_mass / preys - position_;
     copy.setVelocity(velocity_ + hunting);
+    copy.biological_limits();
   }
-  copy.biological_limits();
   copy.setPosition(position_ + dt * velocity_);
   copy.correct_borders();
-
   return copy;
 }
 
@@ -95,6 +93,7 @@ void Flock::evolution(Boid const& p)
         std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) {
           return boid.hasNeighbour(other, flock_parameters_.d);
         }));
+    assert(neighbours >= 0.f);
     if (neighbours != 0.f) {
       auto corrections = std::accumulate(
           flock_.begin(), flock_.end(), Corrections{},
@@ -120,8 +119,8 @@ void Flock::evolution(Boid const& p)
                                 + flock_parameters_.a * corrections.alignment
                                 + flock_parameters_.c * corrections.cohesion
                                 - flock_parameters_.s * corrections.separation);
+      modified_boid.biological_limits();
     }
-    modified_boid.biological_limits();
     modified_boid.setPosition(modified_boid.getPosition()
                               + dt * modified_boid.getVelocity());
     overlapping(modified_boid);
