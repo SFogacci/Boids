@@ -24,7 +24,20 @@ float norm(Vector const&);
 
 Vector generateCoordinates(float a, float b);
 
+float generateCoordinate(float a, float b);
+
 void normalize(Vector&, float);
+
+float toroidalDistance(float, float, float);
+
+struct SpaceDimensions
+{
+  float width;
+  float height;
+};
+
+Vector toroidalDifference(Vector const&, Vector const&, SpaceDimensions);
 } // namespace bd
+
 
 #endif

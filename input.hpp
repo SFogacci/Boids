@@ -2,8 +2,8 @@
 #define INPUT_HPP
 
 namespace bd {
-Predator createPredators();
-std::vector<Boid> createBirds(const std::size_t&);
+Boid createBird(bool);
+std::vector<Boid> createPreys(const std::size_t);
 
 } // namespace bd
 #endif

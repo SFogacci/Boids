@@ -2,21 +2,29 @@
 #define BOID_HPP
 
 #include "vectors.hpp"
+#include "SFML/Graphics.hpp"
 #include <cmath>
 #include <vector>
 
 namespace bd {
 
 const float pi = std::atan(1.f) * 4;
-
+inline SpaceDimensions windowDimensions{900.f, 900.f};
 class Boid
 {
  private:
   Vector position_;
   Vector velocity_;
+  bool isPredator_;
 
  public:
-  explicit Boid(Vector p, Vector v)
+  Boid(Vector p, Vector v, bool isPred)
+      : position_{p}
+      , velocity_{v}
+      , isPredator_{isPred}
+  {}
+
+    explicit Boid(Vector p, Vector v)
       : position_{p}
       , velocity_{v}
   {}
@@ -29,6 +37,11 @@ class Boid
   auto getVelocity() const
   {
     return velocity_;
+  }
+
+  auto isPredator() const
+  {
+    return isPredator_;
   }
 
   float getOrientation() const
@@ -51,19 +64,10 @@ class Boid
     velocity_ = v;
   }
 
-  void correctBorders();
+  void correct_borders();
 
-  // bool isClose(Boid const&, float) const;
   bool hasNeighbour(Boid const&, float) const;
-  void biologicalLimits();
-};
-
-class Predator : public Boid // predator derivata da boid.
-{
- public:
-  explicit Predator(Vector position, Vector velocity)
-      : Boid{position, velocity}
-  {}
+  void biological_limits();
 };
 
 bool operator==(Boid const&, Boid const&);
@@ -88,27 +92,34 @@ struct Corrections
 class Flock
 {
   std::vector<Boid> flock_;
-  Parameters flock_pars_;
+  Parameters flock_parameters_;
+  Boid predator_;
 
  public:
-  explicit Flock(Boid const& b, Parameters p)
-      : flock_pars_{p}
-  {
-    flock_.push_back(b);
-  }
-
-  explicit Flock(std::vector<Boid> v, Parameters p)
+  explicit Flock(std::vector<Boid> v, Parameters p, Boid predator)
       : flock_{v}
-      , flock_pars_{p}
+      , flock_parameters_{p}
+      , predator_{predator}
   {}
+
+  auto setPredator(const Boid& p)
+  {
+    predator_ = p;
+  }
 
   auto const& getFlock() const
   {
     return flock_;
   }
 
+  auto const& getPredator() const
+  {
+    return predator_;
+  }
+
   void evolution();
-  void predator_evolution(Predator& p); // forse meglio come metodo di Predator?
+  Boid predator_evolution();
+  void overlapping(Boid&);
 };
 
 } // namespace bd

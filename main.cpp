@@ -1,6 +1,3 @@
-#include "TApplication.h"
-#include "TCanvas.h"
-#include "TGraph.h"
 #include "graphics.hpp"
 #include "input.hpp"
 #include <stdlib.h>
@@ -31,9 +28,8 @@ int main()
     if (std::cin >> c >> a >> s >> d >> ds
         >> n) { // checks if input type is valid
       if (c < 0 || c > 1 || a < 0 || a > 1 || s < 0 || s > 1 || d < 0 || d > 100
-          || ds < 0 || ds > 20
-          || n > 300) { // checks range of input (std::size_t is by def >0).
-        throw e;        // if input not in range
+          || ds < 0 || ds > 20 || n > 300) {  // checks range of input (std::size_t is by def >0).
+        throw e; // if input not in range
       }
 
     } else
@@ -41,42 +37,14 @@ int main()
 
     bd::Parameters parameters{a, c, d, ds, s, n};
 
-    std::vector<bd::Boid> birds = bd::createBirds(parameters.n);
-    // bd::Predator predator       = bd::createPredators();
-    bd::Flock flock{birds, parameters};
+    std::vector<bd::Boid> preys = bd::createPreys(parameters.n);
+    bd::Boid predator = bd::createBird(1);
+    bd::Flock flock{preys, parameters, predator};
     bd::gameLoop(flock);
-
-    // drawing graphs of distance and speed over time
-    TApplication app("app", 0, nullptr);
-    TCanvas canvas("Statistics", "Statistics", 0, 0, 800, 600);
-    canvas.Divide(2, 2);
-    canvas.cd(1);
-    TGraph meanSpeeds("statistics.txt", "%lg %lg");
-    meanSpeeds.SetTitle("Mean speed");
-    bd::drawGraph(meanSpeeds);
-    canvas.cd(2);
-    TGraph sigmaSpeeds("statistics.txt", "%lg %*lg %lg");
-    sigmaSpeeds.SetTitle("Std deviation for speed");
-    bd::drawGraph(sigmaSpeeds);
-    canvas.cd(3);
-    TGraph meanDistances("statistics.txt", "%lg %*lg %*lg %lg");
-    meanDistances.SetTitle("Mean distance");
-    bd::drawGraph(meanDistances);
-    canvas.cd(4);
-    TGraph sigmaDistances("statistics.txt", "%lg %*lg %*lg %*lg %lg");
-    sigmaDistances.SetTitle("Std deviation for distance");
-    bd::drawGraph(sigmaDistances);
-    canvas.Modified();
-    canvas.Update();
-    canvas.Print("statistics.pdf");
-    app.Run();
   }
 
   catch (std::runtime_error const& e) {
     std::cerr << e.what() << '\n';
-    return EXIT_FAILURE;
-  } catch (...) {
-    std::cerr << "Caught unknown exception\n";
     return EXIT_FAILURE;
   }
 }

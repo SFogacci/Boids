@@ -3,29 +3,33 @@
 #include <iostream>
 namespace bd {
 
-auto createBirds(const std::size_t& n)
+auto createBird(bool is_predator)
+{
+  float x = generateCoordinate(0.f, static_cast<float>(windowDimensions.width));
+  float y = generateCoordinate(0.f, static_cast<float>(windowDimensions.height));
+  Vector position{x, y};
+  Boid bird{position, {}, is_predator};
+  while (true) {
+    float v_x = generateCoordinate(-5.f, 5.f);
+    float v_y = generateCoordinate(-5.f, 5.f);
+    Vector velocity{v_x, v_y};
+    if (norm(velocity) > 0.5) {
+      bird.setVelocity(velocity);
+      return bird;
+    }
+  }
+}
+
+auto createPreys(const std::size_t n)
 {
   std::vector<Boid> birds;
   birds.reserve(n);
 
   for (std::size_t i = 0; i != n; ++i) {
-    while (true) {
-      Boid bird{generateCoordinates(0.f, 900.f),
-                generateCoordinates(-5.f, 5.f)};
-      if (norm(bird.getVelocity()) > 0.5) {
-        birds.push_back(bird);
-        break;
-      }
-    }
+    birds.push_back(createBird(0));
   }
   return birds;
 }
 
-auto createPredators()
-{
-  Predator bird{generateCoordinates(0.f, 900.f),
-                generateCoordinates(-5.f, 5.f)};
-  return bird;
-}
 
 } // namespace bd
