@@ -17,15 +17,15 @@ bool operator==(Boid const& a, Boid const& b)
 
 void Boid::correct_borders() // teletrasporto toroidale
 {
-  if (position_.x > w_window) {
-    position_.x -= w_window;
+  if (position_.x > windowDimensions.x) {
+    position_.x -= windowDimensions.x;
   } else if (position_.x < 0.f) {
-    position_.x += w_window;
+    position_.x += windowDimensions.x;
   }
-  if (position_.y > h_window) {
-    position_.y -= h_window;
+  if (position_.y > windowDimensions.y) {
+    position_.y -= windowDimensions.y;
   } else if (position_.y < 0.f) {
-    position_.y += h_window;
+    position_.y += windowDimensions.y;
   }
 }
 
@@ -36,7 +36,7 @@ bool Boid::hasNeighbour(Boid const& b, float d)
   // float yDist   = toroidalDistance(position_.y, b.getPosition().y, 900.f);
   // auto distance = std::hypot(xDist, yDist);
   auto distance =
-      toroidalDifference(position_, b.getPosition(), windowDimensions);
+      toroidalDifference(position_, b.getPosition());
   return norm(distance) < d && (&b != this);
 }
 
@@ -68,15 +68,14 @@ Boid Boid::predator_evolution(Flock const& f)
           if (hasNeighbour(b, d)) {
             // sum += b.getPosition();
             auto difference =
-                toroidalDifference(b.getPosition(), position_,
-                                   windowDimensions); // Calcolo centro di massa
+                toroidalDifference(b.getPosition(), position_); // Calcolo centro di massa
                                                       // nello spazio toroidale.
             sum += getPosition() + difference;
           }
           return sum;
         });
     const auto hunting =
-        toroidalDifference(center_of_mass / preys, position_, windowDimensions);
+        toroidalDifference(center_of_mass / preys, position_);
     copy.setVelocity(velocity_ + hunting);
     copy.biological_limits();
   }
@@ -96,7 +95,7 @@ void Flock::evolution(Boid const& p)
     if (boid.hasNeighbour(p, flock_parameters_.d)) {
       const auto separation_predator =
           flock_parameters_.s
-          * toroidalDifference(boid.getPosition(), p.getPosition(), windowDimensions);
+          * toroidalDifference(boid.getPosition(), p.getPosition());
       modified_boid.setVelocity(boid.getVelocity() + separation_predator);
     }
 
@@ -112,10 +111,10 @@ void Flock::evolution(Boid const& p)
             if (boid.hasNeighbour(other, flock_parameters_.d)) {
               sums.alignment += other.getVelocity();
               sums.cohesion += toroidalDifference(
-                  other.getPosition(), boid.getPosition(), windowDimensions);
+                  other.getPosition(), boid.getPosition());
               if (boid.hasNeighbour(other, flock_parameters_.ds)) {
                 auto distance = toroidalDifference(
-                    other.getPosition(), boid.getPosition(), windowDimensions);
+                    other.getPosition(), boid.getPosition());
                 normalize(distance, flock_parameters_.ds / norm(distance));
                 sums.separation += distance;
               }
@@ -147,7 +146,7 @@ void Flock::overlapping(Boid& boid)
 {
   std::for_each(flock_.begin(), flock_.end(), [&boid](Boid const& other) {
     if (other == boid) {
-      boid.setPosition(boid.getPosition() + generateCoordinates(-1.f, 1.f));
+      boid.setPosition(boid.getPosition() + Vector{generateCoordinates(-1.f, 1.f), generateCoordinates(-1.f, 1.f)});
     }
   });
 }
