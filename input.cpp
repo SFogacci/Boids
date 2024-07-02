@@ -9,25 +9,42 @@ auto createBirds(const std::size_t& n)
   birds.reserve(n);
 
   for (std::size_t i = 0; i != n; ++i) {
-    Boid bird{generateCoordinates(0.f, static_cast<float>(h_window)),
-              {}}; // sarebbe da modificare in modo che la posizione in x sia al
-                   // masismo w_window e in y h_window
+    Boid bird{
+        Vector{
+            generateCoordinates(0.f, static_cast<float>(windowDimensions.x)),
+            generateCoordinates(0.f, static_cast<float>(windowDimensions.y))},
+        {}};
     while (true) {
-      auto velocity{generateCoordinates(-5.f, 5.f)};
-      if (norm(velocity) > 0.5) {
+      auto velocity{Vector{
+          generateCoordinates(-5.f, 5.f),
+          generateCoordinates(-5.f, 5.f)}}; // da cambiare in variabili (const)
+      if (norm(velocity) > 5.f) {
         bird.setVelocity(velocity);
         birds.push_back(bird);
         break;
       }
     }
   }
+
   return birds;
 }
 
-Boid createPredator()
+auto createPredator()
 {
-  Boid bird{generateCoordinates(0.f, static_cast<float>(h_window)),
-            generateCoordinates(-5.f, 5.f), 1};
+  Boid bird{
+      Vector{generateCoordinates(0.f, static_cast<float>(windowDimensions.x)),
+             generateCoordinates(0.f, static_cast<float>(windowDimensions.y))},
+      {},
+      1};
+  while (true) {
+    auto velocity{Vector{
+        generateCoordinates(-5.f, 5.f),
+        generateCoordinates(-5.f, 5.f)}}; // da cambiare in variabili (const)
+    if (norm(velocity) > 5.f) {
+      bird.setVelocity(velocity);
+      break;
+    }
+  }
   return bird;
 }
 
