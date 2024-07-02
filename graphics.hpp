@@ -10,7 +10,7 @@ namespace bd {
 
 sf::ConvexShape setShape(Boid const&);
 
-void gameLoop(Flock&, Predator&);
+void gameLoop(Flock&, Boid&);
 
 void drawGraph(TGraph&);
 

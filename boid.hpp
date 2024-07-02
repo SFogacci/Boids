@@ -15,18 +15,31 @@ const auto h_window = 900.f; // sf::VideoMode::getDesktopMode().height; prima di
                              // delle posizioni (h è diverso da w)
 const SpaceDimensions windowDimensions{w_window, h_window};
 
+class Flock;
+
 class Boid
 {
  private:
   Vector position_;
   Vector velocity_;
+  bool isPredator_{0};
 
  public:
-  Boid() = default;
+  // Boid() = default;
   explicit Boid(Vector p, Vector v)
       : position_{p}
       , velocity_{v}
   {}
+  Boid(Vector p, Vector v, bool isPred)
+      : position_{p}
+      , velocity_{v}
+      , isPredator_{isPred}
+  {}
+
+  auto isPredator() const
+  {
+    return isPredator_;
+  }
 
   auto getPosition() const
   {
@@ -58,20 +71,19 @@ class Boid
     velocity_ = v;
   }
 
+  Boid predator_evolution(Flock const&) const;
   void correct_borders();
-
-  // bool isClose(Boid const&, float) const;
   bool hasNeighbour(Boid const&, float) const;
   void biological_limits();
 };
 
-class Predator : public Boid // predator derivata da boid.
+/*class Predator : public Boid // predator derivata da boid.
 {
  public:
   explicit Predator(Vector position, Vector velocity)
       : Boid{position, velocity}
   {}
-};
+};*/
 
 bool operator==(Boid const&, Boid const&);
 
@@ -84,7 +96,7 @@ struct Parameters
   float s;
   std::size_t n;
 
-  Parameters()= default;
+  Parameters() = default;
 
   explicit Parameters(std::vector<float> v, std::size_t p)
       : a{v[0]}
@@ -94,7 +106,6 @@ struct Parameters
       , s{v[4]}
       , n{p}
   {}
-
 };
 
 struct Corrections
@@ -102,7 +113,7 @@ struct Corrections
   Vector alignment;
   Vector cohesion;
   Vector separation;
-  Vector separation_predator;
+  // Vector separation_predator;
 };
 
 class Flock
@@ -128,8 +139,13 @@ class Flock
     return flock_;
   }
 
-  void evolution(Predator const&);
-  Predator predator_evolution(Predator const&) const;
+  auto const& getFlockParameters() const
+  {
+    return flock_parameters_;
+  }
+
+  void evolution(Boid const&);
+  // Predator predator_evolution(Predator const&) const;
   void overlapping(Boid&);
 };
 

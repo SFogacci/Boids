@@ -29,12 +29,12 @@ int main()
     while (std::cin >> cmd) {
       if (cmd == 'p') {
         std::cout << "Insert flock's parameters in the following order: \n"
-                  << "Cohesion intensity [0,1], \n"
-                  << "Alignment intensity [0,1], \n"
-                  << "Separation intensity [0,1], \n"
-                  << "Interaction distance [0, 100], \n"
-                  << "Separation distance [0, 20], \n"
-                  << "Number of boids [0, 300]. \n";
+                  << "- Cohesion intensity [0,1], \n"
+                  << "- Alignment intensity [0,1], \n"
+                  << "- Separation intensity [0,1], \n"
+                  << "- Interaction distance [0, 100], \n"
+                  << "- Separation distance [0, 20], \n"
+                  << "- Number of boids [0, 300]. \n";
 
         if (std::cin >> parameters.c >> parameters.a >> parameters.s
             >> parameters.d >> parameters.ds >> parameters.n) {
@@ -81,7 +81,7 @@ int main()
     }
 
     std::vector<bd::Boid> birds = bd::createBirds(parameters.n);
-    bd::Predator predator       = bd::createPredators();
+    bd::Boid predator           = bd::createPredator();
     bd::Flock flock{birds, parameters};
     bd::gameLoop(flock, predator);
 

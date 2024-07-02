@@ -48,42 +48,46 @@ void Boid::biological_limits()
   }
 }
 
-Predator Flock::predator_evolution(Predator const& p)
+Boid Boid::predator_evolution(Flock const& f)
     const // Tutto ciò che riguarda distanze e correzioni è stato trasposto
 { // nello spazio toroidale. Le regole di correzione per l'alignment (Cami l'ho
   // scritto bene solo per te)
-  Predator copy = p; // non sono state modificate.
-  const float d = 2.f * flock_parameters_.d;
+  assert(isPredator_);
+  auto copy{*this}; // non sono state modificate.
+  const auto flock{f.getFlock()};
+  const auto parameters{f.getFlockParameters()};
+  const float d = 2.f * parameters.d;
 
   const auto preys = static_cast<float>(
-      std::count_if(flock_.begin(), flock_.end(),
-                    [&](auto const& boid) { return p.hasNeighbour(boid, d); }));
+      std::count_if(flock.begin(), flock.end(),
+                    [&](auto const& boid) { return hasNeighbour(boid, d); }));
   assert(preys >= 0.f);
   if (preys != 0.f) {
     const auto center_of_mass = std::accumulate(
-        flock_.begin(), flock_.end(), Vector{}, [&](auto& sum, auto const& b) {
-          if (p.hasNeighbour(b, d)) {
+        flock.begin(), flock.end(), Vector{}, [&](auto& sum, auto const& b) {
+          if (hasNeighbour(b, d)) {
             // sum += b.getPosition();
             auto difference =
-                toroidalDifference(b.getPosition(), p.getPosition(),
+                toroidalDifference(b.getPosition(), position_,
                                    windowDimensions); // Calcolo centro di massa
                                                       // nello spazio toroidale.
-            sum += p.getPosition() + difference;
+            sum += getPosition() + difference;
           }
           return sum;
         });
-    const auto hunting = toroidalDifference(center_of_mass / preys,
-                                            p.getPosition(), windowDimensions);
-    copy.setVelocity(p.getVelocity() + hunting);
+    const auto hunting =
+        toroidalDifference(center_of_mass / preys, position_, windowDimensions);
+    copy.setVelocity(velocity_ + hunting);
     copy.biological_limits();
   }
-  copy.setPosition(copy.getPosition() + dt * copy.getVelocity());
+  copy.setPosition(position_ + dt * copy.getVelocity());
   copy.correct_borders();
   return copy;
 }
 
-void Flock::evolution(Predator const& p)
+void Flock::evolution(Boid const& p)
 {
+  assert(p.isPredator());
   std::vector<Boid> modified_flock;
   modified_flock.reserve(flock_.size());
 
@@ -92,10 +96,7 @@ void Flock::evolution(Predator const& p)
     if (boid.hasNeighbour(p, flock_parameters_.d)) {
       const auto separation_predator =
           flock_parameters_.s
-          * (flock_parameters_.d
-             / norm(toroidalDifference(p.getPosition(), boid.getPosition(),
-                                    windowDimensions))
-             * p.getVelocity());
+          * toroidalDifference(boid.getPosition(), p.getPosition(), windowDimensions);
       modified_boid.setVelocity(boid.getVelocity() + separation_predator);
     }
 
