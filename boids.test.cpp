@@ -2,20 +2,9 @@
 
 #include "boid.hpp"
 #include "doctest.h"
+#include "statistics.hpp"
 
 namespace bd {
-
-TEST_CASE("Vector functions")
-{
-  SUBCASE("Normalize function")
-  {
-    bd::Vector v{5, 0};
-    normalize(v, 1);
-    CHECK(v.x == doctest::Approx(1));
-    CHECK(v.y == doctest::Approx(0));
-    // da aggiungere altri casi,  e test anche per le altre funzioni
-  }
-}
 
 TEST_CASE("One boid, all rules")
 {
@@ -23,7 +12,8 @@ TEST_CASE("One boid, all rules")
   std::vector birds{b1};
   Parameters parameters{0.5f, 0.5f, 2.f, 1.5f, 0.5f, 2};
   Flock flock{birds, parameters};
-  flock.evolution();
+  Boid predator{{500.f, 500.f}, {}, 1};
+  flock.evolution(predator);
   auto it = flock.getFlock().begin();
   CHECK(it->getPosition().x == doctest::Approx(102));
   CHECK(it->getPosition().y == doctest::Approx(102));
@@ -39,7 +29,8 @@ TEST_CASE("Two boids, separation only")
   std::vector birds{b1, b2};
   Parameters parameters{0.f, 0.f, 2.f, 1.5f, 0.5f, 2};
   Flock flock{birds, parameters};
-  flock.evolution();
+  Boid predator{{500.f, 500.f}, {}, 1};
+  flock.evolution(predator);
   auto it = flock.getFlock().begin();
   auto et = it + 1;
   CHECK(it->getPosition().x == doctest::Approx(100.5));
@@ -61,7 +52,8 @@ TEST_CASE(
   std::vector birds{b1, b2};
   Parameters parameters{0.f, 0.5f, 4.f, 1.5f, 0.f, 2};
   Flock flock{birds, parameters};
-  flock.evolution();
+  Boid predator{{500.f, 500.f}, {}, 1};
+  flock.evolution(predator);
   auto it = flock.getFlock().begin();
   auto et = it + 1;
   CHECK(it->getPosition().x == doctest::Approx(102));
@@ -82,7 +74,8 @@ TEST_CASE("Two boids, alignment only: one still.")
   std::vector birds{b1, b2};
   Parameters parameters{0.5f, 0.f, 2.f, 1.5f, 0.f, 2};
   Flock flock{birds, parameters};
-  flock.evolution();
+  Boid predator{{500.f, 500.f}, {}, 1};
+  flock.evolution(predator);
   auto it = flock.getFlock().begin();
   auto et = it + 1;
   CHECK(it->getPosition().x == doctest::Approx(101));
@@ -103,7 +96,8 @@ TEST_CASE("Overlap of two boids") // Come lo risolviamo?
   std::vector birds{b1, b2};
   Parameters parameters{0.5f, 0.5f, 2.f, 1.5f, 0.5f, 2};
   Flock flock{birds, parameters};
-  flock.evolution();
+  Boid predator{{500.f, 500.f}, {}, 1};
+  flock.evolution(predator);
   auto it = flock.getFlock().begin();
   auto et = it + 1;
   CHECK(it->getPosition().x == doctest::Approx(101));
@@ -124,7 +118,8 @@ TEST_CASE("two boids normal situation") // Come lo risolviamo?
   std::vector birds{b1, b2};
   Parameters parameters{0.5f, 0.5f, 10.f, 1.f, 0.5f, 2};
   Flock flock{birds, parameters};
-  flock.evolution();
+  Boid predator{{500.f, 500.f}, {}, 1};
+  flock.evolution(predator);
   auto it = flock.getFlock().begin();
   auto et = it + 1;
 
@@ -149,8 +144,9 @@ TEST_CASE("all rules")
   std::vector birds{b1, b2};
   Parameters parameters{0.5f, 0.5f, 10.f, 1.f, 0.5f, 2};
   Flock flock{birds, parameters};
-  flock.evolution();
-  flock.evolution();
+  Boid predator{{500.f, 500.f}, {}, 1};
+  flock.evolution(predator);
+  flock.evolution(predator);
   auto it1 = flock.getFlock().begin();
   auto et1 = it1 + 1;
 
@@ -164,7 +160,6 @@ TEST_CASE("all rules")
   CHECK(et1->getVelocity().x == doctest::Approx(0));
   CHECK(et1->getVelocity().y == doctest::Approx(4.5));
 }
-
 // cohesion  -2,5 2,5 --  -1,25  1,25
 // alignment   6   -6  --  3      -3
 
