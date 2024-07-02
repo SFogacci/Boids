@@ -11,7 +11,7 @@ sf::ConvexShape setShape(Boid const&);
 
 void gameLoop(Flock&, Boid&);
 
-void drawGraph(TGraph&);
+void drawGraph(TGraph&, std::string const&);
 
 } // namespace bd
 

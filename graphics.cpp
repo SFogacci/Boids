@@ -91,12 +91,13 @@ void gameLoop(Flock& flock, Boid& p)
   }
 }
 
-void drawGraph(TGraph& graph)
+void drawGraph(TGraph& graph, std::string const& title)
 {
   graph.SetLineColor(kAzure + 4);
-  // auto ctitle{title.c_str()};
-  // graph.SetTitle(";iterations;");
-  // graph.SetTitle(ctitle);
+  // graph.SetTitle((title + ";iterations;" + title).c_str());
+  std::string fullTitle = {title + ";iterations;" + title};
+  const char* ctitle{fullTitle.c_str()};
+  graph.SetTitle(ctitle);
   graph.Draw("AC");
 }
 } // namespace bd
