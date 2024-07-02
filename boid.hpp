@@ -2,18 +2,12 @@
 #define BOID_HPP
 
 #include "vectors.hpp"
-#include "SFML/Graphics.hpp"
 #include <cmath>
 #include <vector>
 
 namespace bd {
 
-const float pi      = std::atan(1.f) * 4;
-const auto w_window = 900.f; // sf::VideoMode::getDesktopMode().width;
-const auto h_window = 900.f; // sf::VideoMode::getDesktopMode().height; prima di
-                             // inserire questi, va modificata la generazione
-                             // delle posizioni (h è diverso da w)
-const SpaceDimensions windowDimensions{w_window, h_window};
+const float pi = std::atan(1.f) * 4;
 
 class Flock;
 
