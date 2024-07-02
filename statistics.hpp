@@ -24,6 +24,8 @@ Stats doStatistics(std::vector<double> const&);
 Results statistics(Flock const&);
 
 std::string printStatistics(Results const&);
+
+std::string fileName();
 } // namespace bd
 
 #endif
