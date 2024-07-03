@@ -164,192 +164,192 @@ TEST_CASE("all rules")
 // cohesion  -2,5 2,5 --  -1,25  1,25
 // alignment   6   -6  --  3      -3
 
-// TEST_CASE("Testing toroidalDistance function") {
-//     float window_dimension = 800.0f;
+TEST_CASE("Testing toroidalDistance function") {
+    float window_dimension = 800.0f;
 
-//     CHECK(toroidalDistance(100.0f, 700.0f, window_dimension) == doctest::Approx(200.0f));
-//     CHECK(toroidalDistance(100.0f, 300.0f, window_dimension) == doctest::Approx(200.0f));
-//     CHECK(toroidalDistance(0.0f, 800.0f, window_dimension) == doctest::Approx(0.0f));  // zero distance
-//     CHECK(toroidalDistance(800.0f, 800.0f, window_dimension) == doctest::Approx(0.0f));
-//     CHECK(toroidalDistance(200.0f, 600.0f, window_dimension) == doctest::Approx(400.0f)); // toroidal and normal distance are the same 
-// }
+    CHECK(toroidalDistance(100.0f, 700.0f, window_dimension) == doctest::Approx(200.0f));
+    CHECK(toroidalDistance(100.0f, 300.0f, window_dimension) == doctest::Approx(200.0f));
+    CHECK(toroidalDistance(0.0f, 800.0f, window_dimension) == doctest::Approx(0.0f));  // zero distance
+    CHECK(toroidalDistance(800.0f, 800.0f, window_dimension) == doctest::Approx(0.0f));
+    CHECK(toroidalDistance(200.0f, 600.0f, window_dimension) == doctest::Approx(400.0f)); // toroidal and normal distance are the same 
+}
 
-// TEST_CASE("Testing toroidalDifference function") {
-//     // bd::Vector windowDimensions = {800.0f, 600.0f};
-//     // bd::Vector windowDimensions = {800.0f, 600.0f};
+TEST_CASE("Testing toroidalDifference function") {
+    // bd::Vector windowDimensions = {800.0f, 600.0f};
+    // bd::Vector windowDimensions = {800.0f, 600.0f};
     
-//     bd::Vector pos1{100.0f, 100.0f};  
-//     bd::Vector pos2{700.0f, 500.0f};
-//     bd::Vector result = toroidalDifference(pos1, pos2);
-//     CHECK(result.x == doctest::Approx(200.0f));  // same sign
-//     CHECK(result.y == doctest::Approx(200.0f));
+    bd::Vector pos1{100.0f, 100.0f};  
+    bd::Vector pos2{700.0f, 500.0f};
+    bd::Vector result = toroidalDifference(pos1, pos2);
+    CHECK(result.x == doctest::Approx(200.0f));  // same sign
+    CHECK(result.y == doctest::Approx(200.0f));
 
-//     pos1 = {700.0f, 500.0f};
-//     pos2 = {100.0f, 100.0f};
-//     result = toroidalDifference(pos1, pos2);
-//     CHECK(result.x == doctest::Approx(-200.0f));  // same sign
-//     CHECK(result.y == doctest::Approx(-200.0f));
+    pos1 = {700.0f, 500.0f};
+    pos2 = {100.0f, 100.0f};
+    result = toroidalDifference(pos1, pos2);
+    CHECK(result.x == doctest::Approx(-200.0f));  // same sign
+    CHECK(result.y == doctest::Approx(-200.0f));
 
-//     pos1 = {400.0f, 300.0f};
-//     pos2 = {400.0f, 100.0f};
-//     result = toroidalDifference(pos1, pos2);
-//     CHECK(result.x == doctest::Approx(0.0f));  // opposite signs
-//     CHECK(result.y == doctest::Approx(-200.0f));
+    pos1 = {400.0f, 300.0f};
+    pos2 = {400.0f, 100.0f};
+    result = toroidalDifference(pos1, pos2);
+    CHECK(result.x == doctest::Approx(0.0f));  // opposite signs
+    CHECK(result.y == doctest::Approx(-200.0f));
 
-//     pos1 = {0.0f, 0.0f};
-//     pos2 = {400.0f, 300.0f};
-//     result = toroidalDifference(pos1, pos2);
-//     CHECK(result.x == doctest::Approx(400.0f)); // toroidal and normal distance are the same 
-//     CHECK(result.y == doctest::Approx(300.0f));
+    pos1 = {0.0f, 0.0f};
+    pos2 = {400.0f, 300.0f};
+    result = toroidalDifference(pos1, pos2);
+    CHECK(result.x == doctest::Approx(400.0f)); // toroidal and normal distance are the same 
+    CHECK(result.y == doctest::Approx(300.0f));
 
-//     pos1 = {0.0f, 0.0f};
-//     pos2 = {800.0f, 600.0f};
-//     result = toroidalDifference(pos1, pos2);
-//     CHECK(result.x == doctest::Approx(0.0f)); // same point in toroidal distance
-//     CHECK(result.y == doctest::Approx(0.0f));
+    pos1 = {0.0f, 0.0f};
+    pos2 = {800.0f, 600.0f};
+    result = toroidalDifference(pos1, pos2);
+    CHECK(result.x == doctest::Approx(0.0f)); // same point in toroidal distance
+    CHECK(result.y == doctest::Approx(0.0f));
 
-//     pos1 = {0.0f, 0.0f};
-//     pos2 = {0.0f, 0.0f};
-//     result = toroidalDifference(pos1, pos2);
-//     CHECK(result.x == doctest::Approx(0.0f)); // same point in normal distance 
-//     CHECK(result.y == doctest::Approx(0.0f));
-// }
+    pos1 = {0.0f, 0.0f};
+    pos2 = {0.0f, 0.0f};
+    result = toroidalDifference(pos1, pos2);
+    CHECK(result.x == doctest::Approx(0.0f)); // same point in normal distance 
+    CHECK(result.y == doctest::Approx(0.0f));
+}
 
-// TEST_CASE("Testing Boid::hasNeighbour function") {
-//     // bd::Vector window_dimensions = {800.0f, 600.0f};
+TEST_CASE("Testing Boid::hasNeighbour function") {
+    // bd::Vector window_dimensions = {800.0f, 600.0f};
     
-//     bd::Boid boid1({100.0f, 100.0f}, {0.f, 0.f});  // velocity isn't considered.
-//     bd::Boid boid2({700.0f, 500.0f}, {0.f, 0.f});
-//     bd::Boid boid3({400.0f, 500.0f}, {0.f, 0.f});
-//     bd::Boid boid4({100.0f, 100.0f}, {0.f, 0.f}); 
-//     bd::Boid boid5({300.0f, 300.0f}, {0.f, 0.f});
+    bd::Boid boid1({100.0f, 100.0f}, {0.f, 0.f});  // velocity isn't considered.
+    bd::Boid boid2({700.0f, 500.0f}, {0.f, 0.f});
+    bd::Boid boid3({400.0f, 500.0f}, {0.f, 0.f});
+    bd::Boid boid4({100.0f, 100.0f}, {0.f, 0.f}); 
+    bd::Boid boid5({300.0f, 300.0f}, {0.f, 0.f});
     
-//     SUBCASE("Neighbours in toroidal distance") {
-//         CHECK(boid1.hasNeighbour(boid2, 300.0f) == true); 
-//     }
+    SUBCASE("Neighbours in toroidal distance") {
+        CHECK(boid1.hasNeighbour(boid2, 300.0f) == true); 
+    }
     
-//     SUBCASE("Neighbours in normal distance") {
-//         CHECK(boid1.hasNeighbour(boid5, 300.0f) == true); 
-//     }
+    SUBCASE("Neighbours in normal distance") {
+        CHECK(boid1.hasNeighbour(boid5, 300.0f) == true); 
+    }
 
-//     SUBCASE("Boids far from each other") {
-//         CHECK(boid1.hasNeighbour(boid5, 200.0f) == false); 
-//     }
+    SUBCASE("Boids far from each other") {
+        CHECK(boid1.hasNeighbour(boid5, 200.0f) == false); 
+    }
 
-//     SUBCASE("Overlapped boids") {
-//         CHECK(boid1.hasNeighbour(boid4, 1.0f) == true); 
-//     }
+    SUBCASE("Overlapped boids") {
+        CHECK(boid1.hasNeighbour(boid4, 1.0f) == true); 
+    }
 
-//     SUBCASE("Same boid") {
-//         CHECK(boid1.hasNeighbour(boid1, 1.0f) == false); 
-//     }
+    SUBCASE("Same boid") {
+        CHECK(boid1.hasNeighbour(boid1, 1.0f) == false); 
+    }
 
-//     SUBCASE("Limiting case") {
-//         CHECK(boid1.hasNeighbour(boid3, 500.0f) == true); 
-//     }
-// }
+    SUBCASE("Limiting case") {
+        CHECK(boid1.hasNeighbour(boid3, 500.0f) == true); 
+    }
+}
 
-// TEST_CASE("Testing normalize function") {
-//     bd::Vector v;
-//     float f;
+TEST_CASE("Testing normalize function") {
+    bd::Vector v;
+    float f;
 
-//     SUBCASE("Normalizing a non-zero vector") {
-//         v = {3.0f, 4.0f}; // norm is 5.0
-//         f = 10.0f;
-//         normalize(v, f);
-//         CHECK(v.x == doctest::Approx(6.0f));
-//         CHECK(v.y == doctest::Approx(8.0f));
-//     }
+    SUBCASE("Normalizing a non-zero vector") {
+        v = {3.0f, 4.0f}; // norm is 5.0
+        f = 10.0f;
+        normalize(v, f);
+        CHECK(v.x == doctest::Approx(6.0f));
+        CHECK(v.y == doctest::Approx(8.0f));
+    }
 
-//     SUBCASE("Normalizing a zero vector") {
-//         v = {0.0f, 0.0f}; // norm is 0.0
-//         f = 10.0f;
-//         normalize(v, f);
-//         CHECK(v.x == doctest::Approx(0.0f));
-//         CHECK(v.y == doctest::Approx(0.0f));
-//     }
+    SUBCASE("Normalizing a zero vector") {
+        v = {0.0f, 0.0f}; // norm is 0.0
+        f = 10.0f;
+        normalize(v, f);
+        CHECK(v.x == doctest::Approx(0.0f));
+        CHECK(v.y == doctest::Approx(0.0f));
+    }
 
-//     SUBCASE("Normalizing a negative vector") {
-//         v = {-3.0f, -4.0f}; // norm is 5.0
-//         f = 10.0f;
-//         normalize(v, f);
-//         CHECK(v.x == doctest::Approx(-6.0f));
-//         CHECK(v.y == doctest::Approx(-8.0f));
-//     }
-// }
+    SUBCASE("Normalizing a negative vector") {
+        v = {-3.0f, -4.0f}; // norm is 5.0
+        f = 10.0f;
+        normalize(v, f);
+        CHECK(v.x == doctest::Approx(-6.0f));
+        CHECK(v.y == doctest::Approx(-8.0f));
+    }
+}
 
-// TEST_CASE("Testing Boid::correct_borders function") {
-//     // bd::Vector windowDimensions = {800.0f, 600.0f};
+TEST_CASE("Testing Boid::correct_borders function") {
+    // bd::Vector windowDimensions = {800.0f, 600.0f};
 
-//     SUBCASE("Boid inside the window") {
-//         bd::Boid boid({400.0f, 300.0f}, {0.f, 0.f});
-//         boid.correct_borders();
-//         CHECK(boid.getPosition().x == doctest::Approx(400.0f));
-//         CHECK(boid.getPosition().y == doctest::Approx(300.0f));
-//     }
+    SUBCASE("Boid inside the window") {
+        bd::Boid boid({400.0f, 300.0f}, {0.f, 0.f});
+        boid.correct_borders();
+        CHECK(boid.getPosition().x == doctest::Approx(400.0f));
+        CHECK(boid.getPosition().y == doctest::Approx(300.0f));
+    }
 
-//     SUBCASE("Boid outside the right border") {
-//         bd::Boid boid({850.0f, 300.0f}, {0.f, 0.f});
-//         boid.correct_borders();
-//         CHECK(boid.getPosition().x == doctest::Approx(50.0f));
-//         CHECK(boid.getPosition().y == doctest::Approx(300.0f));
-//     }
+    SUBCASE("Boid outside the right border") {
+        bd::Boid boid({850.0f, 300.0f}, {0.f, 0.f});
+        boid.correct_borders();
+        CHECK(boid.getPosition().x == doctest::Approx(50.0f));
+        CHECK(boid.getPosition().y == doctest::Approx(300.0f));
+    }
 
-//     SUBCASE("Boid outside the left border") {
-//         bd::Boid boid({-50.0f, 300.0f}, {0.f, 0.f});
-//         boid.correct_borders();
-//         CHECK(boid.getPosition().x == doctest::Approx(750.0f));
-//         CHECK(boid.getPosition().y == doctest::Approx(300.0f));
-//     }
+    SUBCASE("Boid outside the left border") {
+        bd::Boid boid({-50.0f, 300.0f}, {0.f, 0.f});
+        boid.correct_borders();
+        CHECK(boid.getPosition().x == doctest::Approx(750.0f));
+        CHECK(boid.getPosition().y == doctest::Approx(300.0f));
+    }
 
-//     SUBCASE("Boid outside the top border") {
-//         bd::Boid boid({400.0f, 650.0f}, {0.f, 0.f});
-//         boid.correct_borders();
-//         CHECK(boid.getPosition().x == doctest::Approx(400.0f));
-//         CHECK(boid.getPosition().y == doctest::Approx(50.0f));
-//     }
+    SUBCASE("Boid outside the top border") {
+        bd::Boid boid({400.0f, 650.0f}, {0.f, 0.f});
+        boid.correct_borders();
+        CHECK(boid.getPosition().x == doctest::Approx(400.0f));
+        CHECK(boid.getPosition().y == doctest::Approx(50.0f));
+    }
 
-//     SUBCASE("Boid outside the bottom border") {
-//         bd::Boid boid({400.0f, -50.0f}, {0.f, 0.f});
-//         boid.correct_borders();
-//         CHECK(boid.getPosition().x == doctest::Approx(400.0f));
-//         CHECK(boid.getPosition().y == doctest::Approx(550.0f));
-//     }
+    SUBCASE("Boid outside the bottom border") {
+        bd::Boid boid({400.0f, -50.0f}, {0.f, 0.f});
+        boid.correct_borders();
+        CHECK(boid.getPosition().x == doctest::Approx(400.0f));
+        CHECK(boid.getPosition().y == doctest::Approx(550.0f));
+    }
 
-//     SUBCASE("Boid on the right border") {
-//         bd::Boid boid({800.0f, 300.0f}, {0.f, 0.f});
-//         boid.correct_borders();
-//         CHECK(boid.getPosition().x == doctest::Approx(800.0f));
-//         CHECK(boid.getPosition().y == doctest::Approx(300.0f));
-//     }
+    SUBCASE("Boid on the right border") {
+        bd::Boid boid({800.0f, 300.0f}, {0.f, 0.f});
+        boid.correct_borders();
+        CHECK(boid.getPosition().x == doctest::Approx(800.0f));
+        CHECK(boid.getPosition().y == doctest::Approx(300.0f));
+    }
 
-//     SUBCASE("Boid on the left border") {
-//         bd::Boid boid({0.0f, 300.0f}, {0.f, 0.f});
-//         boid.correct_borders();
-//         CHECK(boid.getPosition().x == doctest::Approx(0.0f));
-//         CHECK(boid.getPosition().y == doctest::Approx(300.0f));
-//     }
+    SUBCASE("Boid on the left border") {
+        bd::Boid boid({0.0f, 300.0f}, {0.f, 0.f});
+        boid.correct_borders();
+        CHECK(boid.getPosition().x == doctest::Approx(0.0f));
+        CHECK(boid.getPosition().y == doctest::Approx(300.0f));
+    }
 
-//     SUBCASE("Boid on the top border") {
-//         bd::Boid boid({400.0f, 600.0f}, {0.f, 0.f});
-//         boid.correct_borders();
-//         CHECK(boid.getPosition().x == doctest::Approx(400.0f));
-//         CHECK(boid.getPosition().y == doctest::Approx(600.0f));
-//     }
+    SUBCASE("Boid on the top border") {
+        bd::Boid boid({400.0f, 600.0f}, {0.f, 0.f});
+        boid.correct_borders();
+        CHECK(boid.getPosition().x == doctest::Approx(400.0f));
+        CHECK(boid.getPosition().y == doctest::Approx(600.0f));
+    }
 
-//     SUBCASE("Boid on the bottom border") {
-//         bd::Boid boid({400.0f, 0.0f}, {0.f, 0.f});
-//         boid.correct_borders();
-//         CHECK(boid.getPosition().x == doctest::Approx(400.0f));
-//         CHECK(boid.getPosition().y == doctest::Approx(0.0f));
-//     }
-// }
-// TEST_CASE("") 
-// {}
+    SUBCASE("Boid on the bottom border") {
+        bd::Boid boid({400.0f, 0.0f}, {0.f, 0.f});
+        boid.correct_borders();
+        CHECK(boid.getPosition().x == doctest::Approx(400.0f));
+        CHECK(boid.getPosition().y == doctest::Approx(0.0f));
+    }
+}
+TEST_CASE("") 
+{}
 
-// TEST_CASE("") 
-// {}
-// TEST_CASE("") 
-// {}
-// TEST_CASE("") 
-// {}
+TEST_CASE("") 
+{}
+TEST_CASE("") 
+{}
+TEST_CASE("") 
+{}
