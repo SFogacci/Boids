@@ -91,24 +91,24 @@ struct Parameters
   float d;
   float ds;
   std::size_t n;
+  
+  Parameters() = default;
 
-    // Parameters() = default;
-
-         Parameters(float c, float a, float s, float d, float ds, std::size_t n)
-      : c{c}
-      , a{a}
-      , s{s}
-      , d{d}
-      , ds{ds}
-      , n{n}
+         Parameters(float o, float p, float q, float r, float t, std::size_t u)
+      : c{o}
+      , a{p}
+      , s{q}
+      , d{r}
+      , ds{t}
+      , n{u}
   {}
 
   explicit Parameters(std::vector<float> v, std::size_t p)
-      : a{v[0]}
-      , c{v[1]}
-      , d{v[2]}
-      , ds{v[3]}
-      , s{v[4]}
+      : c{v[0]}
+      , a{v[1]}
+      , s{v[2]}
+      , d{v[3]}
+      , ds{v[4]}
       , n{p}
   {}
 };
