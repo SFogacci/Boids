@@ -13,9 +13,11 @@ struct Vector
   Vector operator+=(Vector const&);
 };
 
-inline const bd::Vector windowDimensions{
-    0.75f * static_cast<float>(sf::VideoMode::getDesktopMode().width),
-    0.75f * static_cast<float>(sf::VideoMode::getDesktopMode().height)};
+// inline const bd::Vector windowDimensions{
+//     0.75f * static_cast<float>(sf::VideoMode::getDesktopMode().width),
+//     0.75f * static_cast<float>(sf::VideoMode::getDesktopMode().height)};
+
+inline const bd::Vector windowDimensions{800.f, 600.f};
 
 Vector operator+(Vector const&, Vector const&);
 

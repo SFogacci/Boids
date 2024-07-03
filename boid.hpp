@@ -15,15 +15,17 @@ class Boid
 {
  private:
   Vector position_;
-  Vector velocity_;
+  Vector velocity_{0.f, 0.f};
   bool isPredator_{0};
 
  public:
-  // Boid() = default;
+  //  Boid() = default;
+
   explicit Boid(Vector p, Vector v)
       : position_{p}
       , velocity_{v}
   {}
+
   Boid(Vector p, Vector v, bool isPred)
       : position_{p}
       , velocity_{v}
@@ -83,21 +85,30 @@ bool operator==(Boid const&, Boid const&);
 
 struct Parameters
 {
-  float a;
   float c;
+  float a;
+  float s;
   float d;
   float ds;
-  float s;
   std::size_t n;
 
-  Parameters() = default;
+    // Parameters() = default;
 
-  explicit Parameters(std::vector<float> v, std::size_t p)
-      : a{v[0]}
-      , c{v[1]}
-      , d{v[2]}
-      , ds{v[3]}
-      , s{v[4]}
+     Parameters(float c, float a, float s, float d, float ds, std::size_t n)
+      : c{c}
+      , a{a}
+      , s{s}
+      , d{d}
+      , ds{ds}
+      , n{n}
+  {}
+
+     Parameters(std::vector<float> v, std::size_t p)
+      : c{v[0]}
+      , a{v[1]}
+      , s{v[2]}
+      , d{v[3]}
+      , ds{v[4]}
       , n{p}
   {}
 };
