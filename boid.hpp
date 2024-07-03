@@ -144,10 +144,17 @@ class Flock
 
   void evolution(Boid const&);
   // Predator predator_evolution(Predator const&) const;
-  void overlapping(Boid&);
-  
+   
 };
 
+inline void overlapping(std::vector<Boid>& birds, Boid& boid)
+{
+  std::for_each(birds.begin(), birds.end(), [&boid](Boid const& other) {
+    if (other.getPosition() == boid.getPosition()) {
+      boid.setPosition(boid.getPosition() + Vector{generateCoordinates(-1.f, 1.f), generateCoordinates(-1.f, 1.f)});
+    }
+  });
+}
 } // namespace bd
 
 #endif

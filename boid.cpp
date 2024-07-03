@@ -105,21 +105,12 @@ void Flock::evolution(Boid const& p)
       modified_boid.biological_limits();
     }
     modified_boid.setPosition(modified_boid.getPosition() + modified_boid.getVelocity());
-    overlapping(modified_boid);
     modified_boid.correct_borders();
+    overlapping(modified_flock, modified_boid);
     modified_flock.push_back(modified_boid);
   }
 
   flock_ = modified_flock;
-}
-
-void Flock::overlapping(Boid& boid)
-{
-  std::for_each(flock_.begin(), flock_.end(), [&boid](Boid const& other) {
-    if (other == boid) {
-      boid.setPosition(boid.getPosition() + Vector{generateCoordinates(-1.f, 1.f), generateCoordinates(-1.f, 1.f)});
-    }
-  });
 }
 
 } // namespace bd
