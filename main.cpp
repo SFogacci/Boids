@@ -15,28 +15,27 @@
 int main()
 {
   try {
-    char cmd;
-    std::size_t n;
-    bd::Parameters parameters;
-    std::string filename;
-
     std::cout << "Valid commands: \n"
               << "- provide data [p]\n"
               << "- provide the number of boids and use sample parameters [r "
                  "FILE_NAME n_NUMBER]\n"
               << "- quit [q]\n";
 
+    char cmd;
+    std::size_t n;
+    bd::Parameters parameters;
+    std::string filename;
     std::runtime_error e{"Invalid input. \n"};
 
     while (std::cin >> cmd) {
       if (cmd == 'p') {
         std::cout << "Insert flock's parameters in the following order: \n"
-                  << "- Cohesion intensity [0,1], \n"
-                  << "- Alignment intensity [0,1], \n"
-                  << "- Separation intensity [0,1], \n"
-                  << "- Interaction distance [0, 100], \n"
-                  << "- Separation distance [0, 20], \n"
-                  << "- Number of boids [0, 300]. \n";
+                  << "Cohesion intensity [0,0.1], \n"
+                  << "Alignment intensity [0,1], \n"
+                  << "Separation intensity [0,1], \n"
+                  << "Interaction distance [20, 100], \n"
+                  << "Separation distance [5, 20], \n"
+                  << "Number of boids [3, 300]. \n";
 
         if (std::cin >> parameters.c >> parameters.a >> parameters.s
             >> parameters.d >> parameters.ds >> parameters.n) {
@@ -89,7 +88,8 @@ int main()
 
     // drawing graphs of distance and speed over time
     TApplication app("app", 0, nullptr);
-    TCanvas canvas("Statistics", "Statistics", 0, 0, 800, 600);
+    const auto dim{static_cast<Int_t>(bd::windowDimensions.y)};
+    TCanvas canvas("Statistics", "Statistics", 0, 0, dim, dim);
     canvas.Divide(2, 2);
 
     canvas.cd(1);
@@ -111,10 +111,11 @@ int main()
     canvas.Modified();
     canvas.Update();
     canvas.Print(bd::fileName().c_str());
-    TRootCanvas* rc = static_cast<TRootCanvas*>(canvas.GetCanvasImp());
+    TRootCanvas* rc{static_cast<TRootCanvas*>(canvas.GetCanvasImp())};
     rc->Connect("CloseWindow()", "TApplication", gApplication, "Terminate()");
     app.Run();
 
+    //Serve qualcosa per chiudere la simulazione
   } catch (std::exception const& e) {
     std::cerr << e.what() << "'\n";
     return EXIT_FAILURE;

@@ -28,9 +28,6 @@ void Boid::correct_borders() // teletrasporto toroidale
 
 bool Boid::hasNeighbour(Boid const& b, float d) const // Al posto della distanza normale, usa distanza toroidale.
 {
-  // float xDist   = toroidalDistance(position_.x, b.getPosition().x, 900.f);
-  // float yDist   = toroidalDistance(position_.y, b.getPosition().y, 900.f);
-  // auto distance = std::hypot(xDist, yDist);
   auto distance = toroidalDifference(position_, b.getPosition());
   return norm(distance) < d && (&b != this);
 }

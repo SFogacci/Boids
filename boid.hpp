@@ -94,7 +94,7 @@ struct Parameters
 
     // Parameters() = default;
 
-     Parameters(float c, float a, float s, float d, float ds, std::size_t n)
+         Parameters(float c, float a, float s, float d, float ds, std::size_t n)
       : c{c}
       , a{a}
       , s{s}
@@ -103,12 +103,12 @@ struct Parameters
       , n{n}
   {}
 
-     Parameters(std::vector<float> v, std::size_t p)
-      : c{v[0]}
-      , a{v[1]}
-      , s{v[2]}
-      , d{v[3]}
-      , ds{v[4]}
+  explicit Parameters(std::vector<float> v, std::size_t p)
+      : a{v[0]}
+      , c{v[1]}
+      , d{v[2]}
+      , ds{v[3]}
+      , s{v[4]}
       , n{p}
   {}
 };
@@ -127,13 +127,6 @@ class Flock
   Parameters flock_parameters_;
 
  public:
-  // explicit Flock(Boid const& b, Parameters p)
-  //     : flock_parameters_{p}
-  // {
-  //   flock_.push_back(b);
-  // }
-  // Flock() = default; //default constructor (?)
-
   explicit Flock(std::vector<Boid> v, Parameters p)
       : flock_{v}
       , flock_parameters_{p}
@@ -152,6 +145,7 @@ class Flock
   void evolution(Boid const&);
   // Predator predator_evolution(Predator const&) const;
   void overlapping(Boid&);
+  
 };
 
 } // namespace bd
