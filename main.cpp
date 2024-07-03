@@ -81,6 +81,8 @@ int main()
       break;
     }
 
+    std::cout
+        << "Remember to press the Escape Key to pause the simulation. \n";
     std::vector<bd::Boid> birds = bd::createBirds(parameters.n);
     bd::Boid predator           = bd::createPredator();
     bd::Flock flock{birds, parameters};
@@ -115,7 +117,7 @@ int main()
     rc->Connect("CloseWindow()", "TApplication", gApplication, "Terminate()");
     app.Run();
 
-    //Serve qualcosa per chiudere la simulazione
+    // Serve qualcosa per chiudere la simulazione
   } catch (std::exception const& e) {
     std::cerr << e.what() << "'\n";
     return EXIT_FAILURE;
