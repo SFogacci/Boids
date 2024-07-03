@@ -35,8 +35,6 @@ float generateCoordinates(float a, float b);
 
 void normalize(Vector&, float);
 
-float toroidalDistance(float, float, float);
-
 Vector toroidalDifference(Vector const&, Vector const&);
 } // namespace bd
 

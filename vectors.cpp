@@ -58,44 +58,11 @@ void normalize(Vector& v, float f)  // avoid division by zero
   }
 }
 
-// float toroidalDistance(
-//     float pos1, float pos2,
-//     float maxVal) // nello spazio toridale, lungo ciascun asse, la massima
-// {                 // distanza tra due boids diventa pari a metà della
-//   float dist =
-//       std::abs(pos1 - pos2); // dimensione della finestra lungo quell'asse.
-//   if (dist > maxVal / 2) { // Dati due boids, tra di loro ci sono due distanze:
-//                            // quella toroidale,
-//     dist = maxVal - dist; // che trapassa i bordi, e quella normale. La funzione
-//                           // restituisce la
-//   }                       // minima tra le due.
-//   return dist;
-// }
-
-// Vector toroidalDifference(Vector const& pos1, Vector const& pos2)
-
-// {
-//   float xDiff = pos1.x - pos2.x;
-//   float yDiff = pos1.y - pos2.y;
-
-//   if (std::abs(xDiff) > windowDimensions.x / 2) {
-//     xDiff = windowDimensions.x - std::abs(xDiff);
-//     xDiff *= (pos1.x > pos2.x) ? -1 : 1;
-//   }
-
-//   if (std::abs(yDiff) > windowDimensions.y / 2) {
-//     yDiff = windowDimensions.y - std::abs(yDiff);
-//     yDiff *= (pos1.y > pos2.y) ? -1 : 1;
-//   }
-
-//   return Vector{xDiff, yDiff};
-// }
 
 Vector toroidalDifference(Vector const& pos1, Vector const& pos2) 
                                               
 { 
-  float xDiff =
-      pos1.x - pos2.x; 
+  float xDiff = pos1.x - pos2.x; 
   float yDiff = pos1.y - pos2.y;
 
   if (std::abs(xDiff) > windowDimensions.x / 2.f) {
