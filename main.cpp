@@ -1,6 +1,7 @@
 #include "TApplication.h"
 #include "TCanvas.h"
 #include "TGraph.h"
+#include "TRootCanvas.h"
 #include "graphics.hpp"
 #include "input.hpp"
 #include "statistics.hpp"
@@ -106,10 +107,12 @@ int main()
     canvas.cd(4);
     TGraph sigmaDistances("statistics.txt", "%lg %*lg %*lg %*lg %lg");
     bd::drawGraph(sigmaDistances, "Std deviation for distance");
-    
+
     canvas.Modified();
     canvas.Update();
     canvas.Print(bd::fileName().c_str());
+    TRootCanvas* rc = static_cast<TRootCanvas*>(canvas.GetCanvasImp());
+    rc->Connect("CloseWindow()", "TApplication", gApplication, "Terminate()");
     app.Run();
 
   } catch (std::exception const& e) {

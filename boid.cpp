@@ -66,7 +66,6 @@ Boid Boid::predator_evolution(Flock const& f)
     const auto center_of_mass = std::accumulate(
         flock.begin(), flock.end(), Vector{}, [&](auto& sum, auto const& b) {
           if (hasNeighbour(b, d)) {
-            // sum += b.getPosition();
             auto difference =
                 toroidalDifference(b.getPosition(), position_); // Calcolo centro di massa
                                                       // nello spazio toroidale.

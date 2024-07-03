@@ -23,11 +23,11 @@ string(APPEND CMAKE_EXE_LINKER_FLAGS_DEBUG " -fsanitize=address,undefined -fno-o
 # richiedi il componente graphics della libreria SFML, versione 2.5
 #   le dipendenze vengono identificate automaticamente
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
-find_package (ROOT COMPONENTS Core Hist HistPainter )
+find_package (ROOT COMPONENTS Core Hist HistPainter Gui)
 
 add_executable(main boid.cpp vectors.cpp main.cpp graphics.cpp input.cpp statistics.cpp)
 target_link_libraries(main PRIVATE sfml-graphics)
-target_link_libraries (main PRIVATE ROOT::Core ROOT::Hist ROOT::HistPainter)
+target_link_libraries (main PRIVATE ROOT::Core ROOT::Hist ROOT::HistPainter ROOT::Gui)
 
 # se il testing e' abilitato...
 #   per disabilitare il testing, passare -DBUILD_TESTING=OFF a cmake durante la fase di configurazione
