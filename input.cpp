@@ -9,17 +9,15 @@ auto createBirds(const std::size_t& n)
   birds.reserve(n);
 
   for (std::size_t i = 0; i != n; ++i) {
-    Boid bird{
-        Vector{
-            generateCoordinates(0.f, static_cast<float>(windowDimensions.x)),
-            generateCoordinates(0.f, static_cast<float>(windowDimensions.y))},
-        {}};
+    const Vector position{
+        generateCoordinates(0.f, static_cast<float>(windowDimensions.x)),
+        generateCoordinates(0.f, static_cast<float>(windowDimensions.y))};
     while (true) {
-      auto velocity{Vector{
+      const Vector velocity{
           generateCoordinates(-5.f, 5.f),
-          generateCoordinates(-5.f, 5.f)}}; // da cambiare in variabili (const)
+          generateCoordinates(-5.f, 5.f)}; // da cambiare in variabili (const)
       if (norm(velocity) > 5.f) {
-        bird.setVelocity(velocity);
+        Boid bird{position, velocity};
         birds.push_back(bird);
         break;
       }
