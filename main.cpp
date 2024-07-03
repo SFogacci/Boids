@@ -15,17 +15,16 @@
 int main()
 {
   try {
-    char cmd;
-    std::size_t n;
-    bd::Parameters parameters;
-    std::string filename;
-
     std::cout << "Valid commands: \n"
               << "- provide data [p]\n"
               << "- provide the number of boids and use sample parameters [r "
                  "FILE_NAME n_NUMBER]\n"
               << "- quit [q]\n";
 
+    char cmd;
+    std::size_t n;
+    bd::Parameters parameters;
+    std::string filename;
     std::runtime_error e{"Invalid input. \n"};
 
     while (std::cin >> cmd) {
@@ -89,7 +88,7 @@ int main()
 
     // drawing graphs of distance and speed over time
     TApplication app("app", 0, nullptr);
-    const auto dim = static_cast<Int_t>(bd::windowDimensions.y);
+    const auto dim{static_cast<Int_t>(bd::windowDimensions.y)};
     TCanvas canvas("Statistics", "Statistics", 0, 0, dim, dim);
     canvas.Divide(2, 2);
 
@@ -112,7 +111,7 @@ int main()
     canvas.Modified();
     canvas.Update();
     canvas.Print(bd::fileName().c_str());
-    TRootCanvas* rc = static_cast<TRootCanvas*>(canvas.GetCanvasImp());
+    TRootCanvas* rc{static_cast<TRootCanvas*>(canvas.GetCanvasImp())};
     rc->Connect("CloseWindow()", "TApplication", gApplication, "Terminate()");
     app.Run();
 
