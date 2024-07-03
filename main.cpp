@@ -89,7 +89,8 @@ int main()
 
     // drawing graphs of distance and speed over time
     TApplication app("app", 0, nullptr);
-    TCanvas canvas("Statistics", "Statistics", 0, 0, 800, 600);
+    const auto dim = static_cast<Int_t>(bd::windowDimensions.y);
+    TCanvas canvas("Statistics", "Statistics", 0, 0, dim, dim);
     canvas.Divide(2, 2);
 
     canvas.cd(1);
