@@ -29,12 +29,12 @@ int main()
     while (std::cin >> cmd) {
       if (cmd == 'p') {
         std::cout << "Insert flock's parameters in the following order: \n"
-                  << "Cohesion intensity [0,1], \n"
+                  << "Cohesion intensity [0,0.1], \n"
                   << "Alignment intensity [0,1], \n"
                   << "Separation intensity [0,1], \n"
-                  << "Interaction distance [0, 100], \n"
-                  << "Separation distance [0, 20], \n"
-                  << "Number of boids [0, 300]. \n";
+                  << "Interaction distance [20, 100], \n"
+                  << "Separation distance [5, 20], \n"
+                  << "Number of boids [3, 300]. \n";
 
         if (std::cin >> parameters.c >> parameters.a >> parameters.s
             >> parameters.d >> parameters.ds >> parameters.n) {
@@ -109,6 +109,8 @@ int main()
     canvas.Update();
     canvas.Print("statistics.pdf");
     app.Run();
+
+    //Serve qualcosa per chiudere la simulazione
   } catch (std::exception const& e) {
     std::cerr << e.what() << "'\n";
     return EXIT_FAILURE;
