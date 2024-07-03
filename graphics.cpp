@@ -62,32 +62,39 @@ void gameLoop(Flock& flock, Boid& p)
   }
   auto iteration{0};
 
+  bool active{true};
   while (window.isOpen()) {
     sf::Event event;
     while (window.pollEvent(event)) {
       if (event.type == sf::Event::Closed) {
         window.close();
+      } else if (sf::Event::KeyPressed == event.type
+                 && (sf::Keyboard::Escape == event.key.code)) {
+        active = !active;
+        std::cout << "Press the Escape Key again to resume the simulation. \n";
       }
     }
 
-    Boid modified_predator = p.predator_evolution(flock);
-    flock.evolution(p);
-    p = modified_predator;
+    if (active) {
+      Boid modified_predator = p.predator_evolution(flock);
+      flock.evolution(p);
+      p = modified_predator;
 
-    window.clear(
-        sf::Color(113, 188, 225, 255)); // è il colore del cielo (sereno)
+      window.clear(
+          sf::Color(113, 188, 225, 255)); // è il colore del cielo (sereno)
 
-    window.draw(setShape(p));
-    std::for_each(flock.getFlock().begin(), flock.getFlock().end(),
-                  [&window](Boid const& b) { window.draw(setShape(b)); });
-    window.display();
+      window.draw(setShape(p));
+      std::for_each(flock.getFlock().begin(), flock.getFlock().end(),
+                    [&window](Boid const& b) { window.draw(setShape(b)); });
+      window.display();
 
-    auto stats{statistics(flock)};
-    outfile << iteration << ' ' << stats.speedStats.mean << ' '
-            << stats.speedStats.sigma << ' ' << stats.distanceStats.mean << ' '
-            << stats.distanceStats.sigma << '\n';
-    std::cout << "Iteration: " << iteration << '\n' << printStatistics(stats);
-    ++iteration;
+      auto stats{statistics(flock)};
+      outfile << iteration << ' ' << stats.speedStats.mean << ' '
+              << stats.speedStats.sigma << ' ' << stats.distanceStats.mean
+              << ' ' << stats.distanceStats.sigma << '\n';
+      std::cout << "Iteration: " << iteration << '\n' << printStatistics(stats);
+      ++iteration;
+    }
   }
 }
 
