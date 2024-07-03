@@ -28,6 +28,7 @@ class Boid
       : position_{p}
       , velocity_{v}
   {}
+  
   Boid(Vector p, Vector v, bool isPred)
       : position_{p}
       , velocity_{v}
