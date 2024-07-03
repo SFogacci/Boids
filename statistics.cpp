@@ -81,11 +81,11 @@ std::string printStatistics(Results const& results)
 
 std::string fileName()
 {
-  auto now        = std::chrono::system_clock::now();
-  auto nowInTimeT = std::chrono::system_clock::to_time_t(now);
+  auto timeNow        = std::chrono::system_clock::now();
+  auto timeNowTimeT = std::chrono::system_clock::to_time_t(timeNow);
 
-  std::stringstream ss;
-  ss << std::put_time(std::localtime(&nowInTimeT), "%Y_%m_%d_%X");
-  return "statistics_" + ss.str() + ".pdf";
+  std::stringstream t;
+  t << std::put_time(std::localtime(&timeNowTimeT), "%Y_%m_%d_%X");
+  return "statistics_" + t.str() + ".pdf";
 }
 } // namespace bd
