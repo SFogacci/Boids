@@ -77,21 +77,21 @@ bool operator==(Boid const&, Boid const&);
 
 struct Parameters
 {
-  float a;
   float c;
+  float a;
+  float s;
   float d;
   float ds;
-  float s;
   std::size_t n;
 
   Parameters()= default;
 
   explicit Parameters(std::vector<float> v, std::size_t p)
-      : a{v[0]}
-      , c{v[1]}
-      , d{v[2]}
-      , ds{v[3]}
-      , s{v[4]}
+      : c{v[0]}
+      , a{v[1]}
+      , s{v[2]}
+      , d{v[3]}
+      , ds{v[4]}
       , n{p}
   {}
 
@@ -131,6 +131,7 @@ class Flock
   void evolution(Predator const&);
   Predator predator_evolution(Predator const&) const;
   void overlapping(Boid&);
+  
 };
 
 } // namespace bd
