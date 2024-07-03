@@ -15,17 +15,16 @@
 int main()
 {
   try {
-    char cmd;
-    std::size_t n;
-    bd::Parameters parameters;
-    std::string filename;
-
     std::cout << "Valid commands: \n"
               << "- provide data [p]\n"
               << "- provide the number of boids and use sample parameters [r "
                  "FILE_NAME n_NUMBER]\n"
               << "- quit [q]\n";
 
+    char cmd;
+    std::size_t n;
+    bd::Parameters parameters;
+    std::string filename;
     std::runtime_error e{"Invalid input. \n"};
 
     while (std::cin >> cmd) {
