@@ -4,15 +4,14 @@
 #include "TGraph.h"
 #include "boid.hpp"
 #include "SFML/Graphics.hpp"
-#include <string>
 
 namespace bd {
 
 sf::ConvexShape setShape(Boid const&);
 
-void gameLoop(Flock&, Predator&);
+void gameLoop(Flock&, Boid&);
 
-void drawGraph(TGraph&);
+void drawGraph(TGraph&, std::string const&);
 
 } // namespace bd
 

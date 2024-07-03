@@ -1,8 +1,10 @@
 #include "TApplication.h"
 #include "TCanvas.h"
 #include "TGraph.h"
+#include "TRootCanvas.h"
 #include "graphics.hpp"
 #include "input.hpp"
+#include "statistics.hpp"
 #include <stdlib.h>
 #include <algorithm>
 #include <fstream>
@@ -81,33 +83,37 @@ int main()
     }
 
     std::vector<bd::Boid> birds = bd::createBirds(parameters.n);
-    bd::Predator predator       = bd::createPredators();
+    bd::Boid predator           = bd::createPredator();
     bd::Flock flock{birds, parameters};
     bd::gameLoop(flock, predator);
 
     // drawing graphs of distance and speed over time
     TApplication app("app", 0, nullptr);
-    TCanvas canvas("Statistics", "Statistics", 0, 0, 800, 600);
+    const auto dim = static_cast<Int_t>(bd::windowDimensions.y);
+    TCanvas canvas("Statistics", "Statistics", 0, 0, dim, dim);
     canvas.Divide(2, 2);
+
     canvas.cd(1);
     TGraph meanSpeeds("statistics.txt", "%lg %lg");
-    meanSpeeds.SetTitle("Mean speed");
-    bd::drawGraph(meanSpeeds);
+    bd::drawGraph(meanSpeeds, "Mean speed");
+
     canvas.cd(2);
     TGraph sigmaSpeeds("statistics.txt", "%lg %*lg %lg");
-    sigmaSpeeds.SetTitle("Std deviation for speed");
-    bd::drawGraph(sigmaSpeeds);
+    bd::drawGraph(sigmaSpeeds, "Std deviation for speed");
+
     canvas.cd(3);
     TGraph meanDistances("statistics.txt", "%lg %*lg %*lg %lg");
-    meanDistances.SetTitle("Mean distance");
-    bd::drawGraph(meanDistances);
+    bd::drawGraph(meanDistances, "Mean distance");
+
     canvas.cd(4);
     TGraph sigmaDistances("statistics.txt", "%lg %*lg %*lg %*lg %lg");
-    sigmaDistances.SetTitle("Std deviation for distance");
-    bd::drawGraph(sigmaDistances);
+    bd::drawGraph(sigmaDistances, "Std deviation for distance");
+
     canvas.Modified();
     canvas.Update();
-    canvas.Print("statistics.pdf");
+    canvas.Print(bd::fileName().c_str());
+    TRootCanvas* rc = static_cast<TRootCanvas*>(canvas.GetCanvasImp());
+    rc->Connect("CloseWindow()", "TApplication", gApplication, "Terminate()");
     app.Run();
 
     //Serve qualcosa per chiudere la simulazione

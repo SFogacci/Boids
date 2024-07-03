@@ -2,8 +2,11 @@
 #include "vectors.hpp"
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <cmath>
+#include <iomanip>
 #include <numeric>
+#include <sstream>
 #include <stdexcept>
 
 namespace bd {
@@ -53,7 +56,7 @@ Results statistics(Flock const& f)
                                       // magnitude of each boid's velocity
     for (std::size_t j = i + 1; j < N; ++j) {
       auto distance = toroidalDifference(
-          flock[i].getPosition(), flock[j].getPosition(), windowDimensions);
+          flock[i].getPosition(), flock[j].getPosition());
       distances.push_back(norm(distance));
     } // filling the distances vector with the distance of each pair of boids
   }
@@ -74,5 +77,15 @@ std::string printStatistics(Results const& results)
       + '\n' + "Flock distance standard deviation: "
       + std::to_string(results.distanceStats.sigma) + '\n' + '\n'};
   return print;
+}
+
+std::string fileName()
+{
+  auto timeNow        = std::chrono::system_clock::now();
+  auto timeNowTimeT = std::chrono::system_clock::to_time_t(timeNow);
+
+  std::stringstream t;
+  t << std::put_time(std::localtime(&timeNowTimeT), "%Y_%m_%d_%X");
+  return "statistics_" + t.str() + ".pdf";
 }
 } // namespace bd

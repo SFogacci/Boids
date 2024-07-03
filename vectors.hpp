@@ -1,7 +1,10 @@
 #ifndef VECTORS_HPP
 #define VECTORS_HPP
 
+#include "SFML/Graphics.hpp"
+
 namespace bd {
+
 struct Vector
 {
   float x{};
@@ -9,6 +12,10 @@ struct Vector
 
   Vector operator+=(Vector const&);
 };
+
+inline const bd::Vector windowDimensions{
+    0.75f * static_cast<float>(sf::VideoMode::getDesktopMode().width),
+    0.75f * static_cast<float>(sf::VideoMode::getDesktopMode().height)};
 
 Vector operator+(Vector const&, Vector const&);
 
@@ -22,19 +29,13 @@ bool operator==(Vector const&, Vector const&);
 
 float norm(Vector const&);
 
-Vector generateCoordinates(float a, float b);
+float generateCoordinates(float a, float b);
 
 void normalize(Vector&, float);
 
 float toroidalDistance(float, float, float);
 
-struct SpaceDimensions
-{
-  float width;
-  float height;
-};
-
-Vector toroidalDifference(Vector const&, Vector const&, SpaceDimensions);
+Vector toroidalDifference(Vector const&, Vector const&);
 } // namespace bd
 
 #endif
