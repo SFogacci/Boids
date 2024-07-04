@@ -78,8 +78,11 @@ void Flock::evolution(Boid const& p)
   for (Boid const& boid : flock_) {
     Boid modified_boid(boid);
     if (boid.hasNeighbour(p, flock_parameters_.d)) {
-      const auto separation_predator = flock_parameters_.s * toroidalDifference(boid.getPosition(), p.getPosition());
-      modified_boid.setVelocity(boid.getVelocity() + separation_predator);
+      auto predator_distance = toroidalDifference(boid.getPosition(), p.getPosition());
+      normalize(predator_distance, flock_parameters_.d / norm(predator_distance));
+      modified_boid.setVelocity(boid.getVelocity() + flock_parameters_.s * predator_distance);
+      // const auto separation_predator = flock_parameters_.s * toroidalDifference(boid.getPosition(), p.getPosition());
+      // modified_boid.setVelocity(boid.getVelocity() + flock_parameters_.s *separation_predator);
     }
 
     const auto neighbours = static_cast<float>(std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) { return boid.hasNeighbour(other, flock_parameters_.d); }));
@@ -92,7 +95,8 @@ void Flock::evolution(Boid const& p)
           sums.cohesion += distance;
           if (boid.hasNeighbour(other, flock_parameters_.ds)) {
             normalize(distance, flock_parameters_.ds / norm(distance));
-            sums.separation += distance;
+            sums.separation += flock_parameters_.s * distance;
+            // sums.separation += distance;  // implementando regola originaria per la separation si baca
           }
         }
         return sums;
@@ -101,7 +105,8 @@ void Flock::evolution(Boid const& p)
       corrections.alignment = corrections.alignment / neighbours - boid.getVelocity();
       corrections.cohesion  = corrections.cohesion / neighbours;
 
-      modified_boid.setVelocity(modified_boid.getVelocity() + flock_parameters_.a * corrections.alignment + flock_parameters_.c * corrections.cohesion - flock_parameters_.s * corrections.separation);
+      modified_boid.setVelocity(modified_boid.getVelocity() + flock_parameters_.a * corrections.alignment + flock_parameters_.c * corrections.cohesion
+                                - flock_parameters_.s * corrections.separation);
       modified_boid.biological_limits();
     }
     modified_boid.setPosition(modified_boid.getPosition() + modified_boid.getVelocity());
