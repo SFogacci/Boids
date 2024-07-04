@@ -69,8 +69,8 @@ Boid Boid::predator_evolution(Flock const& f)
         });
     const auto hunting = toroidalDifference(center_of_mass / preys, position_);
     copy.setVelocity(velocity_ + hunting);
-    copy.biological_limits();
   }
+  copy.biological_limits();
   copy.setPosition(position_ + copy.getVelocity());
   copy.correct_borders();
   return copy;
