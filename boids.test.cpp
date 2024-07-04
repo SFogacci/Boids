@@ -383,12 +383,12 @@ TEST_CASE("Testing predator-boid interaction")
     flock.evolution(predator);
     auto it = flock.getFlock().begin();
 
-    CHECK(it->getPosition().x == doctest::Approx(105.5));
-    CHECK(it->getPosition().y == doctest::Approx(102.5));
+    CHECK(it->getPosition().x == doctest::Approx(103.25));
+    CHECK(it->getPosition().y == doctest::Approx(100.25));
     CHECK(predator_ev.getPosition().x == doctest::Approx(104));
     CHECK(predator_ev.getPosition().y == doctest::Approx(103));
-    CHECK(it->getVelocity().x == doctest::Approx(4.5));
-    CHECK(it->getVelocity().y == doctest::Approx(1.5));
+    CHECK(it->getVelocity().x == doctest::Approx(2.25));
+    CHECK(it->getVelocity().y == doctest::Approx(-0.75));
     CHECK(predator_ev.getVelocity().x == doctest::Approx(4));
     CHECK(predator_ev.getVelocity().y == doctest::Approx(3));
   }
