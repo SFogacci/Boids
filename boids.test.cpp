@@ -21,27 +21,27 @@ TEST_CASE("One boid, all rules")
   CHECK(it->getVelocity().y == doctest::Approx(1));
 }
 
-// TEST_CASE("Two bd::Boids, separation only") //Sono da fare dei conti
-// {
-//   bd::Boid b1{{101.f, 101.f}, {0.f, 0.f}};
-//   bd::Boid b2{{102.f, 101.f}, {0.f, 0.f}};
-//   std::vector birds{b1, b2};
-//   bd::Parameters parameters{0.f, 0.f, 2.f, 1.5f, 0.5f, 2};
-//   bd::Flock flock{birds, parameters};
-//   bd::Boid predator{{500.f, 500.f}, {}, 1};
-//   flock.evolution(predator);
-//   auto it = flock.getFlock().begin();
-//   auto et = it + 1;
-//   CHECK(it->getPosition().x == doctest::Approx(100.5));
-//   CHECK(it->getPosition().y == doctest::Approx(101));
-//   CHECK(et->getPosition().x == doctest::Approx(102.5));
-//   CHECK(et->getPosition().y == doctest::Approx(101));
+TEST_CASE("Two bd::Boids, separation only")
+{
+  bd::Boid b1{{101.f, 101.f}, {0.f, 0.f}};
+  bd::Boid b2{{102.f, 101.f}, {0.f, 0.f}};
+  std::vector birds{b1, b2};
+  bd::Parameters parameters{0.f, 0.f, 1.f, 20.f, 2.f, 2};
+  bd::Flock flock{birds, parameters};
+  bd::Boid predator{{500.f, 500.f}, {}, 1};
+  flock.evolution(predator);
+  auto it = flock.getFlock().begin();
+  auto et = it + 1;
+  CHECK(it->getPosition().x == doctest::Approx(99));
+  CHECK(it->getPosition().y == doctest::Approx(101));
+  CHECK(et->getPosition().x == doctest::Approx(104));
+  CHECK(et->getPosition().y == doctest::Approx(101));
 
-//   CHECK(it->getVelocity().x == doctest::Approx(-0.5));
-//   CHECK(it->getVelocity().y == doctest::Approx(0));
-//   CHECK(et->getVelocity().x == doctest::Approx(0.5));
-//   CHECK(et->getVelocity().y == doctest::Approx(0));
-// }
+  CHECK(it->getVelocity().x == doctest::Approx(-2));
+  CHECK(it->getVelocity().y == doctest::Approx(0));
+  CHECK(et->getVelocity().x == doctest::Approx(2));
+  CHECK(et->getVelocity().y == doctest::Approx(0));
+}
 
 TEST_CASE("Two Boids, cohesion only")
 {
@@ -86,7 +86,7 @@ TEST_CASE("Two boids, alignment only: one still.")
   CHECK(et->getVelocity().y == doctest::Approx(0.5));
 }
 
-TEST_CASE("Overlap of two boids") // Come lo risolviamo?
+TEST_CASE("Overlap of two boids")
 {
   bd::Boid b1{{101.f, 100.f}, {0.f, 1.f}};
   bd::Boid b2{{101.f, 102.f}, {0.f, -1.f}};
@@ -105,54 +105,53 @@ TEST_CASE("Overlap of two boids") // Come lo risolviamo?
   CHECK(!(*it == *et));
 }
 
-
 TEST_CASE("two boids normal situation")
 {
-  bd::Boid b1{{101.f, 101.f}, {2.f, -1.f}};
-  bd::Boid b2{{105.f, 90.f}, {-2.f, 5.f}};
-  std::vector birds{b1, b2};
-  bd::Parameters parameters{0.5f, 0.5f, 0.5f, 10.f, 1.f, 2};
-  bd::Flock flock{birds, parameters};
-  bd::Boid predator{{500.f, 500.f}, {}, 1};
-  flock.evolution(predator);
-  auto it = flock.getFlock().begin();
-  auto et = it + 1;
   SUBCASE("No interaction")
   {
+    bd::Boid b1{{101.f, 101.f}, {2.f, -1.f}};
+    bd::Boid b2{{105.f, 90.f}, {-2.f, 3.f}};
+    std::vector birds{b1, b2};
+    bd::Parameters parameters{0.5f, 0.5f, 0.5f, 10.f, 1.f, 2};
+    bd::Flock flock{birds, parameters};
+    bd::Boid predator{{500.f, 500.f}, {}, 1};
+    flock.evolution(predator);
+    auto it = flock.getFlock().begin();
+    auto et = it + 1;
+
     CHECK(it->getPosition().x == doctest::Approx(103));
     CHECK(it->getPosition().y == doctest::Approx(100));
     CHECK(et->getPosition().x == doctest::Approx(103));
-    CHECK(et->getPosition().y == doctest::Approx(95));
+    CHECK(et->getPosition().y == doctest::Approx(93));
     CHECK(it->getVelocity().x == doctest::Approx(2));
     CHECK(it->getVelocity().y == doctest::Approx(-1));
     CHECK(et->getVelocity().x == doctest::Approx(-2));
-    CHECK(et->getVelocity().y == doctest::Approx(5));
+    CHECK(et->getVelocity().y == doctest::Approx(3));
+  }
+
+  SUBCASE("all rules")
+  {
+    bd::Boid b1{{101.f, 101.f}, {2.f, -1.f}};
+    bd::Boid b2{{105.f, 98.f}, {-2.f, 5.f}};
+    std::vector birds{b1, b2};
+    bd::Parameters parameters{0.5f, 0.5f, 0.5f, 20.f, 10.f, 2};
+    bd::Flock flock{birds, parameters};
+    bd::Boid predator{{500.f, 500.f}, {}, 1};
+    flock.evolution(predator);
+    auto it1 = flock.getFlock().begin();
+    auto et1 = it1 + 1;
+
+    CHECK(it1->getPosition().x == doctest::Approx(102.2));
+    CHECK(it1->getPosition().y == doctest::Approx(102.1));
+    CHECK(et1->getPosition().x == doctest::Approx(103.8));
+    CHECK(et1->getPosition().y == doctest::Approx(100.9));
+
+    CHECK(it1->getVelocity().x == doctest::Approx(1.2));
+    CHECK(it1->getVelocity().y == doctest::Approx(1.1));
+    CHECK(et1->getVelocity().x == doctest::Approx(-1.2));
+    CHECK(et1->getVelocity().y == doctest::Approx(2.9));
   }
 }
-
-// // TEST_CASE("all rules") //sono da fare dei conti
-// {
-//   bd::Boid b1{{101.f, 101.f}, {2.f, -1.f}};
-//   bd::Boid b2{{105.f, 90.f}, {-2.f, 5.f}};
-//   std::vector birds{b1, b2};
-//   bd::Parameters parameters{0.5f, 0.5f, 0.5f, 1.f, 10.f, 2};
-//   bd::Flock flock{birds, parameters};
-//   bd::Boid predator{{500.f, 500.f}, {}, 1};
-//   flock.evolution(predator);
-//   flock.evolution(predator);
-//   auto it1 = flock.getFlock().begin();
-//   auto et1 = it1 + 1;
-
-//   CHECK(it1->getPosition().x == doctest::Approx(103));
-//   CHECK(it1->getPosition().y == doctest::Approx(99.5));
-//   CHECK(et1->getPosition().x == doctest::Approx(103));
-//   CHECK(et1->getPosition().y == doctest::Approx(99.5));
-
-//   CHECK(it1->getVelocity().x == doctest::Approx(0));
-//   CHECK(it1->getVelocity().y == doctest::Approx(-0.5));
-//   CHECK(et1->getVelocity().x == doctest::Approx(0));
-//   CHECK(et1->getVelocity().y == doctest::Approx(4.5));
-// }
 
 TEST_CASE("Testing toroidalDifference function")
 {
@@ -180,7 +179,9 @@ TEST_CASE("Testing toroidalDifference function")
   pos1   = {0.0f, 0.0f};
   pos2   = {400.0f, 300.0f};
   result = toroidalDifference(pos1, pos2);
-  CHECK(result.x == doctest::Approx(-400.0f)); // toroidal and normal distance are the same
+  CHECK(
+      result.x
+      == doctest::Approx(-400.0f)); // toroidal and normal distance are the same
   CHECK(result.y == doctest::Approx(-300.0f));
 
   pos1   = {0.0f, 0.0f};
@@ -346,12 +347,74 @@ TEST_CASE("Testing Boid::correct_borders function")
     CHECK(boid.getPosition().y == doctest::Approx(0.0f));
   }
 }
-TEST_CASE("")
-{}
+
+// TEST_CASE("Testing predator-boid interaction")
+// {
+  // SUBCASE("No interaction")
+  // {
+    // bd::Boid b1{{101.f, 101.f}, {2.f, -1.f}};
+    // std::vector birds{b1};
+    // bd::Parameters parameters{0.5f, 0.5f, 0.5f, 10.f, 1.f, 2};
+    // bd::Flock flock{birds, parameters};
+    // bd::Boid predator{{100.f, 100.f}, {3.f, 2.f}, 1};
+    // predator.predator_evolution(flock);
+    // flock.evolution(predator);
+    // auto it = flock.getFlock().begin();
+    // auto et = it + 1;
+// 
+    // CHECK(it->getPosition().x == doctest::Approx(103));
+    // CHECK(it->getPosition().y == doctest::Approx(100));
+    // CHECK(et->getPosition().x == doctest::Approx(103));
+    // CHECK(et->getPosition().y == doctest::Approx(95));
+    // CHECK(it->getVelocity().x == doctest::Approx(2));
+    // CHECK(it->getVelocity().y == doctest::Approx(-1));
+    // CHECK(et->getVelocity().x == doctest::Approx(-2));
+    // CHECK(et->getVelocity().y == doctest::Approx(5));
+  // }
+// 
+  // SUBCASE("all rules")
+  // {
+    // bd::Boid b1{{101.f, 101.f}, {2.f, -1.f}};
+    // bd::Boid b2{{105.f, 98.f}, {-2.f, 5.f}};
+    // std::vector birds{b1, b2};
+    // bd::Parameters parameters{0.5f, 0.5f, 0.5f, 20.f, 10.f, 2};
+    // bd::Flock flock{birds, parameters};
+    // bd::Boid predator{{500.f, 500.f}, {}, 1};
+    // flock.evolution(predator);
+    // auto it1 = flock.getFlock().begin();
+    // auto et1 = it1 + 1;
+// 
+    // CHECK(it1->getPosition().x == doctest::Approx(102.2));
+    // CHECK(it1->getPosition().y == doctest::Approx(102.1));
+    // CHECK(et1->getPosition().x == doctest::Approx(103.8));
+    // CHECK(et1->getPosition().y == doctest::Approx(100.9));
+// 
+    // CHECK(it1->getVelocity().x == doctest::Approx(1.2));
+    // CHECK(it1->getVelocity().y == doctest::Approx(1.1));
+    // CHECK(et1->getVelocity().x == doctest::Approx(-1.2));
+    // CHECK(et1->getVelocity().y == doctest::Approx(2.9));
+  // }
+// }
+
+TEST_CASE("Testing Boid::biological_limits function")
+{
+    bd::Boid b1{{100.f, 100.f}, {6.f, 8.f}};
+    std::vector birds{b1};
+    bd::Parameters parameters{0.5f, 0.5f, 0.5f, 20.f, 10.f, 2};
+    bd::Flock flock{birds, parameters};
+    bd::Boid predator{{500.f, 500.f}, {}, 1};
+    flock.evolution(predator);
+    auto it1 = flock.getFlock().begin();
+
+    CHECK(it1->getPosition().x == doctest::Approx(103));
+    CHECK(it1->getPosition().y == doctest::Approx(104));
+
+    CHECK(it1->getVelocity().x == doctest::Approx(3));
+    CHECK(it1->getVelocity().y == doctest::Approx(4));
+  }
 
 TEST_CASE("")
 {}
-TEST_CASE("")
-{}
+
 TEST_CASE("")
 {}

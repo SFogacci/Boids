@@ -3,12 +3,12 @@
 #include <iostream>
 namespace bd {
 
-auto createBirds(const std::size_t& n)
+auto createBirds(const int n)
 {
   std::vector<Boid> birds;
   birds.reserve(n);
 
-  for (std::size_t i = 0; i != n; ++i) {
+  for (int i = 0; i != n; ++i) {
     const Vector position{generateCoordinates(0.f, static_cast<float>(windowDimensions.x)), generateCoordinates(0.f, static_cast<float>(windowDimensions.y))};
     while (true) {
       const Vector velocity{generateCoordinates(-5.f, 5.f), generateCoordinates(-5.f, 5.f)}; // da cambiare in variabili (const)

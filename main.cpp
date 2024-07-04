@@ -22,7 +22,7 @@ int main()
               << "- quit [q]\n";
 
     char cmd;
-    std::size_t n;
+    int n;
     bd::Parameters parameters;
     std::string filename;
     std::runtime_error e{"Invalid input. \n"};
@@ -72,17 +72,15 @@ int main()
       if (parameters.c < 0 || parameters.c > 1 || parameters.a < 0
           || parameters.a > 1 || parameters.s < 0 || parameters.s > 1
           || parameters.d < 0 || parameters.d > 100 || parameters.ds < 0
-          || parameters.ds > 20
-          || parameters.n > 300) { // checks range of input (std::size_t is
-                                   // by def >0).
+          || parameters.ds > 20 || parameters.n < 0
+          || parameters.n > 300) { 
         throw e;                   // if input not in range
       }
 
       break;
     }
 
-    std::cout
-        << "Remember to press the Escape Key to pause the simulation. \n";
+    std::cout << "Remember to press the Escape Key to pause the simulation. \n";
     std::vector<bd::Boid> birds = bd::createBirds(parameters.n);
     bd::Boid predator           = bd::createPredator();
     bd::Flock flock{birds, parameters};
