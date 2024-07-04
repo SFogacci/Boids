@@ -69,7 +69,7 @@ auto createBird(bool is_predator)
 auto createPreys(const int n)
 {
   std::vector<Boid> birds;
-  birds.reserve(n);
+  birds.reserve(static_cast<std::size_t>(n));
 
   for (int i = 0; i != n; ++i) {
     birds.push_back(createBird(0));
