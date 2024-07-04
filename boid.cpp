@@ -91,6 +91,8 @@ void Flock::evolution(Boid const& p)
                 flock_parameters_.d / norm(predator_distance));
       modified_boid.setVelocity(boid.getVelocity()
                                 + flock_parameters_.s * predator_distance);
+      // const auto separation_predator = flock_parameters_.s * toroidalDifference(boid.getPosition(), p.getPosition());  // separation originaria
+      // modified_boid.setVelocity(boid.getVelocity() + flock_parameters_.s *separation_predator);
     }
 
     const auto neighbours = static_cast<float>(
