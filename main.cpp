@@ -80,9 +80,10 @@ int main()
       break;
     }
 
-    std::cout << "Remember to press the Escape Key to pause the simulation. \n";
-    std::vector<bd::Boid> birds = bd::createBirds(parameters.n);
-    bd::Boid predator           = bd::createPredator();
+    std::cout
+        << "Remember to press the Escape Key to pause the simulation. \n";
+    std::vector<bd::Boid> birds = bd::createPreys(parameters.n);
+    bd::Boid predator           = bd::createBird(true);
     bd::Flock flock{birds, parameters};
     bd::gameLoop(flock, predator);
 

@@ -42,7 +42,7 @@ float norm(Vector const& v)
   return std::hypot(v.x, v.y);
 }
 
-float generateCoordinates(float a, float b)
+float generateCoordinate(float a, float b)
 {
   std::random_device rd;
   std::uniform_real_distribution<float> dis(a, b);

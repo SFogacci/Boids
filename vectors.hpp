@@ -31,7 +31,7 @@ bool operator==(Vector const&, Vector const&);
 
 float norm(Vector const&);
 
-float generateCoordinates(float a, float b);
+float generateCoordinate(float a, float b);
 
 void normalize(Vector&, float);
 
