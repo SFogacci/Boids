@@ -90,11 +90,11 @@ struct Parameters
   float s;
   float d;
   float ds;
-  std::size_t n;
+  int n;
   
   Parameters() = default;
 
-         Parameters(float o, float p, float q, float r, float t, std::size_t u)
+         Parameters(float o, float p, float q, float r, float t, int u)
       : c{o}
       , a{p}
       , s{q}
@@ -103,7 +103,7 @@ struct Parameters
       , n{u}
   {}
 
-  explicit Parameters(std::vector<float> v, std::size_t p)
+  explicit Parameters(std::vector<float> v, int p)
       : c{v[0]}
       , a{v[1]}
       , s{v[2]}
@@ -144,10 +144,17 @@ class Flock
 
   void evolution(Boid const&);
   // Predator predator_evolution(Predator const&) const;
-  void overlapping(Boid&);
-  
+   
 };
 
+inline void overlapping(std::vector<Boid>& birds, Boid& boid)
+{
+  std::for_each(birds.begin(), birds.end(), [&boid](Boid const& other) {
+    if (other.getPosition() == boid.getPosition()) {
+      boid.setPosition(boid.getPosition() + Vector{generateCoordinate(-1.f, 1.f), generateCoordinate(-1.f, 1.f)});
+    }
+  });
+}
 } // namespace bd
 
 #endif

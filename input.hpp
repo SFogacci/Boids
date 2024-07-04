@@ -3,7 +3,7 @@
 
 namespace bd {
 Boid createBird(bool);
-std::vector<Boid> createPreys(const std::size_t);
+std::vector<Boid> createPreys(const int);
 
 } // namespace bd
 #endif
