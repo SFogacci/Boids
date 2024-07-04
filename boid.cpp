@@ -85,10 +85,12 @@ void Flock::evolution(Boid const& p)
   for (Boid const& boid : flock_) {
     Boid modified_boid(boid);
     if (boid.hasNeighbour(p, flock_parameters_.d)) {
-      const auto separation_predator =
-          flock_parameters_.s
-          * toroidalDifference(boid.getPosition(), p.getPosition());
-      modified_boid.setVelocity(boid.getVelocity() + separation_predator);
+      auto predator_distance =
+          toroidalDifference(boid.getPosition(), p.getPosition());
+      normalize(predator_distance,
+                flock_parameters_.d / norm(predator_distance));
+      modified_boid.setVelocity(boid.getVelocity()
+                                + flock_parameters_.s * predator_distance);
     }
 
     const auto neighbours = static_cast<float>(
@@ -104,10 +106,10 @@ void Flock::evolution(Boid const& p)
               auto distance =
                   toroidalDifference(other.getPosition(), boid.getPosition());
               sums.alignment += other.getVelocity();
-              sums.cohesion += distance;  
+              sums.cohesion += distance;
               if (boid.hasNeighbour(other, flock_parameters_.ds)) {
                 normalize(distance, flock_parameters_.ds / norm(distance));
-                sums.separation += distance; 
+                sums.separation += distance;
               }
             }
             return sums;
@@ -124,9 +126,10 @@ void Flock::evolution(Boid const& p)
           - flock_parameters_.s
                 * corrections.separation); // Perché togliamo la separation e
                                            // aggiungiamo le altre?
-      
     }
-    modified_boid.biological_limits(); //O qui, oppure se lo vogliamo mettere dentro if, allora va controllato anche l'input
+    modified_boid
+        .biological_limits(); // O qui, oppure se lo vogliamo mettere dentro if,
+                              // allora va controllato anche l'input
     modified_boid.setPosition(modified_boid.getPosition()
                               + modified_boid.getVelocity());
     modified_boid.correct_borders();
