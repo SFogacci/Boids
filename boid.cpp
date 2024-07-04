@@ -63,12 +63,13 @@ Boid Boid::predator_evolution(Flock const& f)
             auto difference = toroidalDifference(
                 b.getPosition(), position_); // Calcolo centro di massa
                                              // nello spazio toroidale.
-            sum += getPosition() + difference;
+            sum += getPosition() + difference; //Questo non è uguale alla posizione del boid?
+            //Tutto quello qui dentro non è riassumibile in sum += b.getPosition()?
           }
           return sum;
         });
     const auto hunting = toroidalDifference(center_of_mass / preys, position_);
-    copy.setVelocity(velocity_ + hunting);
+    copy.setVelocity(velocity_ + hunting);//Nessun parametro?
   }
   copy.biological_limits();
   copy.setPosition(position_ + copy.getVelocity());
@@ -86,7 +87,7 @@ void Flock::evolution(Boid const& p)
     Boid modified_boid(boid);
     if (boid.hasNeighbour(p, flock_parameters_.d)) {
       auto predator_distance =
-          toroidalDifference(boid.getPosition(), p.getPosition());
+          toroidalDifference(boid.getPosition(), p.getPosition()); //segni?
       normalize(predator_distance,
                 flock_parameters_.d / norm(predator_distance));
       modified_boid.setVelocity(boid.getVelocity()
