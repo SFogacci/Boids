@@ -11,7 +11,7 @@ struct Vector
   Vector operator+=(Vector const&);
 };
 
-constexpr bd::Vector windowDimensions{800.f, 600.f};
+constexpr bd::Vector windowDimensions{800.f, 600.f}; //Abbiamo optato per questo?
 
 Vector operator+(Vector const&, Vector const&);
 
