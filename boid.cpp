@@ -84,8 +84,8 @@ void Flock::evolution(Boid const& p)
   for (Boid const& boid : flock_) {
     Boid modified_boid(boid);
     if (boid.hasNeighbour(p, flockParameters_.d)) {
-      const auto separation_predator = flockParameters_.s * toroidalDifference(boid.getPosition(), p.getPosition());
-      modified_boid.setVelocity(boid.getVelocity() + flockParameters_.s * separation_predator); // così moltiplichiamo 2 volte per s
+      const auto separation_predator = toroidalDifference(boid.getPosition(), p.getPosition());
+      modified_boid.setVelocity(boid.getVelocity() + flockParameters_.s * separation_predator);
     }
 
     const auto neighbours = static_cast<float>(std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) { return boid.hasNeighbour(other, flockParameters_.d); }));
