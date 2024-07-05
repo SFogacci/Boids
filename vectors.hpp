@@ -1,7 +1,7 @@
 #ifndef VECTORS_HPP
 #define VECTORS_HPP
 
-#include "SFML/Graphics.hpp"
+// #include "SFML/Graphics.hpp"
 
 namespace bd {
 

@@ -7,7 +7,7 @@
 namespace bd {
 sf::ConvexShape birdShape;
 sf::ConvexShape predatorShape;
-sf::ConvexShape setShape(bd::Boid const& b) // passaggio by const ref
+sf::ConvexShape setShape(bd::Boid const& b)
 {
   if (!b.isPredator()) {
     birdShape.setPointCount(3);
@@ -71,14 +71,14 @@ void gameLoop(Flock& flock, Boid& p)
       } else if (sf::Event::KeyPressed == event.type
                  && (sf::Keyboard::Escape == event.key.code)) {
         active = !active;
-        std::cout << "Press the Escape Key again to resume the simulation. \n";
+        // std::cout << "Press the Escape Key again to resume the simulation. \n";
       }
     }
 
     if (active) {
-      Boid modified_predator = p.predator_evolution(flock);
+      Boid modifiedPredator = p.predatorEvolution(flock);
       flock.evolution(p);
-      p = modified_predator;
+      p = modifiedPredator;
 
       window.clear(
           sf::Color(113, 188, 225, 255)); // è il colore del cielo (sereno)
@@ -88,7 +88,7 @@ void gameLoop(Flock& flock, Boid& p)
                     [&window](Boid const& b) { window.draw(setShape(b)); });
       window.display();
 
-      auto stats{statistics(flock)};
+      const auto stats{statistics(flock)};
       outfile << iteration << ' ' << stats.speedStats.mean << ' '
               << stats.speedStats.sigma << ' ' << stats.distanceStats.mean
               << ' ' << stats.distanceStats.sigma << '\n';

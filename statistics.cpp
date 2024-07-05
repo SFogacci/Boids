@@ -24,14 +24,14 @@ Stats doStatistics(std::vector<double> const& entries)
     throw std::runtime_error{"Not enough entries to run a statistics"};
   }
 
-  const auto sum_entries = std::reduce(entries.begin(), entries.end(), 0.);
-  const auto mean{sum_entries / N};
+  const auto sumEntries = std::reduce(entries.begin(), entries.end(), 0.);
+  const auto mean{sumEntries / N};
 
-  const auto squared_devs = std::accumulate(
+  const auto squaredDevs = std::accumulate(
       entries.begin(), entries.end(), 0., [mean](auto sum, auto const& entry) {
         return sum += std::pow(entry - mean, 2);
       });
-  const auto sigma{std::sqrt(squared_devs / (N - 1))};
+  const auto sigma{std::sqrt(squaredDevs / (N - 1))};
 
   return {mean, sigma};
 }
@@ -40,8 +40,6 @@ Results statistics(Flock const& f)
 {
   const auto flock{f.getFlock()};
   const auto N{flock.size()};
-  // assert(N >= 3); // otherwise there would be just one distance, so stats
-  // could not be computed
 
   std::vector<double> speeds;
   std::vector<double> distances;
@@ -50,13 +48,13 @@ Results statistics(Flock const& f)
   distances.reserve(
       static_cast<std::size_t>(pairs)); // conversions are to be improved
 
-  for (std::size_t i = 0; i < N; ++i) {
+  for (std::size_t i = 0; i != N; ++i) {
     auto velocity = flock[i].getVelocity();
     speeds.push_back(norm(velocity)); // filling the speeds vector with the
                                       // magnitude of each boid's velocity
     for (std::size_t j = i + 1; j < N; ++j) {
-      auto distance = toroidalDifference(
-          flock[i].getPosition(), flock[j].getPosition());
+      auto distance =
+          toroidalDifference(flock[i].getPosition(), flock[j].getPosition());
       distances.push_back(norm(distance));
     } // filling the distances vector with the distance of each pair of boids
   }
@@ -81,7 +79,7 @@ std::string printStatistics(Results const& results)
 
 std::string fileName()
 {
-  auto timeNow        = std::chrono::system_clock::now();
+  auto timeNow      = std::chrono::system_clock::now();
   auto timeNowTimeT = std::chrono::system_clock::to_time_t(timeNow);
 
   std::stringstream t;

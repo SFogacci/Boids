@@ -9,11 +9,10 @@ namespace bd {
 
 bool operator==(Boid const& a, Boid const& b)
 {
-  return (a.getVelocity() == b.getVelocity()
-          && a.getPosition() == b.getPosition());
+  return (a.getVelocity() == b.getVelocity() && a.getPosition() == b.getPosition());
 }
 
-void Boid::correct_borders() // teletrasporto toroidale
+void Boid::correctBorders() // teletrasporto toroidale
 {
   if (position_.x > windowDimensions.x) {
     position_.x -= windowDimensions.x;
@@ -27,114 +26,94 @@ void Boid::correct_borders() // teletrasporto toroidale
   }
 }
 
-bool Boid::hasNeighbour(Boid const& b, float d)
-    const // Al posto della distanza normale, usa distanza toroidale.
+bool Boid::hasNeighbour(Boid const& b, float d) const
 {
   auto distance = toroidalDifference(position_, b.getPosition());
   return norm(distance) < d && (&b != this);
 }
 
-void Boid::biological_limits()
+void Boid::biologicalLimits()
 {
-  const float maximum_speed = 5.f;
+  const float maximum_speed{5.f};
   if (norm(velocity_) > maximum_speed) {
     normalize(velocity_, maximum_speed);
   }
 }
 
-Boid Boid::predator_evolution(Flock const& f)
-    const // Tutto ciò che riguarda distanze e correzioni è stato trasposto
-{ // nello spazio toroidale. Le regole di correzione per l'alignment (Cami l'ho
-  // scritto bene solo per te)
+Boid Boid::predatorEvolution(Flock const& f) const // Tutto ciò che riguarda distanze e correzioni è stato trasposto
+{                                                  // nello spazio toroidale. Le regole di correzione per l'alignment (Cami l'ho
   assert(isPredator_);
-  auto copy{*this}; // non sono state modificate.
+  auto copy{*this};
   const auto flock{f.getFlock()};
   const auto parameters{f.getFlockParameters()};
-  const float d = 2.f * parameters.d;
+  const float d{2.f * parameters.d};
 
-  const auto preys = static_cast<float>(
-      std::count_if(flock.begin(), flock.end(),
-                    [&](auto const& boid) { return hasNeighbour(boid, d); }));
+  const auto preys = static_cast<float>(std::count_if(flock.begin(), flock.end(), [&](auto const& boid) { return hasNeighbour(boid, d); }));
   assert(preys >= 0.f);
   if (preys != 0.f) {
-    const auto center_of_mass = std::accumulate(
-        flock.begin(), flock.end(), Vector{}, [&](auto& sum, auto const& b) {
-          if (hasNeighbour(b, d)) {
-            auto difference = toroidalDifference(
-                b.getPosition(), position_); // Calcolo centro di massa
-                                             // nello spazio toroidale.
-            sum += getPosition() + difference; //Questo non è uguale alla posizione del boid?
-            //Tutto quello qui dentro non è riassumibile in sum += b.getPosition()?
-          }
-          return sum;
-        });
-    const auto hunting = toroidalDifference(center_of_mass / preys, position_);
-    copy.setVelocity(velocity_ + hunting);//Nessun parametro?
+    const auto center_of_mass = std::accumulate(flock.begin(), flock.end(), Vector{}, [&](auto& sum, auto const& b) {
+      if (hasNeighbour(b, d)) {
+        auto difference = toroidalDifference(b.getPosition(), position_); // Calcolo centro di massa
+                                                                          // nello spazio toroidale.
+        sum += getPosition() + difference;                                // Questo non è uguale alla posizione del boid?
+        // Tutto quello qui dentro non è riassumibile in sum += b.getPosition()?
+      }
+      return sum;
+    });
+    const auto hunting        = toroidalDifference(center_of_mass / preys, position_);
+    copy.setVelocity(velocity_ + hunting); // Nessun parametro?
+    copy.biologicalLimits(); //dentro al caso di prede non nulle, altrimenti la velocità non varia
   }
-  copy.biological_limits();
   copy.setPosition(position_ + copy.getVelocity());
-  copy.correct_borders();
+  copy.correctBorders();
   return copy;
 }
 
 void Flock::evolution(Boid const& p)
 {
   assert(p.isPredator());
-  std::vector<Boid> modified_flock;
-  modified_flock.reserve(flock_.size());
+  std::vector<Boid> modifiedFlock;
+  modifiedFlock.reserve(flock_.size());
 
   for (Boid const& boid : flock_) {
-    Boid modified_boid(boid);
-    if (boid.hasNeighbour(p, flock_parameters_.d)) {
-      const auto separation_predator = flock_parameters_.s * toroidalDifference(boid.getPosition(), p.getPosition());
-      modified_boid.setVelocity(boid.getVelocity() + flock_parameters_.s *separation_predator); //così moltiplichiamo 2 volte per s
+    Boid modifiedBoid(boid);
+    if (boid.hasNeighbour(p, flockParameters_.d)) {
+      const auto separation_predator = flockParameters_.s * toroidalDifference(boid.getPosition(), p.getPosition());
+      modifiedBoid.setVelocity(boid.getVelocity() + flockParameters_.s * separation_predator); // così moltiplichiamo 2 volte per s
     }
 
-    const auto neighbours = static_cast<float>(
-        std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) {
-          return boid.hasNeighbour(other, flock_parameters_.d);
-        }));
+    const auto neighbours = static_cast<float>(std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) { return boid.hasNeighbour(other, flockParameters_.d); }));
     assert(neighbours >= 0.f);
     if (neighbours != 0.f) {
-      auto corrections = std::accumulate(
-          flock_.begin(), flock_.end(), Corrections{},
-          [&](auto& sums, auto const& other) {
-            if (boid.hasNeighbour(other, flock_parameters_.d)) {
-              auto distance =
-                  toroidalDifference(other.getPosition(), boid.getPosition());
-              sums.alignment += other.getVelocity();
-              sums.cohesion += distance;
-              if (boid.hasNeighbour(other, flock_parameters_.ds)) {
-                normalize(distance, flock_parameters_.ds / norm(distance));
-                sums.separation += distance;
-              }
-            }
-            return sums;
-          });
+      auto corrections = std::accumulate(flock_.begin(), flock_.end(), Corrections{}, [&](auto& sums, auto const& other) {
+        if (boid.hasNeighbour(other, flockParameters_.d)) {
+          auto distance = toroidalDifference(other.getPosition(), boid.getPosition());
+          sums.alignment += other.getVelocity();
+          sums.cohesion += distance;
+          if (boid.hasNeighbour(other, flockParameters_.ds)) {
+            normalize(distance, flockParameters_.ds / norm(distance));
+            sums.separation += distance;
+          }
+        }
+        return sums;
+      });
 
-      corrections.alignment =
-          corrections.alignment / neighbours - boid.getVelocity();
-      corrections.cohesion = corrections.cohesion / neighbours;
+      corrections.alignment = corrections.alignment / neighbours - boid.getVelocity();
+      corrections.cohesion  = corrections.cohesion / neighbours;
 
-      modified_boid.setVelocity(
-          modified_boid.getVelocity()
-          + flock_parameters_.a * corrections.alignment
-          + flock_parameters_.c * corrections.cohesion
-          - flock_parameters_.s
-                * corrections.separation); // Perché togliamo la separation e
-                                           // aggiungiamo le altre?
+      modifiedBoid.setVelocity(modifiedBoid.getVelocity() + flockParameters_.a * corrections.alignment + flockParameters_.c * corrections.cohesion
+                                - flockParameters_.s * corrections.separation); // Perché togliamo la separation e
+                                                                                 // aggiungiamo le altre?
     }
-    modified_boid
-        .biological_limits(); // O qui, oppure se lo vogliamo mettere dentro if,
-                              // allora va controllato anche l'input
-    modified_boid.setPosition(modified_boid.getPosition()
-                              + modified_boid.getVelocity());
-    modified_boid.correct_borders();
-    overlapping(modified_flock, modified_boid);
-    modified_flock.push_back(modified_boid);
+    modifiedBoid.biologicalLimits(); // O qui, oppure se lo vogliamo mettere dentro if,
+                                      // allora va controllato anche l'input
+    modifiedBoid.setPosition(modifiedBoid.getPosition() + modifiedBoid.getVelocity());
+    modifiedBoid.correctBorders();
+    overlapping(modifiedFlock, modifiedBoid);
+    modifiedFlock.push_back(modifiedBoid);
   }
 
-  flock_ = modified_flock;
+  flock_ = modifiedFlock;
 }
 
 } // namespace bd

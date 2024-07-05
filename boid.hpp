@@ -4,6 +4,7 @@
 #include "vectors.hpp"
 #include <cmath>
 #include <vector>
+#include <algorithm>
 
 namespace bd {
 
@@ -15,12 +16,10 @@ class Boid
 {
  private:
   Vector position_;
-  Vector velocity_{0.f, 0.f};
+  Vector velocity_{0.f, 0.f}; // value initialization not necessary
   bool isPredator_{0};
 
  public:
-  //  Boid() = default;
-
   explicit Boid(Vector p, Vector v)
       : position_{p}
       , velocity_{v}
@@ -67,19 +66,11 @@ class Boid
     velocity_ = v;
   }
 
-  Boid predator_evolution(Flock const&) const;
-  void correct_borders();
+  Boid predatorEvolution(Flock const&) const;
+  void correctBorders();
   bool hasNeighbour(Boid const&, float) const;
-  void biological_limits();
+  void biologicalLimits();
 };
-
-/*class Predator : public Boid // predator derivata da boid.
-{
- public:
-  explicit Predator(Vector position, Vector velocity)
-      : Boid{position, velocity}
-  {}
-};*/
 
 bool operator==(Boid const&, Boid const&);
 
@@ -91,10 +82,10 @@ struct Parameters
   float d;
   float ds;
   int n;
-  
+
   Parameters() = default;
 
-         Parameters(float o, float p, float q, float r, float t, int u)
+  Parameters(float o, float p, float q, float r, float t, int u)
       : c{o}
       , a{p}
       , s{q}
@@ -118,18 +109,17 @@ struct Corrections
   Vector alignment;
   Vector cohesion;
   Vector separation;
-  // Vector separation_predator;
 };
 
 class Flock
 {
   std::vector<Boid> flock_;
-  Parameters flock_parameters_;
+  Parameters flockParameters_;
 
  public:
   explicit Flock(std::vector<Boid> v, Parameters p)
       : flock_{v}
-      , flock_parameters_{p}
+      , flockParameters_{p}
   {}
 
   auto const& getFlock() const
@@ -139,12 +129,10 @@ class Flock
 
   auto const& getFlockParameters() const
   {
-    return flock_parameters_;
+    return flockParameters_;
   }
 
   void evolution(Boid const&);
-  // Predator predator_evolution(Predator const&) const;
-   
 };
 
 inline void overlapping(std::vector<Boid>& birds, Boid& boid)
