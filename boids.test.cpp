@@ -21,7 +21,7 @@ TEST_CASE("One boid, all rules")
   CHECK(it->getVelocity().y == doctest::Approx(1));
 }
 
-TEST_CASE("Two bd::Boids, separation only")
+TEST_CASE("Two Boids, separation only")
 {
   bd::Boid b1{{101.f, 101.f}, {0.f, 0.f}};
   bd::Boid b2{{102.f, 101.f}, {0.f, 0.f}};
