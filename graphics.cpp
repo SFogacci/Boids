@@ -71,7 +71,7 @@ void gameLoop(Flock& flock, Boid& p)
       } else if (sf::Event::KeyPressed == event.type
                  && (sf::Keyboard::Escape == event.key.code)) {
         active = !active;
-        std::cout << "Press the Escape Key again to resume the simulation. \n";
+        // std::cout << "Press the Escape Key again to resume the simulation. \n";
       }
     }
 
@@ -92,7 +92,7 @@ void gameLoop(Flock& flock, Boid& p)
       outfile << iteration << ' ' << stats.speedStats.mean << ' '
               << stats.speedStats.sigma << ' ' << stats.distanceStats.mean
               << ' ' << stats.distanceStats.sigma << '\n';
-      std::cout << "Iteration: " << iteration << '\n' << printStatistics(stats);
+      // std::cout << "Iteration: " << iteration << '\n' << printStatistics(stats);
       ++iteration;
     }
   }
