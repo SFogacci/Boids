@@ -19,7 +19,7 @@ Stats doStatistics(std::vector<double> const& entries)
 {
   const int N{static_cast<int>(entries.size())};
   if (N < 2) {
-    throw std::runtime_error{"Not enough entries to run a statistics"};
+    throw std::runtime_error{"Not enough entries to run a statistics."};
   }
 
   const auto sumEntries = std::reduce(entries.begin(), entries.end(), 0.);
@@ -43,18 +43,16 @@ Results statistics(Flock const& f)
   std::vector<double> distances;
   speeds.reserve(N);
   const auto pairs{binomialCoeff(static_cast<double>(N), 2.)};
-  distances.reserve(
-      static_cast<std::size_t>(pairs)); // conversions are to be improved
+  distances.reserve(static_cast<std::size_t>(pairs));
 
   for (std::size_t i = 0; i != N; ++i) {
     auto velocity = flock[i].getVelocity();
-    speeds.push_back(norm(velocity)); // filling the speeds vector with the
-                                      // magnitude of each boid's velocity
+    speeds.push_back(norm(velocity));
     for (std::size_t j = i + 1; j < N; ++j) {
       auto distance =
           toroidalDifference(flock[i].getPosition(), flock[j].getPosition());
       distances.push_back(norm(distance));
-    } // filling the distances vector with the distance of each pair of boids
+    }
   }
 
   const Stats speedStats{doStatistics(speeds)};

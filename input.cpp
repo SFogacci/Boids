@@ -7,13 +7,12 @@ auto createBird(bool isPredator)
   float x = generateCoordinate(0.f, static_cast<float>(windowDimensions.x));
   float y = generateCoordinate(0.f, static_cast<float>(windowDimensions.y));
   Vector position{x, y};
-  Boid bird{position, {}, isPredator};
   while (true) {
     float v_x = generateCoordinate(-maximumSpeed, maximumSpeed);
     float v_y = generateCoordinate(-maximumSpeed, maximumSpeed);
     Vector velocity{v_x, v_y};
     if (norm(velocity) > minimumSpeed && norm(velocity) < maximumSpeed) {
-      bird.setVelocity(velocity);
+      Boid bird{position, velocity, isPredator};
       return bird;
     }
   }

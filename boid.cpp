@@ -76,7 +76,7 @@ void overlapping(std::vector<Boid>& birds)
 {
   for (Boid& boid : birds) {
     std::for_each(birds.begin(), birds.end(), [&](Boid const& other) {
-      if (other.getPosition() == boid.getPosition()) {
+      if (other.getPosition() == boid.getPosition() && (&other != &boid)) {
         boid.setPosition(
             boid.getPosition()
             + Vector{generateCoordinate(-minimumSpeed, minimumSpeed),
@@ -93,7 +93,6 @@ void Flock::evolution(Boid const& p)
   modifiedFlock.reserve(flock_.size());
 
   for (Boid const& boid : flock_) {
-
     Boid modifiedBoid(boid);
     if (boid.hasNeighbour(p, flockParameters_.d)) {
       const auto separation_predator =
@@ -113,7 +112,6 @@ void Flock::evolution(Boid const& p)
           flock_.begin(), flock_.end(), Corrections{},
           [&](auto& sums, auto const& other) {
             if (boid.hasNeighbour(other, flockParameters_.d)) {
-
               auto distance =
                   toroidalDifference(other.getPosition(), boid.getPosition());
               sums.alignment += other.getVelocity();

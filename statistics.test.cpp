@@ -45,7 +45,8 @@ TEST_CASE("Statistics functions")
 
 TEST_CASE("statistics function for flocks")
 {
-  SUBCASE("statistics function throws for two boids") //just one pair of boids to calculate distance
+  SUBCASE("statistics function throws for two boids") // just one pair of boids
+                                                      // to calculate distance
   {
     bd::Boid b1{{0.f, 0.f}, {4.f, 3.f}};
     bd::Boid b2{{0.f, 2.f}, {12.f, 5.f}};

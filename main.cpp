@@ -27,13 +27,13 @@ int main()
 
     std::cin >> cmd;
     if (cmd == 'p') {
-      std::cout << "-Insert flock's parameters in the following order: \n"
-                << "-Cohesion intensity [0, 0.05], \n"
-                << "-Alignment intensity [0, 0.5], \n"
-                << "-Separation intensity [0.2, 1], \n"
-                << "-Interaction distance [20, 100], \n"
-                << "-Separation distance [5, 20], \n"
-                << "-Number of boids [3, 1000]. \n";
+      std::cout << "- Insert flock's parameters in the following order: \n"
+                << "- Cohesion intensity [0, 0.05], \n"
+                << "- Alignment intensity [0, 0.5], \n"
+                << "- Separation intensity [0.2, 1], \n"
+                << "- Interaction distance [20, 100], \n"
+                << "- Separation distance [5, 20], \n"
+                << "- Number of boids [3, 1000]. \n";
 
       if (!(std::cin >> parameters.c >> parameters.a >> parameters.s
             >> parameters.d >> parameters.ds >> parameters.n)) {
@@ -107,11 +107,11 @@ int main()
     rc->Connect("CloseWindow()", "TApplication", gApplication, "Terminate()");
     app.Run();
 
-  } catch (std::exception const& e) {
+  } catch (std::runtime_error const& e) {
     std::cerr << e.what() << "\n";
     return EXIT_FAILURE;
   } catch (...) {
-    std::cerr << "Caught unknown exception\n";
+    std::cerr << "Caught unknown exception.\n";
     return EXIT_FAILURE;
   }
 }
