@@ -2,6 +2,7 @@
 #define BOID_HPP
 
 #include "vectors.hpp"
+#include <algorithm>
 #include <cmath>
 #include <vector>
 
@@ -19,8 +20,6 @@ class Boid
   bool isPredator_{0};
 
  public:
-  //  Boid() = default;
-
   explicit Boid(Vector p, Vector v)
       : position_{p}
       , velocity_{v}
@@ -73,14 +72,6 @@ class Boid
   void biological_limits();
 };
 
-/*class Predator : public Boid // predator derivata da boid.
-{
- public:
-  explicit Predator(Vector position, Vector velocity)
-      : Boid{position, velocity}
-  {}
-};*/
-
 bool operator==(Boid const&, Boid const&);
 
 struct Parameters
@@ -91,10 +82,10 @@ struct Parameters
   float d;
   float ds;
   int n;
-  
+
   Parameters() = default;
 
-         Parameters(float o, float p, float q, float r, float t, int u)
+  Parameters(float o, float p, float q, float r, float t, int u)
       : c{o}
       , a{p}
       , s{q}
@@ -118,7 +109,6 @@ struct Corrections
   Vector alignment;
   Vector cohesion;
   Vector separation;
-  // Vector separation_predator;
 };
 
 class Flock
@@ -143,18 +133,7 @@ class Flock
   }
 
   void evolution(Boid const&);
-  // Predator predator_evolution(Predator const&) const;
-   
 };
-
-inline void overlapping(std::vector<Boid>& birds, Boid& boid)
-{
-  std::for_each(birds.begin(), birds.end(), [&boid](Boid const& other) {
-    if (other.getPosition() == boid.getPosition()) {
-      boid.setPosition(boid.getPosition() + Vector{generateCoordinate(-1.f, 1.f), generateCoordinate(-1.f, 1.f)});
-    }
-  });
-}
 } // namespace bd
 
 #endif

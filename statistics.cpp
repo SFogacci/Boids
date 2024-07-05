@@ -1,9 +1,7 @@
 #include "statistics.hpp"
 #include "vectors.hpp"
-#include <algorithm>
 #include <cassert>
 #include <chrono>
-#include <cmath>
 #include <iomanip>
 #include <numeric>
 #include <sstream>

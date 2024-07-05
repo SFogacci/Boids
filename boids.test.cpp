@@ -2,7 +2,6 @@
 
 #include "boid.hpp"
 #include "doctest.h"
-#include "statistics.hpp"
 
 TEST_CASE("One boid, all rules")
 {

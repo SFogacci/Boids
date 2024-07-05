@@ -5,12 +5,8 @@
 #include "graphics.hpp"
 #include "input.hpp"
 #include "statistics.hpp"
-#include <stdlib.h>
-#include <algorithm>
 #include <fstream>
 #include <iostream>
-#include <random>
-#include <stdexcept>
 
 int main()
 {
@@ -26,17 +22,16 @@ int main()
     int n;
     bd::Parameters parameters;
     std::string filename;
-    // std::runtime_error e{"Invalid input."};
 
     std::cin >> cmd;
     if (cmd == 'p') {
-      std::cout << "Insert flock's parameters in the following order: \n"
-                << "Cohesion intensity [0,0.1], \n"
-                << "Alignment intensity [0,1], \n"
-                << "Separation intensity [0,1], \n"
-                << "Interaction distance [20, 100], \n"
-                << "Separation distance [5, 20], \n"
-                << "Number of boids [3, 300]. \n";
+      std::cout << "-Insert flock's parameters in the following order: \n"
+                << "-Cohesion intensity [0, 0.1], \n"
+                << "-Alignment intensity [0, 1], \n"
+                << "-Separation intensity [0, 1], \n"
+                << "-Interaction distance [20, 100], \n"
+                << "-Separation distance [5, 20], \n"
+                << "-Number of boids [3, 300]. \n";
 
       if (!(std::cin >> parameters.c >> parameters.a >> parameters.s >> parameters.d >> parameters.ds >> parameters.n)) {
         throw std::runtime_error("Invalid input type.");
@@ -53,10 +48,6 @@ int main()
       while (infile >> x) {
         par.push_back(x);
       }
-      // if (par.size() != 5) {
-      //   throw std::runtime_error{"Incorrect file content."};
-      // }
-      // std::cout << "Input file read successfully" << '\n';
       bd::Parameters read_parameters(par, n);
       parameters = read_parameters;
     }
@@ -65,8 +56,6 @@ int main()
       return EXIT_SUCCESS;
     } else {
       throw std::runtime_error{"Invalid command.\n"};
-      // std::cout << "Bad format, insert a new command\n";
-      // std::cin.clear();
     }
 
     // checks if input type is valid
@@ -75,11 +64,6 @@ int main()
       throw std::runtime_error{"Input not in range.\n"}; // if input not in range
     }
 
-    //     break;
-    //   }
-    // }
-
-    // std::cout << "Remember to press the Escape Key to pause the simulation. \n";
     std::vector<bd::Boid> birds = bd::createPreys(parameters.n);
     bd::Boid predator           = bd::createBird(true);
     bd::Flock flock{birds, parameters};
@@ -114,7 +98,6 @@ int main()
     rc->Connect("CloseWindow()", "TApplication", gApplication, "Terminate()");
     app.Run();
 
-    // Serve qualcosa per chiudere la simulazione
   } catch (std::exception const& e) {
     std::cerr << e.what() << "\n";
     return EXIT_FAILURE;
