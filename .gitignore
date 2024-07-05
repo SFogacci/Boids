@@ -1,0 +1,10 @@
+build
+.vscode
+a.out
+betterevolution.cpp
+graphing.cpp
+graphing
+predator.cpp
+statistics.txt
+*.pdf
+.gitignore
