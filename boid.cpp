@@ -140,8 +140,8 @@ void Flock::evolution(Boid const& p)
 
     modifiedBoid.setPosition(modifiedBoid.getPosition()
                              + modifiedBoid.getVelocity());
-    modifiedBoid.correctBorders();
     overlapping(modifiedFlock);
+    modifiedBoid.correctBorders();
     modifiedFlock.push_back(modifiedBoid);
   }
 

@@ -69,8 +69,8 @@ int main()
       throw std::runtime_error{"Input not in range.\n"};
     }
 
-    std::vector<bd::Boid> birds = bd::createPreys(parameters.n);
-    bd::Boid predator           = bd::createBird(true);
+    std::vector<bd::Boid> birds{bd::createPreys(parameters.n)};
+    bd::Boid predator{bd::createBird(true)};
     bd::Flock flock{birds, parameters};
     bd::gameLoop(flock, predator);
 
