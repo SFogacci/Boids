@@ -3,6 +3,7 @@
 
 #include "TGraph.h"
 #include "boid.hpp"
+#include <string>
 #include "SFML/Graphics.hpp"
 
 namespace bd {

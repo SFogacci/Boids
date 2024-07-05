@@ -10,7 +10,7 @@ bool operator==(Boid const& a, Boid const& b)
   return (a.getVelocity() == b.getVelocity() && a.getPosition() == b.getPosition());
 }
 
-void Boid::correct_borders()
+void Boid::correctBorders()
 {
   if (position_.x > windowDimensions.x) {
     position_.x -= windowDimensions.x;
@@ -38,7 +38,7 @@ void Boid::biologicalLimits()
   }
 }
 
-Boid Boid::predator_evolution(Flock const& f) const
+Boid Boid::predatorEvolution(Flock const& f) const
 {
   assert(isPredator_);
   auto copy{*this};
@@ -83,21 +83,21 @@ void Flock::evolution(Boid const& p)
 
   for (Boid const& boid : flock_) {
     Boid modified_boid(boid);
-    if (boid.hasNeighbour(p, flock_parameters_.d)) {
-      const auto separation_predator = flock_parameters_.s * toroidalDifference(boid.getPosition(), p.getPosition());
-      modified_boid.setVelocity(boid.getVelocity() + flock_parameters_.s * separation_predator); // così moltiplichiamo 2 volte per s
+    if (boid.hasNeighbour(p, flockParameters_.d)) {
+      const auto separation_predator = flockParameters_.s * toroidalDifference(boid.getPosition(), p.getPosition());
+      modified_boid.setVelocity(boid.getVelocity() + flockParameters_.s * separation_predator); // così moltiplichiamo 2 volte per s
     }
 
-    const auto neighbours = static_cast<float>(std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) { return boid.hasNeighbour(other, flock_parameters_.d); }));
+    const auto neighbours = static_cast<float>(std::count_if(flock_.begin(), flock_.end(), [&](auto const& other) { return boid.hasNeighbour(other, flockParameters_.d); }));
     assert(neighbours >= 0.f);
     if (neighbours != 0.f) {
       auto corrections = std::accumulate(flock_.begin(), flock_.end(), Corrections{}, [&](auto& sums, auto const& other) {
-        if (boid.hasNeighbour(other, flock_parameters_.d)) {
+        if (boid.hasNeighbour(other, flockParameters_.d)) {
           auto distance = toroidalDifference(other.getPosition(), boid.getPosition());
           sums.alignment += other.getVelocity();
           sums.cohesion += distance;
-          if (boid.hasNeighbour(other, flock_parameters_.ds)) {
-            normalize(distance, flock_parameters_.ds / norm(distance));
+          if (boid.hasNeighbour(other, flockParameters_.ds)) {
+            normalize(distance, flockParameters_.ds / norm(distance));
             sums.separation += distance;
           }
         }
@@ -107,14 +107,14 @@ void Flock::evolution(Boid const& p)
       corrections.alignment = corrections.alignment / neighbours - boid.getVelocity();
       corrections.cohesion  = corrections.cohesion / neighbours;
 
-      modified_boid.setVelocity(modified_boid.getVelocity() + flock_parameters_.a * corrections.alignment + flock_parameters_.c * corrections.cohesion
-                                - flock_parameters_.s * corrections.separation);
+      modified_boid.setVelocity(modified_boid.getVelocity() + flockParameters_.a * corrections.alignment + flockParameters_.c * corrections.cohesion
+                                - flockParameters_.s * corrections.separation);
     }
-    modified_boid.biological_limits();
+    modified_boid.biologicalLimits();
     modified_boid.setPosition(modified_boid.getPosition() + modified_boid.getVelocity());
-    modified_boid.correct_borders();
-    overlapping(modified_flock, modified_boid);
-    modified_flock.push_back(modified_boid);
+    modified_boid.correctBorders();
+    overlapping(modifiedFlock, modified_boid);
+    modifiedFlock.push_back(modified_boid);
   }
 
   flock_ = modifiedFlock;

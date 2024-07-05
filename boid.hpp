@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 
 namespace bd {
 
@@ -16,7 +17,7 @@ class Boid
 {
  private:
   Vector position_;
-  Vector velocity_{0.f, 0.f};
+  Vector velocity_{0.f, 0.f}; // value initialization not necessary
   bool isPredator_{0};
 
  public:
@@ -66,10 +67,10 @@ class Boid
     velocity_ = v;
   }
 
-  Boid predator_evolution(Flock const&) const;
-  void correct_borders();
+  Boid predatorEvolution(Flock const&) const;
+  void correctBorders();
   bool hasNeighbour(Boid const&, float) const;
-  void biological_limits();
+  void biologicalLimits();
 };
 
 bool operator==(Boid const&, Boid const&);
@@ -114,12 +115,12 @@ struct Corrections
 class Flock
 {
   std::vector<Boid> flock_;
-  Parameters flock_parameters_;
+  Parameters flockParameters_;
 
  public:
   explicit Flock(std::vector<Boid> v, Parameters p)
       : flock_{v}
-      , flock_parameters_{p}
+      , flockParameters_{p}
   {}
 
   auto const& getFlock() const
@@ -129,7 +130,7 @@ class Flock
 
   auto const& getFlockParameters() const
   {
-    return flock_parameters_;
+    return flockParameters_;
   }
 
   void evolution(Boid const&);

@@ -2,6 +2,7 @@
 #include "TCanvas.h"
 #include "TGraph.h"
 #include "TRootCanvas.h"
+#include "TSystem.h"
 #include "graphics.hpp"
 #include "input.hpp"
 #include "statistics.hpp"
@@ -59,8 +60,10 @@ int main()
     }
 
     // checks if input type is valid
-    if (parameters.c < 0 || parameters.c > 1 || parameters.a < 0 || parameters.a > 1 || parameters.s < 0 || parameters.s > 1 || parameters.d < 0 || parameters.d > 100
-        || parameters.ds < 0 || parameters.ds > 20 || parameters.n < 0 || parameters.n > 300) {
+    if (parameters.c < 0 || parameters.c > 0.1 || parameters.a < 0
+          || parameters.a > 1 || parameters.s < 0 || parameters.s > 1
+          || parameters.d < 20 || parameters.d > 100 || parameters.ds < 5
+          || parameters.ds > 20 || parameters.n < 3 || parameters.n > 300) {
       throw std::runtime_error{"Input not in range.\n"}; // if input not in range
     }
 
@@ -71,6 +74,10 @@ int main()
 
     // drawing graphs of distance and speed over time
     TApplication app("app", 0, nullptr);
+    const TString subDir{"statistics"};
+    if (gSystem->AccessPathName(subDir)) {
+      gSystem->mkdir(subDir);
+    }
     const auto dim{static_cast<Int_t>(bd::windowDimensions.y)};
     TCanvas canvas("Statistics", "Statistics", 0, 0, dim, dim);
     canvas.Divide(2, 2);
@@ -93,7 +100,8 @@ int main()
 
     canvas.Modified();
     canvas.Update();
-    canvas.Print(bd::fileName().c_str());
+    const auto path{"statistics/" + bd::fileName()};
+    canvas.SaveAs(path.c_str());
     TRootCanvas* rc{static_cast<TRootCanvas*>(canvas.GetCanvasImp())};
     rc->Connect("CloseWindow()", "TApplication", gApplication, "Terminate()");
     app.Run();

@@ -2,13 +2,13 @@
 #define STATISTICS_HPP
 
 #include "boid.hpp"
-#include "string"
+#include <string>
 
 namespace bd {
 struct Stats
 {
-  double mean;
-  double sigma;
+  double mean{};
+  double sigma{};
 };
 
 struct Results

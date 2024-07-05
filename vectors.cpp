@@ -58,8 +58,8 @@ void normalize(Vector& v, float f) // avoid division by zero
 }
 
 Vector toroidalDifference(Vector const& a, Vector const& b)
-                                              
-{ 
+
+{
   float xDiff = a.x - b.x;
   float yDiff = a.y - b.y;
 
