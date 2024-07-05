@@ -74,15 +74,16 @@ Boid Boid::predatorEvolution(Flock const& f) const
 
 void overlapping(std::vector<Boid>& birds)
 {
-  for (Boid& boid : birds) {
-    std::for_each(birds.begin(), birds.end(), [&](Boid const& other) {
-      if (other.getPosition() == boid.getPosition() && (&other != &boid)) {
-        boid.setPosition(
-            boid.getPosition()
+  const auto N{birds.size()};
+  for (std::size_t i = 0; i != N; ++i) {
+    for (std::size_t j = i + 1; j < N; ++j) {
+      if (birds[i].getPosition() == birds[j].getPosition()) {
+        birds[i].setPosition(
+            birds[i].getPosition()
             + Vector{generateCoordinate(-minimumSpeed, minimumSpeed),
                      generateCoordinate(-minimumSpeed, minimumSpeed)});
       }
-    });
+    }
   }
 }
 
