@@ -28,13 +28,13 @@ Vector operator-(Vector const& a, Vector const& b)
 
 Vector operator/(Vector const& v, float d)
 {
-  assert(d != 0); // da ottimizzare con exception ad esempio
+  assert(d != 0);
   return 1.f / d * v;
 }
 
-bool operator==(Vector const& v, Vector const& p)
+bool operator==(Vector const& a, Vector const& b)
 {
-  return (v.x == p.x && v.y == p.y);
+  return (a.x == b.x && a.y == b.y);
 }
 
 float norm(Vector const& v)
@@ -49,30 +49,28 @@ float generateCoordinate(float a, float b)
   return dis(rd);
 }
 
-void normalize(Vector& v, float f)  // avoid division by zero
+void normalize(Vector& v, float f) // avoid division by zero
 {
-  if (norm(v) != 0){
-  v = f / norm(v) * v;}
-  else {
-
+  if (norm(v) != 0) {
+    v = f / norm(v) * v;
+  } else {
   }
 }
 
-
-Vector toroidalDifference(Vector const& pos1, Vector const& pos2) 
+Vector toroidalDifference(Vector const& a, Vector const& b)
                                               
 { 
-  float xDiff = pos1.x - pos2.x; 
-  float yDiff = pos1.y - pos2.y;
+  float xDiff = a.x - b.x;
+  float yDiff = a.y - b.y;
 
   if (std::abs(xDiff) > windowDimensions.x / 2.f) {
     xDiff = windowDimensions.x - std::abs(xDiff);
-    xDiff *= (pos1.x > pos2.x) ? -1.f : 1.f;
+    xDiff *= (a.x > b.x) ? -1.f : 1.f;
   }
 
   if (std::abs(yDiff) > windowDimensions.y / 2.f) {
     yDiff = windowDimensions.y - std::abs(yDiff);
-    yDiff *= (pos1.y > pos2.y) ? -1.f : 1.f;
+    yDiff *= (a.y > b.y) ? -1.f : 1.f;
   }
 
   return Vector{xDiff, yDiff};

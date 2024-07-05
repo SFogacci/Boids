@@ -30,9 +30,9 @@ bool Boid::hasNeighbour(Boid const& b, float d) const
   return norm(distance) < d && (&b != this);
 }
 
-void Boid::biological_limits()
+void Boid::biologicalLimits()
 {
-  const float maximum_speed = 5.f;
+  const float maximum_speed{5.f};
   if (norm(velocity_) > maximum_speed) {
     normalize(velocity_, maximum_speed);
   }
@@ -44,7 +44,7 @@ Boid Boid::predator_evolution(Flock const& f) const
   auto copy{*this};
   const auto flock{f.getFlock()};
   const auto parameters{f.getFlockParameters()};
-  const float d = 2.f * parameters.d;
+  const float d{2.f * parameters.d};
 
   const auto preys = static_cast<float>(std::count_if(flock.begin(), flock.end(), [&](auto const& boid) { return hasNeighbour(boid, d); }));
   assert(preys >= 0.f);
@@ -58,11 +58,11 @@ Boid Boid::predator_evolution(Flock const& f) const
       return sum;
     });
     const auto hunting        = toroidalDifference(center_of_mass / preys, position_);
-    copy.setVelocity(velocity_ + hunting);
+    copy.setVelocity(velocity_ + hunting); // Nessun parametro?
+    copy.biologicalLimits(); //dentro al caso di prede non nulle, altrimenti la velocità non varia
   }
-  copy.biological_limits();
   copy.setPosition(position_ + copy.getVelocity());
-  copy.correct_borders();
+  copy.correctBorders();
   return copy;
 }
 
@@ -78,8 +78,8 @@ inline void overlapping(std::vector<Boid>& birds, Boid& boid)
 void Flock::evolution(Boid const& p)
 {
   assert(p.isPredator());
-  std::vector<Boid> modified_flock;
-  modified_flock.reserve(flock_.size());
+  std::vector<Boid> modifiedFlock;
+  modifiedFlock.reserve(flock_.size());
 
   for (Boid const& boid : flock_) {
     Boid modified_boid(boid);
@@ -117,7 +117,7 @@ void Flock::evolution(Boid const& p)
     modified_flock.push_back(modified_boid);
   }
 
-  flock_ = modified_flock;
+  flock_ = modifiedFlock;
 }
 
 } // namespace bd

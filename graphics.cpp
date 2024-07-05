@@ -5,7 +5,7 @@
 namespace bd {
 sf::ConvexShape birdShape;
 sf::ConvexShape predatorShape;
-sf::ConvexShape setShape(bd::Boid const& b) // passaggio by const ref
+sf::ConvexShape setShape(bd::Boid const& b)
 {
   if (!b.isPredator()) {
     birdShape.setPointCount(3);
@@ -62,9 +62,9 @@ void gameLoop(Flock& flock, Boid& p)
     }
 
     if (active) {
-      Boid modified_predator = p.predator_evolution(flock);
+      Boid modifiedPredator = p.predatorEvolution(flock);
       flock.evolution(p);
-      p = modified_predator;
+      p = modifiedPredator;
 
       window.clear(sf::Color(113, 188, 225, 255)); 
 
