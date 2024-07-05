@@ -3,13 +3,9 @@
 
 #include "vectors.hpp"
 #include <algorithm>
-#include <cmath>
 #include <vector>
-#include <algorithm>
 
 namespace bd {
-
-const float pi = std::atan(1.f) * 4;
 
 class Flock;
 
@@ -17,16 +13,16 @@ class Boid
 {
  private:
   Vector position_;
-  Vector velocity_{0.f, 0.f}; // value initialization not necessary
+  Vector velocity_{};
   bool isPredator_{0};
 
  public:
-  explicit Boid(Vector p, Vector v)
+  explicit Boid(Vector const& p, Vector const& v)
       : position_{p}
       , velocity_{v}
   {}
 
-  Boid(Vector p, Vector v, bool isPred)
+  explicit Boid(Vector const& p, Vector const& v, bool isPred)
       : position_{p}
       , velocity_{v}
       , isPredator_{isPred}
@@ -37,12 +33,12 @@ class Boid
     return isPredator_;
   }
 
-  auto getPosition() const
+  auto const& getPosition() const
   {
     return position_;
   }
 
-  auto getVelocity() const
+  auto const& getVelocity() const
   {
     return velocity_;
   }
@@ -86,16 +82,16 @@ struct Parameters
 
   Parameters() = default;
 
-  Parameters(float o, float p, float q, float r, float t, int u)
-      : c{o}
-      , a{p}
-      , s{q}
-      , d{r}
-      , ds{t}
-      , n{u}
+  explicit Parameters(float C, float A, float S, float D, float Ds, int N)
+      : c{C}
+      , a{A}
+      , s{S}
+      , d{D}
+      , ds{Ds}
+      , n{N}
   {}
 
-  explicit Parameters(std::vector<float> v, int p)
+  explicit Parameters(std::vector<float> const& v, int p)
       : c{v[0]}
       , a{v[1]}
       , s{v[2]}
@@ -112,13 +108,15 @@ struct Corrections
   Vector separation;
 };
 
+void overlapping(std::vector<Boid>& birds);
+
 class Flock
 {
   std::vector<Boid> flock_;
   Parameters flockParameters_;
 
  public:
-  explicit Flock(std::vector<Boid> v, Parameters p)
+  explicit Flock(std::vector<Boid> const& v, Parameters const& p)
       : flock_{v}
       , flockParameters_{p}
   {}

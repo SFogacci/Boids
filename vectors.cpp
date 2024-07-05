@@ -49,25 +49,22 @@ float generateCoordinate(float a, float b)
   return dis(rd);
 }
 
-void normalize(Vector& v, float f) // avoid division by zero
+void normalize(Vector& v, float f)
 {
   if (norm(v) != 0) {
     v = f / norm(v) * v;
-  } else {
   }
 }
 
 Vector toroidalDifference(Vector const& a, Vector const& b)
-
 {
-  float xDiff = a.x - b.x;
-  float yDiff = a.y - b.y;
-
+  float xDiff{a.x - b.x};
   if (std::abs(xDiff) > windowDimensions.x / 2.f) {
     xDiff = windowDimensions.x - std::abs(xDiff);
     xDiff *= (a.x > b.x) ? -1.f : 1.f;
   }
 
+  float yDiff{a.y - b.y};
   if (std::abs(yDiff) > windowDimensions.y / 2.f) {
     yDiff = windowDimensions.y - std::abs(yDiff);
     yDiff *= (a.y > b.y) ? -1.f : 1.f;

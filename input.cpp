@@ -9,10 +9,10 @@ auto createBird(bool isPredator)
   Vector position{x, y};
   Boid bird{position, {}, isPredator};
   while (true) {
-    float v_x = generateCoordinate(-5.f, 5.f);
-    float v_y = generateCoordinate(-5.f, 5.f);
+    float v_x = generateCoordinate(-maximumSpeed, maximumSpeed);
+    float v_y = generateCoordinate(-maximumSpeed, maximumSpeed);
     Vector velocity{v_x, v_y};
-    if (norm(velocity) > 0.5) { // && norm(velocity) < 5.f, così possiamo togliere il controllo per la velocità del predator e metterlo nel for loop
+    if (norm(velocity) > minimumSpeed && norm(velocity) < maximumSpeed) {
       bird.setVelocity(velocity);
       return bird;
     }
@@ -27,8 +27,8 @@ auto createPreys(int n)
   for (int i = 0; i != n; ++i) {
     birds.push_back(createBird(0));
   }
+  overlapping(birds);
   return birds;
 }
-
 
 } // namespace bd

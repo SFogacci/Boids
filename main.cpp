@@ -12,12 +12,13 @@
 int main()
 {
   try {
-    std::cout << "Valid commands: \n"
-              << "- provide data [p]\n"
-              << "- provide the number of boids and use sample parameters [r "
-                 "FILE_NAME n_NUMBER]\n"
-              << "- quit [q]\n"
-              << "Once started, press Escape Key to pause/resume the simulation. \n";
+    std::cout
+        << "Valid commands: \n"
+        << "- provide data [p]\n"
+        << "- provide the number of boids and use sample parameters [r "
+           "FILE_NAME n_NUMBER]\n"
+        << "- quit [q]\n"
+        << "Once started, press Escape Key to pause/resume the simulation. \n";
 
     char cmd;
     int n;
@@ -27,19 +28,21 @@ int main()
     std::cin >> cmd;
     if (cmd == 'p') {
       std::cout << "-Insert flock's parameters in the following order: \n"
-                << "-Cohesion intensity [0, 0.1], \n"
-                << "-Alignment intensity [0, 1], \n"
-                << "-Separation intensity [0, 1], \n"
+                << "-Cohesion intensity [0, 0.05], \n"
+                << "-Alignment intensity [0, 0.5], \n"
+                << "-Separation intensity [0.2, 1], \n"
                 << "-Interaction distance [20, 100], \n"
                 << "-Separation distance [5, 20], \n"
-                << "-Number of boids [3, 300]. \n";
+                << "-Number of boids [3, 1000]. \n";
 
-      if (!(std::cin >> parameters.c >> parameters.a >> parameters.s >> parameters.d >> parameters.ds >> parameters.n)) {
+      if (!(std::cin >> parameters.c >> parameters.a >> parameters.s
+            >> parameters.d >> parameters.ds >> parameters.n)) {
         throw std::runtime_error("Invalid input type.");
       }
     }
 
     else if (cmd == 'r' && std::cin >> filename && std::cin >> n) {
+      filename = "sample_parameters/" + filename;
       std::ifstream infile{filename};
       if (!infile) {
         throw std::runtime_error{"Impossible to open file."};
@@ -59,12 +62,11 @@ int main()
       throw std::runtime_error{"Invalid command.\n"};
     }
 
-    // checks if input type is valid
-    if (parameters.c < 0 || parameters.c > 0.1 || parameters.a < 0
-          || parameters.a > 1 || parameters.s < 0 || parameters.s > 1
-          || parameters.d < 20 || parameters.d > 100 || parameters.ds < 5
-          || parameters.ds > 20 || parameters.n < 3 || parameters.n > 300) {
-      throw std::runtime_error{"Input not in range.\n"}; // if input not in range
+    if (parameters.c < 0 || parameters.c > 0.05 || parameters.a < 0
+        || parameters.a > 0.5 || parameters.s < 0.2 || parameters.s > 1
+        || parameters.d < 20 || parameters.d > 100 || parameters.ds < 5
+        || parameters.ds > 20 || parameters.n < 3 || parameters.n > 1000) {
+      throw std::runtime_error{"Input not in range.\n"};
     }
 
     std::vector<bd::Boid> birds = bd::createPreys(parameters.n);
@@ -72,7 +74,6 @@ int main()
     bd::Flock flock{birds, parameters};
     bd::gameLoop(flock, predator);
 
-    // drawing graphs of distance and speed over time
     TApplication app("app", 0, nullptr);
     const TString subDir{"statistics"};
     if (gSystem->AccessPathName(subDir)) {
