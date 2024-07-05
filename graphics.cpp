@@ -92,7 +92,7 @@ void gameLoop(Flock& flock, Boid& p)
       outfile << iteration << ' ' << stats.speedStats.mean << ' '
               << stats.speedStats.sigma << ' ' << stats.distanceStats.mean
               << ' ' << stats.distanceStats.sigma << '\n';
-      // std::cout << "Iteration: " << iteration << '\n' << printStatistics(stats);
+      std::cout << "Iteration: " << iteration << '\n' << printStatistics(stats);
       ++iteration;
     }
   }
